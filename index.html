@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>다국어 안전시스템 v81</title>
+<title>다국어 안전시스템 v83</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -1486,42 +1486,97 @@
     return plainOut;
   }
 
+  // v82: 번역 엔진 여러 개 + 과부하 방지
+  //  1) 브라우저 내장 번역(있으면, 무료·무제한)  2) 구글  3) 구글(예비)  4) Lingva 2곳  5) MyMemory
+  //  구글이 "요청 과다"로 막히면 10분간 쉬게 해서 더 막히지 않게 함
+  let googleCoolUntil = 0;
+  const builtinTr = {};
+  async function builtinTranslate(text, target, src){
+    if(!('Translator' in self) || src === 'auto') return null;
+    const tl = (target === 'zh-CN') ? 'zh' : target;
+    const key = src + '>' + tl;
+    const st = builtinTr[key];
+    if(st && st.failAt && Date.now() - st.failAt < 60000) return null;
+    try{
+      if(!st || st.failAt){
+        const av = await Translator.availability({ sourceLanguage:src, targetLanguage:tl });
+        if(av === 'unavailable'){ builtinTr[key] = { failAt: Date.now() + 3600000 }; return null; }
+        builtinTr[key] = { p: Translator.create({ sourceLanguage:src, targetLanguage:tl }) };
+      }
+      const tr = await builtinTr[key].p;
+      const out = await tr.translate(text);
+      if(out && !window.__builtinOK){
+        window.__builtinOK = true;
+        transStatusEl.textContent = '🟢 PC 내장 번역 사용 중 (무료·무제한·인터넷 끊겨도 번역)';
+      }
+      return out || null;
+    }catch(e){ builtinTr[key] = { failAt: Date.now() }; return null; }
+  }
+  function lingvaCode(c){ return c === 'zh-CN' ? 'zh' : (c === 'auto' ? 'auto' : c); }
   async function translateRaw(text, target, src){
     src = src || 'ko';
-    if(!navigator.onLine) return '[오프라인 - 번역 불가]';
+    if(!navigator.onLine){
+      const off = await builtinTranslate(text, target, src);
+      return off || '[오프라인 - 번역 불가]';
+    }
     let lastErr = '';
-    for(let attempt=0; attempt<3; attempt++){
-      try{
-        const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl='+src+'&tl='+target+'&dt=t&q='+encodeURIComponent(text);
-        const res = await fetch(url);
-        if(!res.ok) throw new Error('HTTP '+res.status);
-        const data = await res.json();
-        const out = data[0].map(function(x){ return x[0]; }).join('');
-        if(out) return out;
-        throw new Error('빈 응답');
-      }catch(err){
-        lastErr = err.message || '연결 실패';
-        await new Promise(function(r){ setTimeout(r, 300 + attempt*300); });
+    // 1) 브라우저 내장 번역
+    const b = await builtinTranslate(text, target, src);
+    if(b) return b;
+    // 2) 구글 (막혀 있으면 건너뜀)
+    if(Date.now() > googleCoolUntil){
+      for(let attempt = 0; attempt < 2; attempt++){
+        try{
+          const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl='+src+'&tl='+target+'&dt=t&q='+encodeURIComponent(text);
+          const res = await fetch(url);
+          if(res.status === 429){ googleCoolUntil = Date.now() + 600000; lastErr = '구글 요청 과다'; break; }
+          if(!res.ok) throw new Error('HTTP '+res.status);
+          const data = await res.json();
+          const out = data[0].map(function(x){ return x[0]; }).join('');
+          if(out){ transStatusEl.textContent = ''; return out; }
+          throw new Error('빈 응답');
+        }catch(err){
+          lastErr = err.message || '연결 실패';
+          await new Promise(function(r){ setTimeout(r, 400); });
+        }
+      }
+      // 3) 구글 예비 주소
+      if(Date.now() > googleCoolUntil){
+        try{
+          const url = 'https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl='+src+'&tl='+target+'&q='+encodeURIComponent(text);
+          const res = await fetch(url);
+          if(res.ok){
+            const data = await res.json();
+            let out = '';
+            if(Array.isArray(data)) out = Array.isArray(data[0]) ? data[0].map(function(x){ return Array.isArray(x) ? x[0] : x; }).join('') : String(data[0] || '');
+            if(out){ transStatusEl.textContent = ''; return out; }
+          } else {
+            lastErr = 'HTTP ' + res.status;
+            if(res.status === 429) googleCoolUntil = Date.now() + 600000;
+          }
+        }catch(err){ lastErr = err.message || lastErr; }
       }
     }
-    try{
-      const url = 'https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl='+src+'&tl='+target+'&q='+encodeURIComponent(text);
-      const res = await fetch(url);
-      if(res.ok){
-        const data = await res.json();
-        let out = '';
-        if(Array.isArray(data)) out = Array.isArray(data[0]) ? data[0].map(function(x){ return Array.isArray(x) ? x[0] : x; }).join('') : String(data[0] || '');
-        if(out) return out;
-      } else { lastErr = 'HTTP ' + res.status; }
-    }catch(err){ lastErr = err.message || lastErr; }
+    // 4) Lingva (구글 번역 결과를 대신 가져다주는 무료 서버 2곳)
+    const lingvaHosts = ['https://lingva.ml', 'https://lingva.lunar.icu'];
+    for(const h of lingvaHosts){
+      try{
+        const res = await fetch(h + '/api/v1/' + lingvaCode(src) + '/' + lingvaCode(target) + '/' + encodeURIComponent(text.replace(/\//g, ' ')));
+        if(res.ok){
+          const d = await res.json();
+          if(d && d.translation){ transStatusEl.textContent = ''; return d.translation; }
+        }
+      }catch(err){}
+    }
+    // 5) MyMemory (하루 사용량 제한 있음)
     try{
       const url2 = 'https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair='+(src==='auto'?'en':src)+'|'+target;
       const res2 = await fetch(url2);
       const data2 = await res2.json();
       if(data2.responseData && data2.responseData.translatedText && String(data2.responseStatus) === '200') return data2.responseData.translatedText;
-      if(data2 && data2.responseDetails) lastErr = String(data2.responseDetails).slice(0,40);
+      if(data2 && data2.responseDetails) lastErr = /USED ALL/i.test(data2.responseDetails) ? '예비 서버 하루 사용량 초과' : String(data2.responseDetails).slice(0,40);
     }catch(err){ lastErr = err.message || lastErr; }
-    transStatusEl.textContent = '⚠️ 번역 서버 연결 실패 (' + lastErr + ')';
+    transStatusEl.textContent = '⚠️ 번역 서버가 잠시 막혔습니다 (' + lastErr + ') — 10~30분 뒤 자동으로 풀립니다';
     return '[번역 실패 - 잠시 후 다시]';
   }
 
@@ -1629,7 +1684,9 @@
   // 말하는 도중에도 미리 번역해 기다리는 시간을 줄인다
   let preTimer = null, preLast = '';
   function schedulePreview(koText){
-    if(koText.length < 3 || koText === preLast) return;
+    const fast = !!window.__builtinOK;   // PC 내장 번역이면 무제한이라 빠르게
+    if(koText.length < (fast ? 3 : 6) || koText === preLast) return;
+    if(!fast && Date.now() < googleCoolUntil) return;   // 번역 서버가 쉬는 중이면 미리 번역 안 함
     clearTimeout(preTimer);
     preTimer = setTimeout(function(){
       preLast = koText;
@@ -1640,7 +1697,7 @@
           if(cell && cur && cur.textContent.indexOf(koText.slice(0,5)) === 0) cell.textContent = (t.charAt(0)==='[') ? '' : t;
         }).catch(function(){});
       });
-    }, 350);
+    }, fast ? 350 : 1200);
   }
 
   function renderLiveCaption(koText, isFinal){
@@ -2579,6 +2636,12 @@ async function srtPretranslateAll(){
         if(t && t.charAt(0) !== '[') j.s.srt.tr[j.code][j.i] = t;
       }catch(e){}
       done++;
+      // v82: 번역 서버 과부하 방지 — 천천히 보내고, 서버가 쉬는 중이면 기다림
+      await new Promise(function(r){ setTimeout(r, 300); });
+      while(tok === srtJobToken && typeof googleCoolUntil !== 'undefined' && Date.now() < googleCoolUntil && !('Translator' in self)){
+        srtSetStatus('⏸ 번역 서버 대기 중 — 잠시 후 자동으로 이어서 번역합니다');
+        await new Promise(function(r){ setTimeout(r, 15000); });
+      }
       if(done % 6 === 0 || done === total){
         srtSetStatus('⏳ 자막 번역 준비 ' + Math.round(done/total*100) + '% (' + done + '/' + total + ')');
         srtSaveCache(j.s);
@@ -2586,7 +2649,7 @@ async function srtPretranslateAll(){
       }
     }
   }
-  await Promise.all([worker(), worker(), worker()]);
+  await Promise.all([worker(), worker()]);
   if(tok !== srtJobToken) return;
   slides.forEach(function(s){ if(s.srt) srtSaveCache(s); });
   srtSetStatus();
@@ -2899,6 +2962,20 @@ function srtEchoLike(txt){
 document.addEventListener('pointerdown', function(){
   try{ if(typeof micCtx !== 'undefined' && micCtx && micCtx.state === 'suspended') micCtx.resume(); }catch(e){}
 }, true);
+</script>
+
+<script>
+// v83: 화면을 처음 누를 때 PC 내장 번역 언어팩을 미리 준비 (브라우저가 누름 동작이 있어야 내려받기를 허락함)
+(function(){
+  if(!('Translator' in self)) return;
+  let done = false;
+  document.addEventListener('pointerdown', function(){
+    if(done) return; done = true;
+    try{
+      (selectedTransCodes || []).forEach(function(code){ builtinTranslate('안전모를 착용하세요', code, 'ko'); });
+    }catch(e){}
+  }, true);
+})();
 </script>
 </body>
 </html>
