@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>다국어 안전시스템 v83</title>
+<title>다국어 안전시스템 v84</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -2589,7 +2589,7 @@ function srtTryEmbedded(s){
     d.cues.forEach(function(c, i){
       Object.keys(c.tr || {}).forEach(function(code){ if(c.tr[code]) (tr[code] = tr[code] || [])[i] = c.tr[code]; });
     });
-    s.srt = { name:(s.imgName || '영상') + ' (내장 번역)', src:d.src || 'ko', offset:0, tr:tr, embedded:true,
+    s.srt = { name:(s.imgName || '영상') + ' (내장 번역)', src:d.src || 'ko', offset:srtDefaultLead(), tr:tr, embedded:true,
               cues:d.cues.map(function(c){ return { s:+c.s, e:+c.e, t:String(c.t || '') }; }) };
     if(s === slides[currentIndex]){
       srtLastIdx = -2;
@@ -2738,36 +2738,66 @@ function srtRender(force){
 })();
 
 // ---------- 상단 상태칩 (싱크 조절 · 자막 해제) ----------
+// v84: 싱크 조절을 항상 보이게 + "자막 먼저" 0 / 0.5 / 1 / 1.5 / 2 / 3초 바로 선택
+const SRT_LEADS = [0, 0.5, 1, 1.5, 2, 3];
+function srtDefaultLead(){ try{ return parseFloat(localStorage.getItem('srtDefaultLead') || '0') || 0; }catch(e){ return 0; } }
 function srtSetStatus(msg){
   if(!srtStatusEl) return;
   const s = slides[currentIndex];
-  if(!srtActiveFor(s)){ srtStatusEl.style.display = msg ? 'inline-flex' : 'none'; srtStatusEl.innerHTML = msg ? escapeHtml(msg) : ''; return; }
-  const v = (s.srt.offset || 0) - srtClipStart(s.imgName);
+  const active = srtActiveFor(s);
+  const v = active ? Math.round(((s.srt.offset || 0) - srtClipStart(s.imgName)) * 10) / 10 : srtDefaultLead();
   const arrow = 'display:block;width:26px;height:15px;line-height:13px;padding:0;margin:0;background:#075985;color:#fff;border:1px solid #38bdf8;font-size:10px;cursor:pointer;';
+  let opts = SRT_LEADS.map(function(x){
+    return '<option value="' + x + '"' + (Math.abs(x - v) < 0.05 ? ' selected' : '') + '>' + (x === 0 ? '맞춤(0초)' : x + '초 먼저') + '</option>';
+  }).join('');
+  if(!SRT_LEADS.some(function(x){ return Math.abs(x - v) < 0.05; })){
+    opts = '<option value="' + v + '" selected>' + (v > 0 ? v.toFixed(1) + '초 먼저' : Math.abs(v).toFixed(1) + '초 늦게') + '</option>' + opts;
+  }
   srtStatusEl.style.display = 'inline-flex';
-  srtStatusEl.title = '▲ 자막을 더 빨리 / ▼ 자막을 더 늦게 (마우스 휠로도 조절)' + (msg ? '\n' + msg : '');
+  srtStatusEl.style.opacity = active ? '1' : '.6';
+  srtStatusEl.title = active
+    ? '자막이 말보다 늦으면 "먼저"를 크게, 빠르면 ▼로 줄이세요 (▲▼ 0.5초씩 · 마우스 휠 가능)' + (msg ? '\n' + msg : '')
+    : '자막이 들어 있는 영상을 열면 바로 적용됩니다. 여기서 고른 값은 다음에 여는 영상에 기본으로 적용됩니다.';
   srtStatusEl.innerHTML =
-    '<span style="font-weight:bold;">⏱ 싱크</span>' +
-    '<b style="min-width:52px;text-align:center;font-size:14px;color:#fff;">' + (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1) + '초</b>' +
+    '<span style="font-weight:bold;">⏱ 자막 싱크</span>' +
+    '<select data-srtsel="1" style="background:#0c4a6e;color:#fff;border:1px solid #38bdf8;border-radius:6px;font-size:12px;font-weight:bold;padding:1px 4px;cursor:pointer;">' + opts + '</select>' +
     '<span style="display:inline-flex;flex-direction:column;gap:1px;">' +
       '<button type="button" data-srt="0.5" title="자막 더 빨리" style="' + arrow + 'border-radius:5px 5px 0 0;">▲</button>' +
       '<button type="button" data-srt="-0.5" title="자막 더 늦게" style="' + arrow + 'border-radius:0 0 5px 5px;">▼</button>' +
     '</span>' +
-    '<button type="button" data-srt="off" title="자막 연결 해제 (마이크 번역으로 돌아감)" style="margin-left:4px;background:#7f1d1d;color:#fff;border:1px solid #f87171;border-radius:6px;padding:2px 7px;font-size:12px;font-weight:bold;cursor:pointer;">✕</button>';
+    (active ? '<button type="button" data-srt="off" title="자막 연결 해제 (마이크 번역으로 돌아감)" style="margin-left:4px;background:#7f1d1d;color:#fff;border:1px solid #f87171;border-radius:6px;padding:2px 7px;font-size:12px;font-weight:bold;cursor:pointer;">✕</button>' : '') +
+    (msg && active ? '<span style="margin-left:6px;font-size:11px;color:#bae6fd;">' + escapeHtml(msg) + '</span>' : '');
 }
+function srtApplyLead(lead){
+  lead = Math.round(lead * 10) / 10;
+  try{ localStorage.setItem('srtDefaultLead', String(lead)); }catch(e){}
+  const s = slides[currentIndex];
+  if(srtActiveFor(s)){
+    s.srt.offset = srtClipStart(s.imgName) + lead;
+    if(!s.srt.embedded) srtRemember(s);
+    srtRender(true);
+  }
+  srtSetStatus();
+}
+srtStatusEl && srtStatusEl.addEventListener('change', function(e){
+  const sel = e.target.closest('select[data-srtsel]');
+  if(sel) srtApplyLead(parseFloat(sel.value) || 0);
+});
 srtStatusEl && srtStatusEl.addEventListener('wheel', function(e){
   const s = slides[currentIndex];
-  if(!srtActiveFor(s)) return;
   e.preventDefault();
-  s.srt.offset = Math.round(((s.srt.offset || 0) + (e.deltaY < 0 ? 0.5 : -0.5)) * 10) / 10;
-  srtRemember(s); srtSetStatus(); srtRender(true);
+  const cur = srtActiveFor(s) ? ((s.srt.offset || 0) - srtClipStart(s.imgName)) : srtDefaultLead();
+  srtApplyLead(cur + (e.deltaY < 0 ? 0.5 : -0.5));
 }, { passive:false });
 srtStatusEl && srtStatusEl.addEventListener('click', function(e){
   const b = e.target.closest('button[data-srt]');
   if(!b) return;
   const s = slides[currentIndex];
-  if(!srtActiveFor(s)) return;
   const a = b.getAttribute('data-srt');
+  if(!srtActiveFor(s)){
+    if(a !== 'off') srtApplyLead(srtDefaultLead() + parseFloat(a));
+    return;
+  }
   if(a === 'off'){
     if(!confirm('이 영상의 자막 연결을 해제할까요?\n(해제하면 다시 마이크로 번역합니다)')) return;
     srtForget(s); s.srt = null; srtLastIdx = -2;
@@ -2775,11 +2805,8 @@ srtStatusEl && srtStatusEl.addEventListener('click', function(e){
     renderSlide();
     return;
   }
-  // 자막이 영상보다 늦게 나오면 −, 빨리 나오면 +
-  s.srt.offset = Math.round(((s.srt.offset || 0) + parseFloat(a)) * 10) / 10;
-  srtRemember(s);
-  srtSetStatus();
-  srtRender(true);
+  // 자막이 영상보다 늦게 나오면 ▲, 빨리 나오면 ▼
+  srtApplyLead(((s.srt.offset || 0) - srtClipStart(s.imgName)) + parseFloat(a));
 });
 
 // ---------- 파일 열기 (영상·자막 한꺼번에 선택 / 끌어다 놓기) ----------
@@ -2824,7 +2851,7 @@ async function srtOpenFiles(fileList){
     if(!target){ notes.push('⚠️ ' + f.name + ' : 짝이 되는 영상을 찾지 못했습니다 (영상 슬라이드를 띄운 상태에서 다시 선택하세요)'); continue; }
     const sample = cues.slice(0, 30).map(function(c){ return c.t; }).join(' ');
     const src = /[가-힣]/.test(sample) ? 'ko' : 'auto';
-    target.srt = { name:f.name, cues:cues, src:src, offset:offset, tr:{} };
+    target.srt = { name:f.name, cues:cues, src:src, offset:offset + srtDefaultLead(), tr:{} };
     srtLoadCache(target);
     srtRemember(target);
     usedInBatch.add(target);
@@ -2976,6 +3003,11 @@ document.addEventListener('pointerdown', function(){
     }catch(e){}
   }, true);
 })();
+</script>
+
+<script>
+// v84: 영상이 없어도 싱크 칸을 처음부터 보이게
+setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
 </script>
 </body>
 </html>
