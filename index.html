@@ -1965,7 +1965,17 @@
   });
 
   // v85: 휴대폰 판별 — 휴대폰은 음성인식이 켜질 때마다 '띵' 소리가 나므로 자동 재시작을 줄임
-  window.__IS_MOBILE = (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Macintosh/.test(navigator.userAgent)));
+  // v86: 크롬 '데스크톱 사이트' 모드에서도 휴대폰으로 인식되도록 터치 화면 여부로도 판별
+  window.__IS_MOBILE = (function(){
+    try{
+      if(/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) return true;
+      if(navigator.userAgentData && navigator.userAgentData.mobile) return true;
+      if(navigator.maxTouchPoints > 0 && window.matchMedia && matchMedia('(pointer: coarse)').matches) return true;
+    }catch(e){}
+    return false;
+  })();
+  // v86: 새 버전이 제대로 열렸는지 확인용 표시
+  try{ transStatusEl.textContent = 'v86 · ' + (window.__IS_MOBILE ? '📱 휴대폰 모드' : '💻 PC 모드'); }catch(e){}
   function startLiveTranslate(){
     if(liveOn) return;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
