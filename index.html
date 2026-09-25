@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>다국어 안전시스템 v90</title>
+<title>다국어 안전시스템 v92</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -778,12 +778,33 @@
 
   const TTS_LANG_TAG = {
     ko:'ko-KR', en:'en-US', vi:'vi-VN', zh:'zh-CN', th:'th-TH', km:'km-KH',
-    uz:'uz-UZ', mn:'mn-MN', ru:'ru-RU', id:'id-ID', tl:'fil-PH', ne:'ne-NP'
+    uz:'uz-UZ', mn:'mn-MN', ru:'ru-RU', id:'id-ID', tl:'fil-PH', ne:'ne-NP',
+    ja:'ja-JP', my:'my-MM', kk:'kk-KZ', si:'si-LK', bn:'bn-BD', ur:'ur-PK',
+    ky:'ky-KG', fr:'fr-CA', pt:'pt-PT', lo:'lo-LA', tg:'tg-TJ', hi:'hi-IN',
+    ms:'ms-MY', es:'es-MX', ak:'ak-GH', ha:'ha-NG', tr:'tr-TR', tk:'tk-TM',
+    ar:'ar-SA', fa:'fa-IR', ps:'ps-AF', ta:'ta-IN', te:'te-IN', mr:'mr-IN',
+    gu:'gu-IN', kn:'kn-IN', ml:'ml-IN', pa:'pa-IN', uk:'uk-UA', pl:'pl-PL',
+    de:'de-DE', it:'it-IT', nl:'nl-NL', am:'am-ET', sw:'sw-KE', so:'so-SO',
+    yo:'yo-NG', ig:'ig-NG'
   };
   const LABEL_TO_CODE = {
     '한국어':'ko','영어':'en','베트남어':'vi','중국어':'zh','태국어':'th',
     '캄보디아어':'km','크메르어':'km','우즈베크어':'uz','몽골어':'mn',
-    '러시아어':'ru','인도네시아어':'id','필리핀어':'tl','타갈로그':'tl','네팔어':'ne'
+    '러시아어':'ru','인도네시아어':'id','필리핀어':'tl','타갈로그':'tl','네팔어':'ne','일본어':'ja',
+    '중국 (조선족 포함)':'zh','대만 (번체)':'zh','베트남':'vi','태국':'th',
+    '우즈베키스탄':'uz','네팔':'ne','캄보디아':'km','인도네시아':'id','필리핀':'tl',
+    '미얀마':'my','몽골':'mn','카자흐스탄':'kk','스리랑카':'si','러시아':'ru',
+    '방글라데시':'bn','파키스탄':'ur','일본':'ja','키르기스스탄':'ky',
+    '미국·영어권':'en','캐나다 (프랑스어)':'fr','동티모르 (포르투갈어)':'pt',
+    '라오스':'lo','타지키스탄':'tg','인도 (힌디)':'hi','말레이시아':'ms',
+    '멕시코 (스페인어)':'es','가나 (트위)':'ak','나이지리아 (하우사)':'ha',
+    '터키·중앙아시아':'tr','투르크멘 등 기타':'tk',
+    '중동·이집트 (아랍어)':'ar','이란 (페르시아어)':'fa','아프가니스탄 (파슈토)':'ps',
+    '인도 (타밀)':'ta','인도 (텔루구)':'te','인도 (마라티)':'mr','인도 (구자라트)':'gu',
+    '인도 (칸나다)':'kn','인도 (말라얄람)':'ml','인도·파키스탄 (펀자브)':'pa',
+    '우크라이나':'uk','폴란드':'pl','독일':'de','이탈리아':'it','네덜란드':'nl',
+    '에티오피아 (암하라)':'am','케냐·탄자니아 (스와힐리)':'sw','소말리아':'so',
+    '나이지리아 (요루바)':'yo','나이지리아 (이그보)':'ig'
   };
   function ttsTagFor(label){
     const clean = (label||'').trim();
@@ -955,18 +976,56 @@
 
   // ---------- 자동 번역 자막 ----------
   const TRANS_LANGS = [
-    {code:'en', label:'영어',        color:'#7CD6FF'},
-    {code:'vi', label:'베트남어',    color:'#4CFF4C'},
-    {code:'zh-CN', label:'중국어',   color:'#FFD24C'},
-    {code:'th', label:'태국어',      color:'#FF8FD6'},
-    {code:'uz', label:'우즈베크어',  color:'#B0FF7C'},
-    {code:'km', label:'캄보디아어',  color:'#FFB07C'},
-    {code:'ru', label:'러시아어',    color:'#9CA8FF'},
-    {code:'mn', label:'몽골어',      color:'#FFF27C'},
-    {code:'id', label:'인도네시아어',color:'#D6A8FF'},
-    {code:'tl', label:'필리핀어',    color:'#FF9C9C'},
-    {code:'ne', label:'네팔어',      color:'#7CFFEA'},
-    {code:'ja', label:'일본어',      color:'#FFA8C8'}
+    {code:'zh-CN', label:'중국 (조선족 포함)', color:'#FFD24C'},
+    {code:'vi',    label:'베트남',           color:'#4CFF4C'},
+    {code:'zh-TW', label:'대만 (번체)',      color:'#FFC46B'},
+    {code:'th',    label:'태국',             color:'#FF8FD6'},
+    {code:'uz',    label:'우즈베키스탄',     color:'#B0FF7C'},
+    {code:'ne',    label:'네팔',             color:'#7CFFEA'},
+    {code:'km',    label:'캄보디아',         color:'#FFB07C'},
+    {code:'id',    label:'인도네시아',       color:'#D6A8FF'},
+    {code:'tl',    label:'필리핀',           color:'#FF9C9C'},
+    {code:'my',    label:'미얀마',           color:'#FFCF8F'},
+    {code:'mn',    label:'몽골',             color:'#FFF27C'},
+    {code:'kk',    label:'카자흐스탄',       color:'#8FE3FF'},
+    {code:'si',    label:'스리랑카',         color:'#C8FF8F'},
+    {code:'ru',    label:'러시아',           color:'#9CA8FF'},
+    {code:'bn',    label:'방글라데시',       color:'#8FFFC4'},
+    {code:'ur',    label:'파키스탄',         color:'#E0B0FF'},
+    {code:'ja',    label:'일본',             color:'#FFA8C8'},
+    {code:'ky',    label:'키르기스스탄',     color:'#A8FFD6'},
+    {code:'en',    label:'미국·영어권',      color:'#7CD6FF'},
+    {code:'fr',    label:'캐나다 (프랑스어)', color:'#9FB6FF'},
+    {code:'pt',    label:'동티모르 (포르투갈어)', color:'#FFB3B3'},
+    {code:'lo',    label:'라오스',           color:'#D9FF8F'},
+    {code:'tg',    label:'타지키스탄',       color:'#B8FFEF'},
+    {code:'hi',    label:'인도 (힌디)',      color:'#FFC8A8'},
+    {code:'ms',    label:'말레이시아',       color:'#A8E6FF'},
+    {code:'es',    label:'멕시코 (스페인어)', color:'#FFDCA8'},
+    {code:'ak',    label:'가나 (트위)',      color:'#C4E8A8'},
+    {code:'ha',    label:'나이지리아 (하우사)', color:'#F5B8E8'},
+    {code:'tr',    label:'터키·중앙아시아',  color:'#B8C8FF'},
+    {code:'tk',    label:'투르크멘 등 기타', color:'#E8E0A8'},
+    {code:'ar', label:'중동·이집트 (아랍어)', color:'#FFE08F'},
+    {code:'fa', label:'이란 (페르시아어)',   color:'#9FE8C8'},
+    {code:'ps', label:'아프가니스탄 (파슈토)', color:'#D8C8FF'},
+    {code:'ta', label:'인도 (타밀)',        color:'#FFB8D8'},
+    {code:'te', label:'인도 (텔루구)',      color:'#A8D8FF'},
+    {code:'mr', label:'인도 (마라티)',      color:'#C8FFB8'},
+    {code:'gu', label:'인도 (구자라트)',    color:'#FFD8B8'},
+    {code:'kn', label:'인도 (칸나다)',      color:'#B8FFE8'},
+    {code:'ml', label:'인도 (말라얄람)',    color:'#E8B8FF'},
+    {code:'pa', label:'인도·파키스탄 (펀자브)', color:'#FFF0A8'},
+    {code:'uk', label:'우크라이나',         color:'#A8C8FF'},
+    {code:'pl', label:'폴란드',             color:'#FFB8B8'},
+    {code:'de', label:'독일',               color:'#D8D8A8'},
+    {code:'it', label:'이탈리아',           color:'#A8FFB8'},
+    {code:'nl', label:'네덜란드',           color:'#FFC8E8'},
+    {code:'am', label:'에티오피아 (암하라)', color:'#C8E8FF'},
+    {code:'sw', label:'케냐·탄자니아 (스와힐리)', color:'#E8FFA8'},
+    {code:'so', label:'소말리아',           color:'#B8E0C8'},
+    {code:'yo', label:'나이지리아 (요루바)', color:'#FFCFB8'},
+    {code:'ig', label:'나이지리아 (이그보)', color:'#D0B8FF'}
   ];
   let selectedTransCodes = JSON.parse(localStorage.getItem('safetyTransLangs') || '["en","vi"]');
   const transStatusEl = document.getElementById('transStatus');
@@ -3109,5 +3168,375 @@ document.addEventListener('pointerdown', function(){
 // v84: 영상이 없어도 싱크 칸을 처음부터 보이게
 setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
 </script>
+<!-- ===================== v91: 🎬 가이드 영상 (처음 쓰는 사람용 순서 안내) ===================== -->
+<style>
+#guideBtn{background:#0f766e;color:#fff;border:2px solid #5eead4;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap}
+#guideBtn.gv-new{animation:gvGlow 1.6s ease-in-out infinite}
+@keyframes gvGlow{0%,100%{box-shadow:0 0 0 0 rgba(94,234,212,.7)}50%{box-shadow:0 0 0 8px rgba(94,234,212,0)}}
+#gvOverlay{position:fixed;inset:0;z-index:2147483000;background:rgba(2,6,23,.88);display:none;align-items:center;justify-content:center;padding:16px;font-family:inherit}
+#gvOverlay.open{display:flex}
+.gv-box{width:min(1100px,100%);max-height:100%;overflow:auto;background:#0f172a;border:2px solid #334155;border-radius:16px;padding:16px 18px;color:#e2e8f0;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.gv-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.gv-head h2{margin:0;font-size:20px;font-weight:900;color:#fff;flex:1}
+.gv-x{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;width:36px;height:36px;font-size:18px;cursor:pointer}
+.gv-steps{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.gv-steps button{flex:1;min-width:120px;background:#1e293b;color:#94a3b8;border:2px solid #334155;border-radius:10px;padding:7px 8px;font-size:13px;font-weight:800;cursor:pointer;text-align:left}
+.gv-steps button b{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:#334155;color:#fff;margin-right:6px;font-size:12px}
+.gv-steps button.on{border-color:#ef4444;color:#fff;background:#1f1215}
+.gv-steps button.on b,.gv-steps button.done b{background:#ef4444}
+.gv-steps button.done{color:#cbd5e1}
+.gv-stage{position:relative;width:100%;aspect-ratio:16/8.2;background:#1e293b;border-radius:12px;overflow:hidden;border:1px solid #334155}
+.gv-scene{position:absolute;inset:0;display:none;font-size:clamp(9px,1.35vw,15px)}
+.gv-scene.on{display:block;animation:gvIn .35s ease}
+@keyframes gvIn{from{opacity:0}to{opacity:1}}
+.gv-cap{margin-top:12px;display:flex;gap:12px;align-items:flex-start}
+.gv-num{flex:none;width:46px;height:46px;border-radius:50%;border:3px solid #ef4444;color:#ef4444;font-size:24px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.gv-txt h3{margin:0 0 4px;font-size:19px;font-weight:900;color:#fff}
+.gv-txt p{margin:0;font-size:15px;line-height:1.55;color:#cbd5e1}
+.gv-txt p b{color:#fde047}
+.gv-bar{height:5px;background:#334155;border-radius:4px;margin-top:12px;overflow:hidden}
+.gv-bar i{display:block;height:100%;width:0;background:#ef4444}
+.gv-ctrl{display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap}
+.gv-ctrl button{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;padding:9px 14px;font-size:14px;font-weight:800;cursor:pointer}
+.gv-ctrl .gv-main{background:#0f766e;border-color:#5eead4}
+.gv-ctrl label{margin-left:auto;font-size:13px;color:#94a3b8;display:flex;align-items:center;gap:6px;cursor:pointer}
+.gv-box button:focus-visible{outline:3px solid #fde047;outline-offset:2px}
+/* 가짜 화면 부품 */
+.gv-top{position:absolute;left:0;right:0;top:0;background:#0f172a;border-bottom:1px solid #334155;padding:.8em 1em;display:flex;gap:.6em;align-items:center;flex-wrap:wrap}
+.gv-top .t{color:#a5b4fc;font-weight:900;margin-right:.4em}
+.gv-b{display:inline-block;border-radius:.5em;padding:.45em .9em;font-weight:900;white-space:nowrap;font-size:1em;position:relative}
+.gv-green{background:#14532d;color:#bbf7d0;border:1px solid #22c55e}
+.gv-purple{background:#7c3aed;color:#fff}
+.gv-teal{background:#0f766e;color:#fff;border:2px solid #5eead4}
+.gv-lock{background:#1e293b;color:#fde047;border:2px solid #fbbf24}
+.gv-blue{background:#2563eb;color:#fff}
+.gv-white{background:#fff;color:#334155;border:1px solid #cbd5e1}
+.gv-red{background:#fff;color:#b91c1c;border:1px solid #fca5a5}
+.gv-dark{background:#334155;color:#fff}
+.gv-hl{animation:gvHl 1s ease-in-out infinite}
+@keyframes gvHl{0%,100%{box-shadow:0 0 0 .25em #ef4444}50%{box-shadow:0 0 0 .55em rgba(239,68,68,.35)}}
+.gv-empty{position:absolute;left:0;right:0;top:3.2em;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#cbd5e1;gap:.6em}
+.gv-empty .big{font-size:1.6em;font-weight:900;color:#fff}
+.gv-light{position:absolute;inset:0;background:#e2e8f0;color:#334155}
+.gv-light .hd{background:#0f172a;color:#fff;padding:.7em 1em;font-weight:900;display:flex;gap:1em;align-items:center}
+.gv-light .hd span{color:#fde047;border:1px solid #fde047;border-radius:.4em;padding:.2em .6em;font-size:.9em}
+.gv-tools{display:flex;gap:.5em;padding:.8em 1em;flex-wrap:wrap}
+.gv-body{display:flex;gap:1em;padding:0 1em}
+.gv-list{width:28%;display:flex;flex-direction:column;gap:.5em}
+.gv-item{background:#fff;border:1px solid #cbd5e1;border-radius:.6em;padding:.6em;display:flex;gap:.6em;align-items:center;font-weight:800}
+.gv-item i{width:3em;height:2.2em;border-radius:.3em;background:#cbd5e1;display:block;flex:none}
+.gv-item small{display:block;font-weight:600;color:#16a34a}
+.gv-item small.no{color:#dc2626}
+.gv-edit{flex:1;background:#fff;border:1px solid #cbd5e1;border-radius:.8em;padding:.8em}
+.gv-drop{border:2px dashed #94a3b8;border-radius:.6em;height:8em;display:flex;align-items:center;justify-content:center;text-align:center;color:#64748b;position:relative;overflow:hidden}
+.gv-drop .pic{position:absolute;inset:0;background:linear-gradient(135deg,#65a30d,#166534);display:none;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.2em}
+.gv-drop.filled .pic{display:flex;animation:gvIn .5s ease}
+.gv-voice{margin-top:.8em;font-weight:900}
+.gv-voice div{margin-top:.5em;display:flex;gap:.5em}
+.gv-toast{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);background:#065f46;color:#fff;border:2px solid #34d399;border-radius:.8em;padding:.8em 1.2em;font-weight:900;display:none;white-space:nowrap}
+.gv-toast.show{display:block;animation:gvIn .4s ease}
+.gv-cast{position:absolute;inset:0;background:#0f172a;display:flex;flex-direction:column}
+.gv-cast .main{flex:1;display:flex}
+.gv-slide{flex:1;margin:.8em;background:#f8fafc;border-radius:.4em;position:relative;overflow:hidden}
+.gv-slide .ttl{background:#84cc16;color:#fff;font-weight:900;margin:.8em;padding:.4em .8em;border-radius:.3em;display:inline-block}
+.gv-slide .bars{position:absolute;left:1.2em;right:1.2em;bottom:1.2em;height:55%;display:flex;align-items:flex-end;gap:.6em}
+.gv-slide .bars i{flex:1;background:#3b82f6;border-radius:.2em .2em 0 0}
+.gv-slide .bars i:first-child{background:#dc2626}
+.gv-sub{width:34%;border-left:1px solid #334155;padding:.8em;display:flex;flex-direction:column;gap:.5em}
+.gv-sub small{color:#94a3b8;font-weight:800}
+.gv-sub div{font-weight:900;font-size:1.15em;min-height:1.4em}
+.gv-sub .vi{color:#4ade80}.gv-sub .zh{color:#fbbf24}.gv-sub .ko{color:#fff}
+.gv-bottom{border-top:1px solid #334155;padding:.6em 1em;display:flex;gap:.6em;align-items:center;color:#94a3b8}
+.gv-typing{overflow:hidden;white-space:nowrap;width:0}
+.gv-scene.play .gv-typing{animation:gvType 1.6s steps(24) forwards}
+.gv-scene.play .gv-typing.d2{animation-delay:.5s}.gv-scene.play .gv-typing.d3{animation-delay:1s}
+@keyframes gvType{to{width:100%}}
+.gv-cursor{position:absolute;width:2.2em;height:2.2em;left:50%;top:60%;z-index:5;pointer-events:none;transition:left 1.1s cubic-bezier(.5,0,.2,1),top 1.1s cubic-bezier(.5,0,.2,1);font-size:clamp(9px,1.35vw,15px)}
+.gv-cursor svg{width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.gv-ring{position:absolute;width:3em;height:3em;border-radius:50%;border:3px solid #ef4444;left:-.9em;top:-.9em;opacity:0}
+.gv-cursor.click .gv-ring{animation:gvRing .7s ease-out}
+@keyframes gvRing{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.gv-cursor{transition:none}.gv-hl,#guideBtn.gv-new{animation:none}}
+@media (max-width:640px){.gv-steps button{min-width:44%}.gv-txt h3{font-size:16px}.gv-txt p{font-size:14px}}
+</style>
+
+<div id="gvOverlay" role="dialog" aria-modal="true" aria-label="가이드 영상">
+  <div class="gv-box">
+    <div class="gv-head">
+      <h2>🎬 처음 쓰는 분을 위한 사용 순서</h2>
+      <button class="gv-x" id="gvClose" title="닫기 (Esc)">✕</button>
+    </div>
+    <div class="gv-steps" id="gvSteps"></div>
+
+    <div class="gv-stage" id="gvStage">
+      <!-- 1. 사진음성슬라이드 열기 -->
+      <div class="gv-scene" data-s="0">
+        <div class="gv-top">
+          <span class="t">🔊 다국어 안전시스템</span>
+          <span class="gv-b gv-green">📂 데이터 불러오기(JSON)</span>
+          <span class="gv-b gv-purple" data-target>📸 사진음성슬라이드 열기</span>
+          <span class="gv-b gv-teal">🎬 가이드 영상</span>
+          <span class="gv-b gv-lock">🔒 암호·기간</span>
+        </div>
+        <div class="gv-empty"><div style="font-size:2.4em">📂</div><div class="big">슬라이드 데이터를 불러와 주세요</div><div>처음이라면 먼저 슬라이드를 만들어야 합니다</div></div>
+      </div>
+
+      <!-- 2. 사진·동영상 넣고 음성 만들기 -->
+      <div class="gv-scene" data-s="1">
+        <div class="gv-light">
+          <div class="hd">음성슬라이드 만들기 <span>👉 다 만들고 “⬇ 파일로 저장”을 누르면 방송 화면으로 돌아갑니다</span></div>
+          <div class="gv-tools">
+            <span class="gv-b gv-white">🌐 언어 관리 ▾</span><span class="gv-b gv-blue">⬇ 파일로 저장(내보내기)</span>
+            <span class="gv-b gv-white">⬆ 파일 불러오기</span><span class="gv-b gv-red">📕 PDF 불러오기</span><span class="gv-b gv-white">🖼 이미지 여러 장</span>
+          </div>
+          <div class="gv-body">
+            <div class="gv-list">
+              <div class="gv-item"><i></i><div>1번<small class="no" id="gvItem1">음성 없음</small></div></div>
+              <div class="gv-item"><i></i><div>2번<small class="no">음성 없음</small></div></div>
+              <div class="gv-item"><i></i><div>3번<small class="no">음성 없음</small></div></div>
+            </div>
+            <div class="gv-edit">
+              <b>① 이미지 / 동영상(MP4)</b>
+              <div class="gv-drop" id="gvDrop" data-target style="margin-top:.5em"><div><b>클릭</b>하여 이미지 또는 동영상을 선택하세요<br>(JPG, PNG, MP4)</div><div class="pic">📷 현장 사진</div></div>
+              <div class="gv-voice">② 언어별 음성 <div><span class="gv-b gv-dark" id="gvText">⌨ 텍스트 입력</span><span class="gv-b gv-white">🎙 목소리 녹음</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 파일로 저장 -->
+      <div class="gv-scene" data-s="2">
+        <div class="gv-light">
+          <div class="hd">음성슬라이드 만들기 <span>👉 다 만들고 “⬇ 파일로 저장”을 누르면 방송 화면으로 돌아갑니다</span></div>
+          <div class="gv-tools">
+            <span class="gv-b gv-white">🌐 언어 관리 ▾</span><span class="gv-b gv-blue" data-target>⬇ 파일로 저장(내보내기)</span>
+            <span class="gv-b gv-white">⬆ 파일 불러오기</span><span class="gv-b gv-red">📕 PDF 불러오기</span><span class="gv-b gv-white">🖼 이미지 여러 장</span>
+          </div>
+          <div class="gv-body">
+            <div class="gv-list">
+              <div class="gv-item"><i style="background:#65a30d"></i><div>1번<small>✓ 전체 언어 완료</small></div></div>
+              <div class="gv-item"><i style="background:#65a30d"></i><div>2번<small>✓ 전체 언어 완료</small></div></div>
+              <div class="gv-item"><i style="background:#65a30d"></i><div>3번<small>✓ 전체 언어 완료</small></div></div>
+            </div>
+            <div class="gv-edit"><b>① 이미지 / 동영상(MP4)</b><div class="gv-drop filled" style="margin-top:.5em"><div class="pic">📷 현장 사진</div></div></div>
+          </div>
+          <div class="gv-toast" id="gvToast3">✅ 저장 완료 → 방송 화면으로 이동합니다</div>
+        </div>
+      </div>
+
+      <!-- 4. 이 슬라이드부터 재생 -->
+      <div class="gv-scene" data-s="3">
+        <div class="gv-cast">
+          <div class="main">
+            <div class="gv-slide"><span class="ttl">업무상 사고사망자</span><div class="bars"><i style="height:95%"></i><i style="height:22%"></i><i style="height:20%"></i><i style="height:18%"></i><i style="height:16%"></i><i style="height:12%"></i><i style="height:8%"></i></div></div>
+            <div class="gv-sub"><small>베트남어</small><div class="vi"></div><small>중국어</small><div class="zh"></div><small>한국어</small><div class="ko"></div></div>
+          </div>
+          <div class="gv-bottom">1 / 7 <span class="gv-b gv-dark">다음 ▶</span><span class="gv-b gv-green" data-target id="gvPlay">▶ 이 슬라이드부터 재생</span><span class="gv-b gv-dark">■ 정지</span><span class="gv-b gv-dark">🎤 마이크 번역</span></div>
+          <div class="gv-toast" id="gvToast4">🔊 슬라이드 음성이 순서대로 나옵니다</div>
+        </div>
+      </div>
+
+      <!-- 5. 마이크 번역 -->
+      <div class="gv-scene" data-s="4">
+        <div class="gv-cast">
+          <div class="main">
+            <div class="gv-slide"><span class="ttl">업무상 사고사망자</span><div class="bars"><i style="height:95%"></i><i style="height:22%"></i><i style="height:20%"></i><i style="height:18%"></i><i style="height:16%"></i><i style="height:12%"></i><i style="height:8%"></i></div></div>
+            <div class="gv-sub"><small>베트남어</small><div class="vi"><div class="gv-typing">Hãy đeo dây an toàn.</div></div><small>중국어</small><div class="zh"><div class="gv-typing d2">请系好安全带。</div></div><small>한국어</small><div class="ko"><div class="gv-typing d3">안전대를 꼭 거세요.</div></div></div>
+          </div>
+          <div class="gv-bottom">1 / 7 <span class="gv-b gv-dark">다음 ▶</span><span class="gv-b gv-green">▶ 이 슬라이드부터 재생</span><span class="gv-b gv-dark">■ 정지</span><span class="gv-b gv-dark" data-target id="gvMic">🎤 마이크 번역</span></div>
+        </div>
+      </div>
+
+      <div class="gv-cursor" id="gvCursor"><div class="gv-ring"></div><svg viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.7-7.8L21 10.5z" fill="#fff" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+    </div>
+
+    <div class="gv-cap">
+      <div class="gv-num" id="gvNum">1</div>
+      <div class="gv-txt"><h3 id="gvTitle"></h3><p id="gvDesc"></p></div>
+    </div>
+    <div class="gv-bar"><i id="gvBarFill"></i></div>
+    <div class="gv-ctrl">
+      <button id="gvPrev">◀ 이전</button>
+      <button id="gvPlayPause" class="gv-main">⏸ 일시정지</button>
+      <button id="gvNext">다음 ▶</button>
+      <button id="gvReplay">↺ 처음부터</button>
+      <label><input type="checkbox" id="gvVoice" checked> 음성 안내</label>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var STEPS = [
+    { t:'사진음성슬라이드 열기', d:'맨 위 보라색 <b>📸 사진음성슬라이드 열기</b> 버튼을 누릅니다. 교육에 쓸 슬라이드를 여기서 만듭니다.',
+      say:'1번. 맨 위 보라색, 사진음성슬라이드 열기 버튼을 누릅니다. 교육에 쓸 슬라이드를 여기서 만듭니다.' },
+    { t:'사진 넣고 음성 만들기', d:'점선 칸을 <b>클릭</b>해서 사진(JPG·PNG)이나 동영상(MP4)을 넣고, 아래 <b>텍스트 입력</b> 또는 <b>목소리 녹음</b>으로 설명 음성을 만듭니다. 여러 장은 <b>PDF 불러오기</b>·<b>이미지 여러 장</b>을 쓰면 편합니다.',
+      say:'2번. 점선 칸을 클릭해서 사진이나 동영상을 넣고, 텍스트 입력이나 목소리 녹음으로 설명 음성을 만듭니다. 여러 장이면 PDF 불러오기나 이미지 여러 장을 쓰면 편합니다.' },
+    { t:'파일로 저장(내보내기)', d:'다 만들었으면 파란색 <b>⬇ 파일로 저장(내보내기)</b>을 누릅니다. 파일이 저장되고 <b>자동으로 방송 화면</b>으로 돌아옵니다. 다음에는 <b>데이터 불러오기(JSON)</b>로 바로 열 수 있습니다.',
+      say:'3번. 다 만들었으면 파란색, 파일로 저장 버튼을 누릅니다. 파일이 저장되고 자동으로 방송 화면으로 돌아옵니다. 다음부터는 데이터 불러오기로 바로 열 수 있습니다.' },
+    { t:'이 슬라이드부터 재생', d:'방송 화면 아래 <b>▶ 이 슬라이드부터 재생</b>을 누르면 슬라이드와 음성이 순서대로 나오고, 오른쪽에 언어별 자막이 뜹니다.',
+      say:'4번. 방송 화면 아래, 이 슬라이드부터 재생을 누르면 슬라이드와 음성이 순서대로 나오고, 오른쪽에 언어별 자막이 뜹니다.' },
+    { t:'마이크 번역', d:'<b>🎤 마이크 번역</b>을 켜면 <b>🔴 마이크 번역 중</b>으로 바뀌고, 관리자가 말하는 내용이 오른쪽에 베트남어·중국어 등으로 바로 번역됩니다.',
+      say:'5번. 마이크 번역을 켜면, 관리자가 말하는 내용이 오른쪽에 베트남어, 중국어 등으로 바로 번역됩니다. 이제 교육을 시작하면 됩니다.' }
+  ];
+  var MIN_MS = 7500;
+
+  // 버튼을 사진음성슬라이드 열기 ↔ 암호·기간 사이에 넣기
+  var lic = document.getElementById('licBtn');
+  var btn = document.createElement('button');
+  btn.id = 'guideBtn'; btn.type = 'button'; btn.title = '처음 쓰는 분을 위한 사용 순서 안내';
+  btn.textContent = '🎬 가이드 영상';
+  if (lic && lic.parentNode) lic.parentNode.insertBefore(btn, lic);
+  else { var p = document.getElementById('openPvsBtn'); if (p) p.insertAdjacentElement('afterend', btn); }
+  try { if (!localStorage.getItem('gvSeen')) btn.classList.add('gv-new'); } catch(e){}
+
+  var ov = document.getElementById('gvOverlay');
+  var stage = document.getElementById('gvStage');
+  var scenes = stage.querySelectorAll('.gv-scene');
+  var cursor = document.getElementById('gvCursor');
+  var stepsEl = document.getElementById('gvSteps');
+  var fill = document.getElementById('gvBarFill');
+  var ppBtn = document.getElementById('gvPlayPause');
+  var voiceChk = document.getElementById('gvVoice');
+  var cur = 0, playing = true, timers = [], startAt = 0, rafId = 0, speechDone = true, timeDone = true;
+
+  STEPS.forEach(function(s,i){
+    var b = document.createElement('button');
+    b.innerHTML = '<b>'+(i+1)+'</b>'+s.t;
+    b.onclick = function(){ go(i); };
+    stepsEl.appendChild(b);
+  });
+
+  function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+  function clearAll(){ timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(rafId); try{ speechSynthesis.cancel(); }catch(e){} }
+
+  function moveCursorTo(el){
+    var sr = stage.getBoundingClientRect(), r = el.getBoundingClientRect();
+    cursor.style.left = (r.left - sr.left + r.width*0.5) + 'px';
+    cursor.style.top  = (r.top  - sr.top  + r.height*0.55) + 'px';
+  }
+  function click(){ cursor.classList.remove('click'); void cursor.offsetWidth; cursor.classList.add('click'); }
+
+  function resetScene(sc){
+    sc.classList.remove('play');
+    sc.querySelectorAll('.gv-hl').forEach(function(e){ e.classList.remove('gv-hl'); });
+    sc.querySelectorAll('.gv-toast').forEach(function(e){ e.classList.remove('show'); });
+    var d = document.getElementById('gvDrop'); d.classList.remove('filled');
+    var i1 = document.getElementById('gvItem1'); i1.className='no'; i1.textContent='음성 없음';
+    document.getElementById('gvText').className = 'gv-b gv-dark';
+    var mic = document.getElementById('gvMic'); mic.textContent='🎤 마이크 번역'; mic.className='gv-b gv-dark';
+    sc.querySelectorAll('.gv-sub .vi,.gv-sub .zh,.gv-sub .ko').forEach(function(e){ if(!e.querySelector('.gv-typing')) e.textContent=''; });
+  }
+
+  function animate(i){
+    var sc = scenes[i], target = sc.querySelector('[data-target]');
+    cursor.style.transition = 'none';
+    cursor.style.left = '55%'; cursor.style.top = '70%';
+    void cursor.offsetWidth; cursor.style.transition = '';
+    later(function(){ target.classList.add('gv-hl'); moveCursorTo(target); }, 500);
+    later(function(){
+      click();
+      if (i===1){
+        document.getElementById('gvDrop').classList.add('filled');
+        later(function(){ var t=document.getElementById('gvText'); t.classList.add('gv-hl'); moveCursorTo(t); target.classList.remove('gv-hl'); }, 900);
+        later(function(){ click(); var i1=document.getElementById('gvItem1'); i1.className=''; i1.textContent='✓ 전체 언어 완료'; }, 2100);
+      }
+      if (i===2) later(function(){ document.getElementById('gvToast3').classList.add('show'); }, 500);
+      if (i===3){
+        later(function(){ document.getElementById('gvToast4').classList.add('show'); }, 400);
+        later(function(){
+          document.getElementById('gvToast4').classList.remove('show');
+          sc.querySelector('.vi').textContent='Nguy hiểm rơi ngã là số 1.';
+          sc.querySelector('.zh').textContent='坠落事故最多。';
+          sc.querySelector('.ko').textContent='떨어짐 사고가 가장 많습니다.';
+        }, 2200);
+      }
+      if (i===4){
+        var m=document.getElementById('gvMic'); m.textContent='🔴 마이크 번역 중'; m.className='gv-b gv-green gv-hl';
+        later(function(){ sc.classList.add('play'); }, 500);
+      }
+    }, 1700);
+  }
+
+  function speak(text){
+    speechDone = true;
+    if (!voiceChk.checked || !('speechSynthesis' in window)) return;
+    try{
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ko-KR'; u.rate = 1.05;
+      var v = speechSynthesis.getVoices().filter(function(v){ return /^ko/i.test(v.lang); });
+      if (v.length) u.voice = v.find(function(x){ return /Natural|Online|Google/i.test(x.name); }) || v[0];
+      speechDone = false;
+      u.onend = u.onerror = function(){ speechDone = true; maybeNext(); };
+      speechSynthesis.speak(u);
+    }catch(e){ speechDone = true; }
+  }
+  function maybeNext(){
+    if (!playing || !speechDone || !timeDone) return;
+    later(function(){ if (cur < STEPS.length-1) go(cur+1); else finish(); }, 700);
+  }
+  function tick(){
+    var p = Math.min(1, (Date.now()-startAt)/MIN_MS);
+    fill.style.width = ((cur + p)/STEPS.length*100) + '%';
+    if (p < 1) rafId = requestAnimationFrame(tick);
+  }
+
+  function go(i){
+    clearAll();
+    cur = i;
+    scenes.forEach(function(s,k){ s.classList.toggle('on', k===i); resetScene(s); });
+    [].forEach.call(stepsEl.children, function(b,k){ b.classList.toggle('on',k===i); b.classList.toggle('done',k<i); });
+    document.getElementById('gvNum').textContent = i+1;
+    document.getElementById('gvTitle').textContent = STEPS[i].t;
+    document.getElementById('gvDesc').innerHTML = STEPS[i].d;
+    document.getElementById('gvPrev').disabled = i===0;
+    document.getElementById('gvNext').textContent = i===STEPS.length-1 ? '✓ 완료' : '다음 ▶';
+    fill.style.width = (i/STEPS.length*100)+'%';
+    animate(i);
+    if (playing){
+      timeDone = false; startAt = Date.now(); tick();
+      later(function(){ timeDone = true; maybeNext(); }, MIN_MS);
+      speak(STEPS[i].say);
+    }
+  }
+  function finish(){
+    playing = false; ppBtn.textContent = '▶ 다시 재생';
+    fill.style.width = '100%';
+    [].forEach.call(stepsEl.children, function(b){ b.classList.add('done'); });
+  }
+  function setPlaying(p){
+    playing = p; ppBtn.textContent = p ? '⏸ 일시정지' : '▶ 재생';
+    if (p) go(cur); else { clearAll(); }
+  }
+
+  function open(){
+    ov.classList.add('open'); btn.classList.remove('gv-new');
+    try{ localStorage.setItem('gvSeen','1'); }catch(e){}
+    playing = true; ppBtn.textContent = '⏸ 일시정지';
+    requestAnimationFrame(function(){ go(0); });
+    document.getElementById('gvClose').focus();
+  }
+  function close(){ clearAll(); ov.classList.remove('open'); btn.focus(); }
+
+  btn.addEventListener('click', open);
+  document.getElementById('gvClose').onclick = close;
+  ov.addEventListener('click', function(e){ if (e.target===ov) close(); });
+  document.addEventListener('keydown', function(e){
+    if (!ov.classList.contains('open')) return;
+    if (e.key==='Escape') close();
+    else if (e.key==='ArrowRight' && cur<STEPS.length-1) go(cur+1);
+    else if (e.key==='ArrowLeft' && cur>0) go(cur-1);
+  });
+  document.getElementById('gvPrev').onclick = function(){ if (cur>0) go(cur-1); };
+  document.getElementById('gvNext').onclick = function(){ if (cur<STEPS.length-1) go(cur+1); else close(); };
+  document.getElementById('gvReplay').onclick = function(){ playing = true; ppBtn.textContent='⏸ 일시정지'; go(0); };
+  ppBtn.onclick = function(){ setPlaying(!playing); };
+  voiceChk.onchange = function(){ if (!voiceChk.checked){ try{speechSynthesis.cancel();}catch(e){} speechDone = true; maybeNext(); } };
+  window.addEventListener('resize', function(){ if (ov.classList.contains('open')){ var t = scenes[cur].querySelector('.gv-hl'); if (t) moveCursorTo(t); } });
+  try{ speechSynthesis.getVoices(); }catch(e){}
+})();
+</script>
+<!-- ===================== /v91 가이드 영상 ===================== -->
+
 </body>
 </html>
