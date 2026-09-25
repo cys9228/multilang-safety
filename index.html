@@ -1964,6 +1964,8 @@
     }
   });
 
+  // v85: 휴대폰 판별 — 휴대폰은 음성인식이 켜질 때마다 '띵' 소리가 나므로 자동 재시작을 줄임
+  window.__IS_MOBILE = (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Macintosh/.test(navigator.userAgent)));
   function startLiveTranslate(){
     if(liveOn) return;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1975,6 +1977,7 @@
     liveRec.interimResults = true;
     liveRec.onresult = function(e){
       window.__liveLastResult = Date.now();
+      window.__sessHeard = true;
       const le = document.getElementById('liveErrMsg'); if(le) le.textContent = '';
       let interim = '';
       for(let i=e.resultIndex; i<e.results.length; i++){
@@ -1997,6 +2000,13 @@
     };
     liveRec.onend = function(){
       if(!liveOn) return;
+      // v85: 휴대폰에서 아무 말도 못 듣고 끝났으면 다시 켜지 않고 쉼 (띵띵 반복 방지)
+      if(window.__IS_MOBILE && !window.__sessHeard){
+        stopLiveTranslate();
+        transStatusEl.textContent = '🎤 말이 없어 마이크를 쉬게 했습니다 — 버튼을 누르면 다시 듣습니다';
+        try{ bottomMicBtn.textContent = '🎤 눌러서 다시 듣기'; }catch(e0){}
+        return;
+      }
       setTimeout(function(){
         if(!liveOn) return;
         try{ liveRec.start(); }
@@ -2006,12 +2016,18 @@
         }
       }, 250);
     };
-    liveRec.onstart = function(){ window.__liveRecActive = true; window.__liveRecStartAt = Date.now(); };
+    liveRec.onstart = function(){
+      window.__liveRecActive = true; window.__liveRecStartAt = Date.now();
+      window.__sessHeard = false;
+      // v85: 휴대폰은 소리 막대(마이크 동시 사용)를 쓰지 않으므로 여기서 켜짐 표시
+      if(window.__IS_MOBILE && !window.__micLabel){ window.__micLabel = '휴대폰 마이크'; updateBottomMic(); }
+    };
     const _end = liveRec.onend;
     liveRec.onend = function(){ window.__liveRecActive = false; if(_end) _end.apply(this, arguments); };
     liveOn = true;
     liveRec.start();
-    startMicMeter();
+    // v85: 휴대폰에서 마이크를 두 곳이 동시에 잡으면 음성인식이 곧바로 끊겨 띵띵 반복됨 → 소리 막대는 PC에서만
+    if(!window.__IS_MOBILE) startMicMeter();
     liveMicBtn.textContent = '🟢 실시간 번역 중';
     liveMicBtn.style.background = '#14532d';
     liveMicBtn.style.borderColor = '#22c55e';
@@ -3105,6 +3121,8 @@ function srtEchoLike(txt){
 }
 // v75: 마이크 번역은 항상 켜둠 — 켜 두었던 상태면 열자마자 자동 시작, 멈추면 자동 재시작
 (function(){
+  // v85: 휴대폰은 자동 시작·자동 재시작 안 함 — 마이크 버튼을 눌렀을 때만 켜짐 (허용 창·띵 소리 반복 방지)
+  if(window.__IS_MOBILE) return;
   function wantMic(){ try{ return (localStorage.getItem('micWanted') || '1') === '1'; }catch(e){ return true; } }
   function autoStart(){ if(wantMic() && !liveOn){ try{ startLiveTranslate(); if(liveOn) showMicReady(); }catch(e){} } }
   // 이미 마이크 권한이 허용된 상태면 바로 켬
