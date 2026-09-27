@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>다국어 안전시스템 v92</title>
+<title>안전 다있소 v110</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -191,7 +191,7 @@
 <body>
 <div id="licLock" style="display:none;position:fixed;inset:0;z-index:99999;background:#0b1220;color:#e2e8f0;align-items:center;justify-content:center;padding:20px;">
   <div style="width:min(460px,94vw);background:#111c2e;border:2px solid #334155;border-radius:16px;padding:26px;box-shadow:0 20px 50px rgba(0,0,0,.6);">
-    <div style="font-size:22px;font-weight:900;margin-bottom:6px;">🔒 다국어 안전시스템</div>
+    <div style="font-size:22px;font-weight:900;margin-bottom:6px;">🔒 안전 다있소</div>
     <div id="licLockSub" style="font-size:13px;color:#94a3b8;margin-bottom:18px;">암호를 입력해 주세요</div>
     <div id="licPwWrap">
       <input id="licPw" type="password" placeholder="암호" style="width:100%;padding:13px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:#fff;font-size:17px;">
@@ -260,7 +260,7 @@
 <!-- ===== 잠금화면 ===== -->
 <div id="lockScreen" style="position:fixed;inset:0;background:#05060a;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;">
   <div style="background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:26px;max-width:420px;width:100%;color:#e2e8f0;font-family:'Malgun Gothic',sans-serif;">
-    <div style="font-size:19px;font-weight:bold;color:#a78bfa;margin-bottom:6px;">🔒 다국어 안전시스템</div>
+    <div style="font-size:19px;font-weight:bold;color:#a78bfa;margin-bottom:6px;">🔒 안전 다있소</div>
     <div id="lockInfo" style="font-size:13px;color:#94a3b8;margin-bottom:18px;line-height:1.7;"></div>
 
     <div id="lockPwArea">
@@ -494,7 +494,7 @@
       document.getElementById('licSetPw').value = '';
     };
     document.getElementById('licAsk').onclick = function(){
-      const txt = '[다국어 안전시스템] 사용기간 연장 요청합니다.\n요청번호: ' + lic.chal;
+      const txt = '[안전 다있소] 사용기간 연장 요청합니다.\n요청번호: ' + lic.chal;
       if(navigator.clipboard) navigator.clipboard.writeText(txt).catch(function(){});
       window.open('sms:?&body=' + encodeURIComponent(txt), '_blank');
       const el = document.getElementById('licPanelMsg');
@@ -674,7 +674,7 @@
 
 
   <div id="topbar">
-    <h1>🔊 다국어 안전시스템</h1>
+    <h1>🔊 안전 다있소</h1>
     <label class="fileBtn">
       📂 데이터 불러오기(JSON)
       <input type="file" id="fileInput" accept="application/json" style="display:none;">
@@ -698,7 +698,7 @@
     </span>
     <button id="liveMicBtn" style="background:#1e293b;color:#fff;border:2px solid #dc2626;border-radius:10px;padding:9px 16px;font-size:15px;font-weight:bold;cursor:pointer;">🔴 실시간 번역 시작</button>
     <button id="fsToggleBtn" type="button" title="브라우저 주소창과 아래 도구줄을 숨기고 화면 전체로 봅니다" style="background:#1e293b;color:#fff;border:2px solid #0ea5e9;border-radius:10px;padding:9px 14px;font-size:15px;font-weight:bold;cursor:pointer;white-space:nowrap;">⛶ 전체화면</button>
-    <label style="display:flex;gap:5px;align-items:center;font-size:12px;color:#cbd5e1;white-space:nowrap;cursor:pointer;"><input type="checkbox" id="autoLiveChk" checked style="width:15px;height:15px;"> 동영상 슬라이드에서 자동 번역</label>
+    <!-- v99: 자동 번역은 항상 켜짐 (칸은 숨김) --><label style="display:none;"><input type="checkbox" id="autoLiveChk" checked style="width:15px;height:15px;"> 동영상 슬라이드에서 자동 번역</label>
     <button id="srtOpenBtn" type="button" title="유튜브 구간추출기에서 받은 영상(mp4)과 자막(.srt)을 함께 선택하세요. 창에 끌어다 놓아도 됩니다." style="background:#0369a1;color:#fff;border:2px solid #38bdf8;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:bold;cursor:pointer;white-space:nowrap;">📝 영상·자막 열기</button>
     <input type="file" id="srtInput" accept=".srt,.vtt,video/*" multiple style="display:none;">
     <span id="srtStatus" style="display:none;align-items:center;gap:6px;font-size:12px;color:#bae6fd;background:#0c4a6e;border:1px solid #0ea5e9;border-radius:8px;padding:4px 8px;white-space:nowrap;"></span>
@@ -731,9 +731,9 @@
     <button class="ctrl" id="prevBtn">◀ 이전</button>
     <span id="slideCounter">0 / 0</span>
     <button class="ctrl" id="nextBtn">다음 ▶</button>
-    <button class="ctrl" id="playBtn">▶ 이 슬라이드부터 재생</button>
+    <button class="ctrl" id="playBtn" title="이 슬라이드부터 재생">▶ 재생</button>
     <button class="ctrl" id="stopBtn">■ 정지</button>
-    <button class="ctrl" id="bottomMicBtn" title="마이크로 말하면 오른쪽에 바로 번역됩니다">🎤 마이크 번역</button>
+    <button class="ctrl" id="bottomMicBtn" title="마이크로 말하면 오른쪽에 바로 번역됩니다">🎤 번역</button>
     <div id="vidTimeBox" style="display:none;align-items:center;gap:12px;background:#0f172a;border:2px solid #334155;border-radius:12px;padding:8px 16px;min-width:300px;">
       <div style="font-size:24px;font-weight:bold;color:#f1f5f9;white-space:nowrap;font-variant-numeric:tabular-nums;">
         <span id="vtCur">0:00</span><span style="color:#64748b;"> / </span><span id="vtDur" style="color:#94a3b8;">0:00</span>
@@ -895,7 +895,7 @@
       if(json){
         try{
           applyLoadedData(JSON.parse(await json.text()), '불러옴 (끌어다 놓기)');
-          if(typeof showMainToast === 'function') showMainToast('✅ 슬라이드를 불러왔습니다. 아래 <b>▶ 이 슬라이드부터 재생</b>을 누르세요.');
+          if(typeof showMainToast === 'function') showMainToast('✅ 슬라이드를 불러왔습니다. <b>▶ 재생</b>을 누르세요.');
         }catch(err){ alert('파일을 읽는 중 오류가 발생했습니다: ' + err.message); }
         return;
       }
@@ -1933,11 +1933,11 @@
     if(liveOn){
       let bars = '';
       for(let i=0;i<10;i++) bars += '<span class="micBar" style="display:inline-block;width:5px;height:5px;background:#bbf7d0;border-radius:2px;vertical-align:middle;transition:height .07s,background .07s;"></span>';
-      bottomMicBtn.innerHTML = '<span style="vertical-align:middle;">🔴 마이크 번역 중</span>' +
+      bottomMicBtn.innerHTML = '<span class="mTxt" style="vertical-align:middle;"><i class="mDot">🔴</i> <b class="mL">번역 중</b></span>' +
         '<span id="micBars" style="display:inline-flex;align-items:center;gap:3px;height:24px;margin-left:10px;vertical-align:middle;">' + bars + '</span>';
       bottomMicBtn.classList.add('on');
     } else {
-      bottomMicBtn.textContent = '🎤 마이크 번역';
+      bottomMicBtn.textContent = '🎤 번역';
       bottomMicBtn.classList.remove('on');
     }
     const box = document.getElementById('liveCapBox');
@@ -2465,13 +2465,13 @@
 
   function updatePlayBtnUI(){
     if(isPlayingAll){
-      playBtn.textContent = `⏸ 전체 재생 중... (${currentIndex+1}/${slides.length})`;
+      playBtn.textContent = `⏸ 재생 중 ${currentIndex+1}/${slides.length}`;
       playBtn.classList.add('playing');
     } else if(isPlaying){
-      playBtn.textContent = '⏸ 재생 중...';
+      playBtn.textContent = '⏸ 재생 중';
       playBtn.classList.add('playing');
     } else {
-      playBtn.textContent = '▶ 이 슬라이드부터 재생';
+      playBtn.textContent = '▶ 재생';
       playBtn.classList.remove('playing');
     }
   }
@@ -2596,7 +2596,7 @@
   function afterReceive(ok){
     if(ok){
       closePvsOverlay();
-      showMainToast('✅ 슬라이드가 들어왔습니다. 아래 <b>▶ 이 슬라이드부터 재생</b>을 누르세요.');
+      showMainToast('✅ 슬라이드가 들어왔습니다. <b>▶ 재생</b>을 누르세요.');
     }
     return ok;
   }
@@ -2623,7 +2623,7 @@
       if(json){
         try{
           applyLoadedData(JSON.parse(await json.text()), '불러옴 (끌어다 놓기)');
-          if(typeof showMainToast === 'function') showMainToast('✅ 슬라이드를 불러왔습니다. 아래 <b>▶ 이 슬라이드부터 재생</b>을 누르세요.');
+          if(typeof showMainToast === 'function') showMainToast('✅ 슬라이드를 불러왔습니다. <b>▶ 재생</b>을 누르세요.');
         }catch(err){ alert('파일을 읽는 중 오류가 발생했습니다: ' + err.message); }
         return;
       }
@@ -3285,6 +3285,20 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
 .gv-ring{position:absolute;width:3em;height:3em;border-radius:50%;border:3px solid #ef4444;left:-.9em;top:-.9em;opacity:0}
 .gv-cursor.click .gv-ring{animation:gvRing .7s ease-out}
 @keyframes gvRing{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+
+.gv-side{width:12%;min-width:4.6em;flex:none;border-right:1px solid #334155;padding:.7em .5em;display:flex;flex-direction:column;gap:.5em;align-items:stretch}
+.gv-cnt{color:#cbd5e1;font-weight:800;text-align:center;font-size:.9em}
+.gv-pad{display:grid;grid-template-columns:1fr 1.25fr 1fr;grid-template-rows:1fr 1fr;height:3.6em;background:#0369a1;border:1px solid #38bdf8;border-radius:.7em;overflow:visible}
+.gv-pad span{display:flex;align-items:center;justify-content:center;border-radius:.3em}
+.gv-pad svg{width:1em;height:1em;fill:#fff}
+.gv-pad .pv{grid-column:1;grid-row:1/3;border-right:1px solid rgba(56,189,248,.5)}
+.gv-pad .pp{grid-column:2;grid-row:1;background:#0284c7;border-bottom:1px solid rgba(56,189,248,.5)}
+.gv-pad .pp svg{width:1.2em;height:1.2em}
+.gv-pad .ps{grid-column:2;grid-row:2}
+.gv-pad .pn{grid-column:3;grid-row:1/3;border-left:1px solid rgba(56,189,248,.5)}
+.gv-pad .pp.on{background:#dc2626}
+.gv-micb{text-align:center;background:#0369a1 !important;border:1px solid #38bdf8;color:#fff}
+.gv-micb.on{background:#16a34a !important;border-color:#22c55e}
 @media (prefers-reduced-motion:reduce){.gv-cursor{transition:none}.gv-hl,#guideBtn.gv-new{animation:none}}
 @media (max-width:640px){.gv-steps button{min-width:44%}.gv-txt h3{font-size:16px}.gv-txt p{font-size:14px}}
 </style>
@@ -3301,7 +3315,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
       <!-- 1. 사진음성슬라이드 열기 -->
       <div class="gv-scene" data-s="0">
         <div class="gv-top">
-          <span class="t">🔊 다국어 안전시스템</span>
+          <span class="t">🔊 안전 다있소</span>
           <span class="gv-b gv-green">📂 데이터 불러오기(JSON)</span>
           <span class="gv-b gv-purple" data-target>📸 사진음성슬라이드 열기</span>
           <span class="gv-b gv-teal">🎬 가이드 영상</span>
@@ -3353,14 +3367,14 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
         </div>
       </div>
 
-      <!-- 4. 이 슬라이드부터 재생 -->
+      <!-- 4. 왼쪽 리모컨 ▶ 재생 -->
       <div class="gv-scene" data-s="3">
         <div class="gv-cast">
-          <div class="main">
+          <div class="main"><div class="gv-side"><div class="gv-cnt">1 / 7</div><div class="gv-pad"><span class="pv"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="3" height="14" rx="1"/><path d="M20 5v14L8 12z"/></svg></span><span class="pp" data-target id="gvPlay"><svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></span><span class="ps"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span><span class="pn"><svg viewBox="0 0 24 24"><rect x="17" y="5" width="3" height="14" rx="1"/><path d="M4 5v14l12-7z"/></svg></span></div><span class="gv-b gv-dark gv-micb">🎤 번역</span></div>
             <div class="gv-slide"><span class="ttl">업무상 사고사망자</span><div class="bars"><i style="height:95%"></i><i style="height:22%"></i><i style="height:20%"></i><i style="height:18%"></i><i style="height:16%"></i><i style="height:12%"></i><i style="height:8%"></i></div></div>
             <div class="gv-sub"><small>베트남어</small><div class="vi"></div><small>중국어</small><div class="zh"></div><small>한국어</small><div class="ko"></div></div>
           </div>
-          <div class="gv-bottom">1 / 7 <span class="gv-b gv-dark">다음 ▶</span><span class="gv-b gv-green" data-target id="gvPlay">▶ 이 슬라이드부터 재생</span><span class="gv-b gv-dark">■ 정지</span><span class="gv-b gv-dark">🎤 마이크 번역</span></div>
+          
           <div class="gv-toast" id="gvToast4">🔊 슬라이드 음성이 순서대로 나옵니다</div>
         </div>
       </div>
@@ -3368,11 +3382,11 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
       <!-- 5. 마이크 번역 -->
       <div class="gv-scene" data-s="4">
         <div class="gv-cast">
-          <div class="main">
+          <div class="main"><div class="gv-side"><div class="gv-cnt">1 / 7</div><div class="gv-pad"><span class="pv"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="3" height="14" rx="1"/><path d="M20 5v14L8 12z"/></svg></span><span class="pp"><svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></span><span class="ps"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></span><span class="pn"><svg viewBox="0 0 24 24"><rect x="17" y="5" width="3" height="14" rx="1"/><path d="M4 5v14l12-7z"/></svg></span></div><span class="gv-b gv-dark gv-micb" data-target id="gvMic">🎤 번역</span></div>
             <div class="gv-slide"><span class="ttl">업무상 사고사망자</span><div class="bars"><i style="height:95%"></i><i style="height:22%"></i><i style="height:20%"></i><i style="height:18%"></i><i style="height:16%"></i><i style="height:12%"></i><i style="height:8%"></i></div></div>
             <div class="gv-sub"><small>베트남어</small><div class="vi"><div class="gv-typing">Hãy đeo dây an toàn.</div></div><small>중국어</small><div class="zh"><div class="gv-typing d2">请系好安全带。</div></div><small>한국어</small><div class="ko"><div class="gv-typing d3">안전대를 꼭 거세요.</div></div></div>
           </div>
-          <div class="gv-bottom">1 / 7 <span class="gv-b gv-dark">다음 ▶</span><span class="gv-b gv-green">▶ 이 슬라이드부터 재생</span><span class="gv-b gv-dark">■ 정지</span><span class="gv-b gv-dark" data-target id="gvMic">🎤 마이크 번역</span></div>
+          
         </div>
       </div>
 
@@ -3403,9 +3417,9 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
       say:'2번. 점선 칸을 클릭해서 사진이나 동영상을 넣고, 텍스트 입력이나 목소리 녹음으로 설명 음성을 만듭니다. 여러 장이면 PDF 불러오기나 이미지 여러 장을 쓰면 편합니다.' },
     { t:'파일로 저장(내보내기)', d:'다 만들었으면 파란색 <b>⬇ 파일로 저장(내보내기)</b>을 누릅니다. 파일이 저장되고 <b>자동으로 방송 화면</b>으로 돌아옵니다. 다음에는 <b>데이터 불러오기(JSON)</b>로 바로 열 수 있습니다.',
       say:'3번. 다 만들었으면 파란색, 파일로 저장 버튼을 누릅니다. 파일이 저장되고 자동으로 방송 화면으로 돌아옵니다. 다음부터는 데이터 불러오기로 바로 열 수 있습니다.' },
-    { t:'이 슬라이드부터 재생', d:'방송 화면 아래 <b>▶ 이 슬라이드부터 재생</b>을 누르면 슬라이드와 음성이 순서대로 나오고, 오른쪽에 언어별 자막이 뜹니다.',
-      say:'4번. 방송 화면 아래, 이 슬라이드부터 재생을 누르면 슬라이드와 음성이 순서대로 나오고, 오른쪽에 언어별 자막이 뜹니다.' },
-    { t:'마이크 번역', d:'<b>🎤 마이크 번역</b>을 켜면 <b>🔴 마이크 번역 중</b>으로 바뀌고, 관리자가 말하는 내용이 오른쪽에 베트남어·중국어 등으로 바로 번역됩니다.',
+    { t:'▶ 재생 누르기', d:'마지막으로 왼쪽 리모컨 가운데 위의 <b>▶ 재생</b> 버튼을 누르면 슬라이드와 음성이 순서대로 나오고, 오른쪽에 언어별 자막이 뜹니다. <b>⏮ ⏭</b>는 이전·다음, <b>■</b>는 정지입니다.',
+      say:'4번. 마지막으로 왼쪽 리모컨 가운데 위의 재생 버튼을 누르면, 슬라이드와 음성이 순서대로 나오고 오른쪽에 언어별 자막이 뜹니다. 양옆은 이전과 다음, 아래 네모는 정지입니다.' },
+    { t:'마이크 번역', d:'리모컨 아래 <b>🎤 번역</b>을 켜면 <b>🔴 번역 중</b>으로 바뀌고, 관리자가 말하는 내용이 오른쪽에 베트남어·중국어 등으로 바로 번역됩니다.',
       say:'5번. 마이크 번역을 켜면, 관리자가 말하는 내용이 오른쪽에 베트남어, 중국어 등으로 바로 번역됩니다. 이제 교육을 시작하면 됩니다.' }
   ];
   var MIN_MS = 7500;
@@ -3453,7 +3467,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
     var d = document.getElementById('gvDrop'); d.classList.remove('filled');
     var i1 = document.getElementById('gvItem1'); i1.className='no'; i1.textContent='음성 없음';
     document.getElementById('gvText').className = 'gv-b gv-dark';
-    var mic = document.getElementById('gvMic'); mic.textContent='🎤 마이크 번역'; mic.className='gv-b gv-dark';
+    var mic = document.getElementById('gvMic'); mic.textContent='🎤 번역'; mic.className='gv-b gv-dark gv-micb'; var gp=document.getElementById('gvPlay'); if (gp) gp.classList.remove('on');
     sc.querySelectorAll('.gv-sub .vi,.gv-sub .zh,.gv-sub .ko').forEach(function(e){ if(!e.querySelector('.gv-typing')) e.textContent=''; });
   }
 
@@ -3472,6 +3486,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
       }
       if (i===2) later(function(){ document.getElementById('gvToast3').classList.add('show'); }, 500);
       if (i===3){
+        document.getElementById('gvPlay').classList.add('on');
         later(function(){ document.getElementById('gvToast4').classList.add('show'); }, 400);
         later(function(){
           document.getElementById('gvToast4').classList.remove('show');
@@ -3481,7 +3496,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
         }, 2200);
       }
       if (i===4){
-        var m=document.getElementById('gvMic'); m.textContent='🔴 마이크 번역 중'; m.className='gv-b gv-green gv-hl';
+        var m=document.getElementById('gvMic'); m.textContent='🔴 번역 중'; m.className='gv-b gv-dark gv-micb on gv-hl';
         later(function(){ sc.classList.add('play'); }, 500);
       }
     }, 1700);
@@ -3587,5 +3602,442 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
   document.addEventListener('webkitfullscreenchange', sync);
 })();
 </script>
+<!-- ===================== v95: 안전 다있소 — 카테고리별 바로가기 ===================== -->
+<style>
+#brandWrap{position:relative;display:flex;align-items:center;gap:6px}
+#topbar h1#brandTitle{cursor:pointer;background:#facc15 !important;color:#000 !important;border-radius:8px;padding:5px 12px;margin:0;user-select:none;font-weight:900;box-shadow:0 2px 0 #a16207;transition:transform .08s}
+#topbar h1#brandTitle:hover{background:#fde047 !important}
+#topbar h1#brandTitle:active{transform:translateY(1px);box-shadow:0 1px 0 #a16207}
+#topbar h1#brandTitle:focus-visible{outline:3px solid #fff;outline-offset:2px}
+#topbar h1#brandTitle{display:flex;align-items:center;gap:6px;padding:0 0 0 10px !important;overflow:hidden}
+#brandTitle .bt-ic{font-size:1em;line-height:1}
+#brandTitle .bt-tx{padding:5px 0}
+#brandTitle .caret{display:flex;align-items:center;justify-content:center;align-self:stretch;width:30px;margin-left:6px;background:#000;color:#facc15;border-left:2px solid #a16207}
+#brandTitle .caret svg{width:13px;height:9px;transition:transform .2s}
+#brandTitle:hover .caret svg{animation:btNudge .9s ease-in-out infinite}
+#brandTitle.open .caret svg{transform:rotate(180deg);animation:none}
+@keyframes btNudge{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+@media (prefers-reduced-motion:reduce){#brandTitle:hover .caret svg{animation:none}}
+#brandMenu{position:absolute;left:0;top:calc(100% + 8px);z-index:2147482000;width:min(760px,94vw);background:#0f172a;border:3px solid #facc15;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.6);display:none;overflow:hidden;color:#e2e8f0}
+#brandMenu.open{display:block}
+.bm-top{display:flex;gap:8px;align-items:center;background:#facc15;padding:9px 12px}
+.bm-top b{color:#000;font-size:16px;font-weight:900;white-space:nowrap}
+.bm-top input{flex:1;min-width:0;border:2px solid #000;border-radius:8px;padding:7px 10px;font-size:14px;background:#fff;color:#000}
+.bm-top button{background:#000;color:#facc15;border:none;border-radius:8px;padding:8px 11px;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap}
+.bm-top button.on{background:#b91c1c;color:#fff}
+.bm-body{display:flex;height:min(420px,60vh)}
+.bm-cats{width:180px;flex:none;border-right:1px solid #334155;overflow:auto;padding:6px}
+.bm-cat{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:none;color:#cbd5e1;text-align:left;padding:10px;font-size:14px;font-weight:800;border-radius:8px;cursor:pointer}
+.bm-cat:hover{background:#1e293b}
+.bm-cat.on{background:#facc15;color:#000}
+.bm-cat i{font-style:normal;font-size:12px;opacity:.75;margin-left:6px}
+.bm-list{flex:1;overflow:auto;padding:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;align-content:start}
+.bm-tile{position:relative;display:flex;align-items:center;gap:9px;background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:10px;cursor:pointer;text-align:left;color:#fff;font-size:14px;font-weight:800;min-width:0}
+.bm-tile:hover{border-color:#facc15;background:#27324a}
+.bm-tile:focus-visible{outline:3px solid #facc15}
+.bm-ic{flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#0f172a;font-size:16px}
+.bm-nm{min-width:0;overflow:hidden}
+.bm-nm span{display:block;font-size:11px;color:#94a3b8;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm-nm .c{color:#facc15}
+.bm-ed{display:none;position:absolute;right:4px;top:4px;gap:2px}
+#brandMenu.edit .bm-ed{display:flex}
+#brandMenu.edit .bm-tile{padding-right:84px;cursor:default}
+.bm-ed button{background:#0f172a;border:1px solid #475569;color:#fff;border-radius:6px;font-size:12px;width:24px;height:24px;cursor:pointer;padding:0}
+.bm-empty{grid-column:1/-1;color:#cbd5e1;font-size:14px;line-height:1.7;padding:20px 6px;text-align:center}
+.bm-empty button{margin-top:10px;background:#facc15;color:#000;border:none;border-radius:8px;padding:9px 16px;font-weight:900;cursor:pointer}
+@media (max-width:600px){.bm-body{flex-direction:column;height:65vh}.bm-cats{width:auto;display:flex;overflow-x:auto;border-right:none;border-bottom:1px solid #334155}.bm-cat{width:auto;white-space:nowrap}.bm-list{grid-template-columns:1fr}}
+#linkDlg{position:fixed;inset:0;z-index:2147483100;background:rgba(2,6,23,.8);display:none;align-items:center;justify-content:center;padding:16px}
+#linkDlg.open{display:flex}
+#linkDlg .ld-box{width:min(440px,100%);background:#0f172a;border:3px solid #facc15;border-radius:14px;padding:18px;color:#e2e8f0}
+#linkDlg h3{margin:0 0 12px;font-size:18px;color:#fde047}
+#linkDlg label{display:block;font-size:13px;font-weight:800;color:#cbd5e1;margin:10px 0 5px}
+#linkDlg input{width:100%;box-sizing:border-box;background:#1e293b;color:#fff;border:1.5px solid #475569;border-radius:8px;padding:10px;font-size:15px}
+#linkDlg input:focus{outline:none;border-color:#facc15}
+#ldChips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+#ldChips button{background:#1e293b;color:#fde047;border:1px solid #a16207;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:800;cursor:pointer}
+#linkDlg .ld-tip{font-size:12px;color:#94a3b8;margin-top:6px;line-height:1.5}
+#linkDlg .ld-err{color:#f87171;font-size:13px;font-weight:800;min-height:18px;margin-top:8px}
+#linkDlg .ld-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+#linkDlg .ld-btns button{border-radius:8px;padding:9px 16px;font-size:14px;font-weight:900;cursor:pointer;border:1px solid #475569;background:#1e293b;color:#fff}
+#linkDlg .ld-btns .ok{background:#facc15;border-color:#facc15;color:#000}
+</style>
+
+<div id="linkDlg" role="dialog" aria-modal="true" aria-labelledby="ldTitle">
+  <div class="ld-box">
+    <h3 id="ldTitle">➕ 바로가기 추가</h3>
+    <label for="ldCat">카테고리</label>
+    <input id="ldCat" maxlength="20" placeholder="예: 유튜브 채널, 안전자료, 정부기관">
+    <div id="ldChips"></div>
+    <label for="ldName">이름</label>
+    <input id="ldName" maxlength="30" placeholder="예: 현장안전365 유튜브">
+    <label for="ldUrl">주소</label>
+    <input id="ldUrl" placeholder="예: https://www.youtube.com/@채널이름">
+    <div class="ld-tip">주소창의 주소를 그대로 복사해서 붙여 넣으세요. https:// 는 빠져도 됩니다.</div>
+    <div class="ld-err" id="ldErr"></div>
+    <div class="ld-btns"><button id="ldCancel" type="button">취소</button><button id="ldMore" type="button">저장 후 계속 추가</button><button id="ldOk" class="ok" type="button">저장</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY = 'brandLinks_v1', CAT_KEY = 'brandLinksCat';
+  var h1 = document.querySelector('#topbar h1');
+  if (!h1) return;
+
+  var wrap = document.createElement('div'); wrap.id = 'brandWrap';
+  h1.parentNode.insertBefore(wrap, h1); wrap.appendChild(h1);
+  h1.id = 'brandTitle';
+  h1.innerHTML = '<span class="bt-ic">🔊</span><span class="bt-tx">안전 다있소</span><span class="caret" aria-hidden="true"><svg viewBox="0 0 12 8"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  h1.setAttribute('aria-haspopup','true'); h1.setAttribute('aria-expanded','false');
+  h1.title = '눌러서 카테고리별 바로가기 열기';
+  h1.setAttribute('role','button'); h1.tabIndex = 0;
+
+  var menu = document.createElement('div'); menu.id = 'brandMenu';
+  menu.innerHTML = '<div class="bm-top"><b>안전 다있소</b><input id="bmSearch" placeholder="🔍 이름·주소로 찾기"><button id="bmEdit" type="button">✏️ 편집</button><button id="bmAdd" type="button">➕ 추가</button></div>' +
+                   '<div class="bm-body"><div class="bm-cats" id="bmCats"></div><div class="bm-list" id="bmList"></div></div>';
+  wrap.appendChild(menu);
+  var catsEl = menu.querySelector('#bmCats'), listEl = menu.querySelector('#bmList'),
+      searchIn = menu.querySelector('#bmSearch'), editBtn = menu.querySelector('#bmEdit');
+
+  var dlg = document.getElementById('linkDlg'), catIn = document.getElementById('ldCat'),
+      nameIn = document.getElementById('ldName'), urlIn = document.getElementById('ldUrl'),
+      errEl = document.getElementById('ldErr'), editIdx = -1;
+
+  var ALL = '__all__';
+  var curCat = (function(){ try{ return localStorage.getItem(CAT_KEY) || ALL; }catch(e){ return ALL; } })();
+
+  function load(){
+    var a; try{ a = JSON.parse(localStorage.getItem(KEY)) || []; }catch(e){ a = []; }
+    a.forEach(function(l){ if (!l.cat) l.cat = '기타'; });
+    return a;
+  }
+  function save(a){ try{ localStorage.setItem(KEY, JSON.stringify(a)); }catch(e){ alert('저장하지 못했습니다. 브라우저 저장공간을 확인하세요.'); } }
+  function cats(a){ var o=[]; a.forEach(function(l){ if (o.indexOf(l.cat)<0) o.push(l.cat); }); return o; }
+  function fixUrl(u){
+    u = (u||'').trim(); if (!u) return '';
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) u = 'https://' + u;
+    try{ var x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ''; }catch(e){ return ''; }
+  }
+  function pretty(u){ try{ return decodeURI(u).replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''); }catch(e){ return u; } }
+  function icon(u){
+    if (/youtube\.com|youtu\.be/i.test(u)) return '▶️';
+    if (/kakao/i.test(u)) return '💬';
+    if (/instagram/i.test(u)) return '📷';
+    if (/blog\.naver|tistory/i.test(u)) return '📝';
+    if (/band\.us/i.test(u)) return '👥';
+    if (/\.go\.kr|\.or\.kr/i.test(u)) return '🏛️';
+    return '🌐';
+  }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function setCat(c){ curCat = c; try{ localStorage.setItem(CAT_KEY, c); }catch(e){} render(); }
+
+  function render(){
+    var a = load(), cs = cats(a), q = searchIn.value.trim().toLowerCase();
+    if (curCat !== ALL && cs.indexOf(curCat) < 0) curCat = ALL;
+    var h = '<button class="bm-cat'+(curCat===ALL?' on':'')+'" data-cat="'+ALL+'">📚 전체<i>'+a.length+'</i></button>';
+    cs.forEach(function(c){
+      var n = a.filter(function(l){ return l.cat===c; }).length;
+      h += '<button class="bm-cat'+(curCat===c?' on':'')+'" data-cat="'+esc(c)+'">📁 '+esc(c)+'<i>'+n+'</i></button>';
+    });
+    catsEl.innerHTML = h;
+
+    var showCat = q || curCat === ALL, t = '';
+    a.forEach(function(l,i){
+      if (q){ if ((l.name+' '+l.url+' '+l.cat).toLowerCase().indexOf(q) < 0) return; }
+      else if (curCat !== ALL && l.cat !== curCat) return;
+      t += '<div class="bm-tile" tabindex="0" data-go="'+i+'"><span class="bm-ic">'+icon(l.url)+'</span>' +
+           '<span class="bm-nm">'+esc(l.name)+'<span>'+(showCat?'<b class="c">'+esc(l.cat)+'</b> · ':'')+esc(pretty(l.url))+'</span></span>' +
+           '<span class="bm-ed"><button data-up="'+i+'" title="앞으로">←</button><button data-ed="'+i+'" title="수정">✏️</button><button data-del="'+i+'" title="삭제">🗑</button></span></div>';
+    });
+    if (!t) t = a.length ? '<div class="bm-empty">찾는 바로가기가 없습니다.</div>'
+                         : '<div class="bm-empty">아직 등록된 곳이 없습니다.<br>카테고리를 정해서 사이트·채널을 추가하세요.<br><button data-add="1">➕ 첫 바로가기 추가</button></div>';
+    listEl.innerHTML = t;
+  }
+  function toggleMenu(show){
+    var s = show === undefined ? !menu.classList.contains('open') : show;
+    if (s){ searchIn.value = ''; render(); }
+    menu.classList.toggle('open', s);
+    h1.classList.toggle('open', s); h1.setAttribute('aria-expanded', s ? 'true' : 'false');
+    if (s) setTimeout(function(){ var on = catsEl.querySelector('.on'); if (on) on.focus(); }, 0);
+  }
+
+  function chips(){
+    var cs = cats(load());
+    document.getElementById('ldChips').innerHTML = cs.map(function(c){ return '<button type="button" data-c="'+esc(c)+'">'+esc(c)+'</button>'; }).join('');
+  }
+  function openDlg(i){
+    editIdx = (typeof i === 'number') ? i : -1;
+    var l = editIdx >= 0 ? load()[editIdx] : null;
+    document.getElementById('ldTitle').textContent = l ? '✏️ 바로가기 수정' : '➕ 바로가기 추가';
+    document.getElementById('ldMore').style.display = l ? 'none' : '';
+    catIn.value = l ? l.cat : (curCat !== ALL ? curCat : '');
+    nameIn.value = l ? l.name : ''; urlIn.value = l ? l.url : '';
+    errEl.textContent = ''; chips();
+    toggleMenu(false);
+    dlg.classList.add('open'); (catIn.value ? nameIn : catIn).focus();
+  }
+  function closeDlg(){ dlg.classList.remove('open'); }
+  function submit(keepOpen){
+    var cat = catIn.value.trim() || '기타', name = nameIn.value.trim(), url = fixUrl(urlIn.value);
+    if (!url){ errEl.textContent = '주소를 확인하세요. (예: https://www.youtube.com/@채널)'; urlIn.focus(); return; }
+    if (!name){ try{ name = new URL(url).hostname.replace(/^www\./,''); }catch(e){ name = url; } }
+    var a = load(), item = { cat:cat, name:name, url:url };
+    if (editIdx >= 0) a[editIdx] = item; else a.push(item);
+    save(a); curCat = cat; try{ localStorage.setItem(CAT_KEY, cat); }catch(e){}
+    if (typeof showMainToast === 'function') showMainToast('✅ [' + esc(cat) + '] ' + esc(name) + ' 저장됨');
+    if (keepOpen){ nameIn.value = ''; urlIn.value = ''; errEl.textContent = ''; chips(); nameIn.focus(); }
+    else { closeDlg(); toggleMenu(true); }
+  }
+
+  h1.addEventListener('click', function(){ toggleMenu(); });
+  h1.addEventListener('keydown', function(e){ if (e.key==='Enter' || e.key===' '){ e.preventDefault(); toggleMenu(); } });
+  menu.querySelector('#bmAdd').addEventListener('click', function(){ openDlg(); });
+  editBtn.addEventListener('click', function(){
+    var on = menu.classList.toggle('edit');
+    editBtn.classList.toggle('on', on); editBtn.textContent = on ? '✓ 편집 끝' : '✏️ 편집';
+  });
+  searchIn.addEventListener('input', render);
+  searchIn.addEventListener('keydown', function(e){
+    if (e.key === 'Enter'){ var f = listEl.querySelector('[data-go]'); if (f && !menu.classList.contains('edit')) f.click(); }
+  });
+
+  catsEl.addEventListener('click', function(e){ var b = e.target.closest('[data-cat]'); if (b){ searchIn.value=''; setCat(b.dataset.cat); } });
+  // 마우스를 카테고리에 올리기만 해도 바로 넘어감
+  catsEl.addEventListener('mouseover', function(e){
+    var b = e.target.closest('[data-cat]');
+    if (b && !searchIn.value && b.dataset.cat !== curCat && matchMedia('(hover:hover)').matches) setCat(b.dataset.cat);
+  });
+  catsEl.addEventListener('keydown', function(e){
+    if (e.key!=='ArrowDown' && e.key!=='ArrowUp') return;
+    e.preventDefault();
+    var bs = [].slice.call(catsEl.querySelectorAll('[data-cat]')), i = bs.indexOf(document.activeElement);
+    var n = bs[Math.max(0, Math.min(bs.length-1, i + (e.key==='ArrowDown'?1:-1)))];
+    if (n){ setCat(n.dataset.cat); var f = catsEl.querySelector('[data-cat="'+CSS.escape(n.dataset.cat)+'"]'); if (f) f.focus(); }
+  });
+
+  listEl.addEventListener('click', function(e){
+    var a = load(), b = e.target.closest('button');
+    if (b){
+      var d = b.dataset;
+      if (d.ed !== undefined) return openDlg(+d.ed);
+      if (d.del !== undefined){ if (confirm('“'+a[+d.del].name+'” 바로가기를 삭제할까요?')){ a.splice(+d.del,1); save(a); render(); } return; }
+      if (d.up !== undefined){
+        var i = +d.up, j = -1;
+        for (var k=i-1;k>=0;k--) if (curCat===ALL || a[k].cat===a[i].cat){ j=k; break; }
+        if (j>=0){ var t=a[j]; a[j]=a[i]; a[i]=t; save(a); render(); }
+        return;
+      }
+      if (d.add) return openDlg();
+    }
+    var tile = e.target.closest('[data-go]');
+    if (tile && !menu.classList.contains('edit')){ window.open(a[+tile.dataset.go].url, '_blank', 'noopener'); }
+  });
+  listEl.addEventListener('keydown', function(e){ if (e.key==='Enter' && e.target.dataset.go !== undefined) e.target.click(); });
+
+  document.addEventListener('click', function(e){ if (menu.classList.contains('open') && e.composedPath().indexOf(wrap) < 0 && e.target.isConnected) toggleMenu(false); });
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    if (dlg.classList.contains('open')) closeDlg(); else if (menu.classList.contains('open')){ toggleMenu(false); h1.focus(); }
+  });
+  document.getElementById('ldChips').addEventListener('click', function(e){ var b = e.target.closest('[data-c]'); if (b){ catIn.value = b.dataset.c; nameIn.focus(); } });
+  document.getElementById('ldCancel').onclick = closeDlg;
+  document.getElementById('ldOk').onclick = function(){ submit(false); };
+  document.getElementById('ldMore').onclick = function(){ submit(true); };
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) closeDlg(); });
+  [catIn, nameIn, urlIn].forEach(function(el){ el.addEventListener('keydown', function(e){ if (e.key==='Enter') submit(false); }); });
+})();
+</script>
+<!-- ===================== /v95 안전 다있소 ===================== -->
+
+<!-- ===================== v96: 아래 버튼줄 → 왼쪽 세로 도구줄 (넓은 화면) ===================== -->
+<style>
+@media (min-width:901px){
+  #stage > #controls{
+    flex:none; width:76px; box-sizing:border-box;
+    flex-direction:row !important; flex-wrap:wrap !important; align-content:flex-start; align-items:stretch;
+    gap:5px !important; padding:8px 5px !important; overflow-y:auto;
+    border-top:none !important; border-right:1px solid rgba(148,163,184,.25);
+  }
+  #stage > #controls > *{ flex:1 1 100%; }
+  #stage > #controls #slideCounter{ order:-1; min-width:0 !important; font-size:11px !important; font-weight:700; padding:2px 0; }
+  #stage > #controls #prevBtn, #stage > #controls #nextBtn{ flex:1 1 100%; }
+  #stage > #controls button.ctrl, #stage > #controls button{ font-size:11px !important; font-weight:700 !important; padding:7px 6px !important; border-radius:7px !important; white-space:normal !important; line-height:1.3; text-align:center; }
+  #stage > #controls #playBtn{ font-size:11px !important; padding:7px 6px !important; }
+  #stage > #controls #bottomMicBtn{ margin:0 !important; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px; }
+  #stage > #controls #bottomMicBtn #micBars{ margin-left:0 !important; }
+  /* v103: 좁은 줄에서 마이크 번역 중 글씨·막대 안 잘리게 */
+  #stage > #controls #bottomMicBtn{ box-sizing:border-box; width:100%; min-width:0; max-width:100%; overflow:hidden; flex-direction:column; flex-wrap:nowrap !important; gap:4px; animation:none !important; }
+  #stage > #controls #bottomMicBtn > span:first-child{ display:block; width:100%; white-space:normal !important; word-break:keep-all; line-height:1.3; }
+  #stage > #controls #bottomMicBtn #micBars{ gap:2px !important; height:12px !important; max-width:100%; justify-content:center; }
+  #stage > #controls #bottomMicBtn .micBar{ width:3px !important; }
+  /* v104: 마이크 / 번역 중 두 줄 가운데 정렬, 빨간 점은 왼쪽 위 모서리 */
+  #bottomMicBtn .mTxt i, #bottomMicBtn .mTxt b{ font-style:normal; font-weight:inherit; }
+  #stage > #controls #bottomMicBtn{ position:relative; }
+  #stage > #controls #bottomMicBtn .mTxt{ text-align:center; }
+  #stage > #controls #bottomMicBtn .mL{ display:block; }
+  #stage > #controls #bottomMicBtn .mDot{ position:absolute; left:3px; top:3px; font-size:7px; line-height:1; }
+  #stage > #controls #vidTimeBox{ min-width:0 !important; flex-direction:column; align-items:stretch !important; gap:6px !important; padding:8px !important; }
+  #stage > #controls #vidTimeBox > div:first-child{ font-size:11px !important; text-align:center; white-space:normal !important; }
+  #stage > #controls #vidTimeBox *{ white-space:normal !important; }
+  /* v110: 좁은 왼쪽 줄에서도 남은 시간이 크게 보이게 */
+  #stage > #controls #vidTimeBox{ padding:7px 4px !important; gap:4px !important; text-align:center; }
+  #stage > #controls #vidTimeBox > div:last-child{ order:-1; min-width:0 !important; }
+  #stage > #controls #vidTimeBox > div:last-child > div:first-child{ font-size:10px !important; line-height:1.2; }
+  #stage > #controls #vidTimeBox #vtLeft{ display:block; font-size:19px !important; font-weight:900; margin-top:2px; font-variant-numeric:tabular-nums; }
+  #stage > #controls #vidTimeBox > div:last-child > div:last-child{ height:4px !important; margin-top:5px !important; }
+  #stage > #controls #vidTimeBox > div:first-child{ font-size:10px !important; font-weight:700 !important; color:#94a3b8; }
+  #stage > #controls #vidTimeBox > div:first-child #vtCur{ color:#f1f5f9; }
+  #stage > #controls .spacer{ display:none; }
+  #stage > #controls #hint{ display:none !important; }
+}
+</style>
+<script>
+(function(){
+  var stage = document.getElementById('stage'), ctr = document.getElementById('controls');
+  if (!stage || !ctr) return;
+  var mq = window.matchMedia('(min-width:901px)');
+  function place(){
+    if (mq.matches){ if (ctr.parentNode !== stage) stage.insertBefore(ctr, stage.firstChild); }
+    else if (ctr.parentNode === stage){ stage.parentNode.insertBefore(ctr, stage.nextSibling); }
+    window.dispatchEvent(new Event('resize-controls'));
+  }
+  if (mq.addEventListener) mq.addEventListener('change', place); else mq.addListener(place);
+  place();
+})();
+</script>
+<!-- ===================== /v96 ===================== -->
+
+<!-- ===================== v98: 버튼 색 통일 (영상·자막 열기 색) — 안전 다있소·암호·기간 제외 ===================== -->
+<style id="v98unify">
+#guideBtn,
+#transLangBtn, #fsToggleBtn, #srtOpenBtn,
+#liveMicBtn:not([style*="20, 83, 45"]),
+#glossaryBtn, #aiVoiceBtn, #toggleImgPaneBtn,
+#capZoomOut, #capZoomIn,
+#controls #prevBtn, #controls #nextBtn,
+#controls #playBtn:not(.playing),
+#controls #stopBtn,
+#controls #bottomMicBtn:not(.on):not(.needPerm){
+  background:#0369a1 !important; background-image:none !important;
+  color:#fff !important; border:1px solid #38bdf8 !important;
+  font-size:11px !important; font-weight:700 !important;
+  border-radius:7px !important; box-shadow:none !important;
+  font-family:inherit !important;
+}
+#topbar .fileBtn:hover, #openPvsBtn:hover, #guideBtn:hover, #transLangBtn:hover, #fsToggleBtn:hover,
+#srtOpenBtn:hover, #liveMicBtn:hover, #glossaryBtn:hover, #aiVoiceBtn:hover, #toggleImgPaneBtn:hover,
+#capZoomOut:hover, #capZoomIn:hover,
+#controls #prevBtn:hover, #controls #nextBtn:hover, #controls #playBtn:not(.playing):hover,
+#controls #stopBtn:hover, #controls #bottomMicBtn:not(.on):not(.needPerm):hover{
+  filter:brightness(1.15);
+}
+#guideBtn.gv-new{ animation:none !important; }
+/* v101: 자주 쓰는 두 버튼 — 연한 보라 (안전 다있소보다 튀지 않게) */
+#topbar .fileBtn, #openPvsBtn{
+  background:#4c3a7a !important; background-image:none !important;
+  color:#ede9fe !important; border:1px solid #8b7bc4 !important;
+  font-size:11px !important; font-weight:700 !important;
+  border-radius:7px !important; box-shadow:none !important;
+  font-family:inherit !important;
+}
+#topbar .fileBtn:hover, #openPvsBtn:hover{ background:#5b478f !important; filter:none; }
+
+#capZoomOut, #capZoomIn{ padding:0 6px !important; }
+#stage > #controls #playBtn{ white-space:normal !important; padding:7px 3px !important; }
+</style>
+<!-- ===================== /v98 ===================== -->
+
+<script>(function(){var c=document.getElementById('autoLiveChk');if(c){c.checked=true;c.disabled=true;}})();</script>
+<!-- ===================== v106: 이전·재생·정지·다음을 아이콘만 있는 하나의 리모컨 버튼으로 ===================== -->
+<style>
+#remotePad{ display:none; }
+@media (min-width:901px){
+  #stage > #controls #remotePad{
+    display:grid; flex:1 1 100%; height:50px;
+    grid-template-columns:1fr 1.25fr 1fr; grid-template-rows:1fr 1fr;
+    background:#0369a1; border:1px solid #38bdf8; border-radius:12px; overflow:hidden;
+  }
+  #stage > #controls #remotePad > button{
+    margin:0 !important; border:none !important; border-radius:0 !important; min-width:0;
+    display:flex; align-items:center; justify-content:center; padding:0 !important;
+  }
+  #stage > #controls #remotePad #prevBtn{ grid-column:1; grid-row:1 / 3; border-right:1px solid rgba(56,189,248,.5) !important; }
+  #stage > #controls #remotePad #playBtn{ grid-column:2; grid-row:1; border-bottom:1px solid rgba(56,189,248,.5) !important; }
+  #stage > #controls #remotePad #playBtn:not(.playing){ background:#0284c7 !important; }
+  #stage > #controls #remotePad #stopBtn{ grid-column:2; grid-row:2; }
+  #stage > #controls #remotePad #nextBtn{ grid-column:3; grid-row:1 / 3; border-left:1px solid rgba(56,189,248,.5) !important; }
+  #remotePad svg{ width:12px; height:12px; fill:#fff; display:block; }
+  #remotePad #playBtn svg{ width:14px; height:14px; }
+  #stage > #controls #remotePad > button:hover{ filter:brightness(1.2); }
+  #stage > #controls #remotePad > button:active{ filter:brightness(1.4); }
+  #stage > #controls #remotePad > button:focus-visible{ outline:2px solid #fde047; outline-offset:-2px; }
+}
+</style>
+<script>
+(function(){
+  var ctr = document.getElementById('controls');
+  var prev = document.getElementById('prevBtn'), next = document.getElementById('nextBtn'),
+      play = document.getElementById('playBtn'), stop = document.getElementById('stopBtn');
+  if (!ctr || !prev || !next || !play || !stop) return;
+  var pad = document.createElement('div'); pad.id = 'remotePad';
+  var mq = window.matchMedia('(min-width:901px)');
+  var orig = { prev: prev.innerHTML, next: next.innerHTML, stop: stop.innerHTML };
+  var anchor = document.createComment('pad-anchor');
+  ctr.insertBefore(anchor, prev);
+
+  var ICON = {
+    prev:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="3" height="14" rx="1"/><path d="M20 5v14L8 12z"/></svg>',
+    next:'<svg viewBox="0 0 24 24"><rect x="17" y="5" width="3" height="14" rx="1"/><path d="M4 5v14l12-7z"/></svg>',
+    play:'<svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg>',
+    pause:'<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>',
+    stop:'<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>'
+  };
+  function toPad(){
+    if (pad.parentNode) return;
+    ctr.insertBefore(pad, anchor);
+    [prev, play, stop, next].forEach(function(b){ pad.appendChild(b); });
+    prev.innerHTML = ICON.prev; next.innerHTML = ICON.next; stop.innerHTML = ICON.stop;
+    prev.setAttribute('aria-label','이전'); next.setAttribute('aria-label','다음'); stop.setAttribute('aria-label','정지');
+    prev.title = '이전 (← ↑)'; next.title = '다음 (→ ↓)';
+    play.title = '이 슬라이드부터 재생 (스페이스바)'; stop.title = '정지';
+  }
+  function toBar(){
+    if (!pad.parentNode) return;
+    [prev, document.getElementById('slideCounter'), next, play, stop].forEach(function(b){ if (b) ctr.insertBefore(b, anchor); });
+    pad.remove();
+    prev.innerHTML = orig.prev; next.innerHTML = orig.next; stop.innerHTML = orig.stop;
+  }
+  // 재생 버튼 글씨도 다른 칸처럼 [아이콘 / 글씨] 두 줄로 (재생 상태가 바뀔 때마다 자동으로 맞춤)
+  var busy = false, lastPlayText = play.textContent.trim();
+  function fmtPlay(){
+    if (busy || !pad.parentNode || play.querySelector('svg')) return;
+    lastPlayText = play.textContent.trim();
+    var paused = /^⏸/.test(lastPlayText);
+    busy = true;
+    play.innerHTML = paused ? ICON.pause : ICON.play;
+    play.setAttribute('aria-label', paused ? '재생 중' : '재생'); play.title = lastPlayText + ' (스페이스바)';
+    busy = false;
+  }
+  new MutationObserver(fmtPlay).observe(play, { childList:true, characterData:true, subtree:true });
+  function place(){ mq.matches ? toPad() : toBar(); if (mq.matches) fmtPlay(); else if (play.querySelector('svg')){ play.textContent = lastPlayText || '▶ 재생'; } }
+  if (mq.addEventListener) mq.addEventListener('change', place); else mq.addListener(place);
+  place();
+
+  // 키보드로도 바로 조작 (←→는 원래 코드가 처리, 여기선 ↑↓·PageUp/Down·스페이스바 추가) (글 입력 중이거나 다른 창이 열려 있으면 무시)
+  document.addEventListener('keydown', function(e){
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    var t = e.target, tag = (t && t.tagName) || '';
+    if (/INPUT|TEXTAREA|SELECT/.test(tag) || (t && t.isContentEditable)) return;
+    if (document.querySelector('#gvOverlay.open, #linkDlg.open, #brandMenu.open')) return;
+    if (tag === 'BUTTON' && (e.key === ' ' || e.key === 'Enter')) return;
+    var k = e.key;
+    if (k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); prev.click(); }
+    else if (k === 'ArrowDown' || k === 'PageDown'){ e.preventDefault(); next.click(); }
+    else if (k === ' '){ e.preventDefault(); play.click(); }
+  });
+})();
+</script>
+<!-- ===================== /v105 ===================== -->
+
 </body>
 </html>
