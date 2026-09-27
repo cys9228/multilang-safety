@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>안전 다있소 v113</title>
+<title>안전 다있소 v117</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -3288,14 +3288,14 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
 
 .gv-side{width:12%;min-width:4.6em;flex:none;border-right:1px solid #334155;padding:.7em .5em;display:flex;flex-direction:column;gap:.5em;align-items:stretch}
 .gv-cnt{color:#cbd5e1;font-weight:800;text-align:center;font-size:.9em}
-.gv-pad{display:grid;grid-template-columns:1fr 1.25fr 1fr;grid-template-rows:1fr 1fr;height:3.6em;background:#0369a1;border:1px solid #38bdf8;border-radius:.7em;overflow:visible}
-.gv-pad span{display:flex;align-items:center;justify-content:center;border-radius:.3em}
-.gv-pad svg{width:1em;height:1em;fill:#fff}
-.gv-pad .pv{grid-column:1;grid-row:1/3;border-right:1px solid rgba(56,189,248,.5)}
-.gv-pad .pp{grid-column:2;grid-row:1;background:#0284c7;border-bottom:1px solid rgba(56,189,248,.5)}
-.gv-pad .pp svg{width:1.2em;height:1.2em}
-.gv-pad .ps{grid-column:2;grid-row:2}
-.gv-pad .pn{grid-column:3;grid-row:1/3;border-left:1px solid rgba(56,189,248,.5)}
+.gv-pad{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1.6em 1.6em;row-gap:.3em;height:3.5em}
+.gv-pad span{display:flex;align-items:center;justify-content:center;background:#0369a1;border:1px solid #38bdf8}
+.gv-pad svg{width:.85em;height:.85em;fill:#fff}
+.gv-pad .pv{grid-column:1;grid-row:1;border-radius:.55em 0 0 .55em;border-right:none}
+.gv-pad .ps{grid-column:2;grid-row:1}
+.gv-pad .pn{grid-column:3;grid-row:1;border-radius:0 .55em .55em 0;border-left:none}
+.gv-pad .pp{grid-column:1/4;grid-row:2;background:#0284c7;border-radius:.6em}
+.gv-pad .pp svg{width:.85em;height:.85em}
 .gv-pad .pp.on{background:#dc2626}
 .gv-micb{text-align:center;background:#0369a1 !important;border:1px solid #38bdf8;color:#fff}
 .gv-micb.on{background:#16a34a !important;border-color:#22c55e}
@@ -3417,8 +3417,8 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
       say:'2번. 점선 칸을 클릭해서 사진이나 동영상을 넣고, 텍스트 입력이나 목소리 녹음으로 설명 음성을 만듭니다. 여러 장이면 PDF 불러오기나 이미지 여러 장을 쓰면 편합니다.' },
     { t:'파일로 저장(내보내기)', d:'다 만들었으면 파란색 <b>⬇ 파일로 저장(내보내기)</b>을 누릅니다. 파일이 저장되고 <b>자동으로 방송 화면</b>으로 돌아옵니다. 다음에는 <b>데이터 불러오기(JSON)</b>로 바로 열 수 있습니다.',
       say:'3번. 다 만들었으면 파란색, 파일로 저장 버튼을 누릅니다. 파일이 저장되고 자동으로 방송 화면으로 돌아옵니다. 다음부터는 데이터 불러오기로 바로 열 수 있습니다.' },
-    { t:'▶ 재생 누르기', d:'마지막으로 왼쪽 리모컨 가운데 위의 <b>▶ 재생</b> 버튼을 누르면 슬라이드와 음성이 순서대로 나오고, 오른쪽에 언어별 자막이 뜹니다. <b>⏮ ⏭</b>는 이전·다음, <b>■</b>는 정지입니다.',
-      say:'4번. 마지막으로 왼쪽 리모컨 가운데 위의 재생 버튼을 누르면, 슬라이드와 음성이 순서대로 나오고 오른쪽에 언어별 자막이 뜹니다. 양옆은 이전과 다음, 아래 네모는 정지입니다.' },
+    { t:'▶ 재생 누르기', d:'마지막으로 왼쪽 리모컨 아래의 큰 <b>▶ 재생</b> 버튼을 누르면 슬라이드와 음성이 순서대로 나오고, 오른쪽에 언어별 자막이 뜹니다. 위 칸은 왼쪽부터 <b>이전 · 정지 · 다음</b>입니다.',
+      say:'4번. 마지막으로 왼쪽 리모컨 아래의 큰 재생 버튼을 누르면, 슬라이드와 음성이 순서대로 나오고 오른쪽에 언어별 자막이 뜹니다. 위 칸은 왼쪽부터 이전, 정지, 다음입니다.' },
     { t:'마이크 번역', d:'리모컨 아래 <b>🎤 번역</b>을 켜면 <b>🔴 번역 중</b>으로 바뀌고, 관리자가 말하는 내용이 오른쪽에 베트남어·중국어 등으로 바로 번역됩니다.',
       say:'5번. 마이크 번역을 켜면, 관리자가 말하는 내용이 오른쪽에 베트남어, 중국어 등으로 바로 번역됩니다. 이제 교육을 시작하면 됩니다.' }
   ];
@@ -3952,22 +3952,24 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
 <style>
 #remotePad{ display:none; }
 @media (min-width:901px){
+  /* v116: 위 칸 = 이전·정지·다음 (가로), 아래 칸 = 재생 (따로) */
   #stage > #controls #remotePad{
-    display:grid; flex:1 1 100%; height:50px;
-    grid-template-columns:1fr 1.25fr 1fr; grid-template-rows:1fr 1fr;
-    background:#0369a1; border:1px solid #38bdf8; border-radius:12px; overflow:hidden;
+    display:grid; flex:1 1 100%; height:57px; row-gap:5px; column-gap:0;
+    grid-template-columns:1fr 1fr 1fr; grid-template-rows:26px 26px;
   }
   #stage > #controls #remotePad > button{
-    margin:0 !important; border:none !important; border-radius:0 !important; min-width:0;
-    display:flex; align-items:center; justify-content:center; padding:0 !important;
+    margin:0 !important; min-width:0; padding:0 !important;
+    display:flex; align-items:center; justify-content:center;
+    background:#0369a1 !important; border:1px solid #38bdf8 !important; border-radius:0 !important;
   }
-  #stage > #controls #remotePad #prevBtn{ grid-column:1; grid-row:1 / 3; border-right:1px solid rgba(56,189,248,.5) !important; }
-  #stage > #controls #remotePad #playBtn{ grid-column:2; grid-row:1; border-bottom:1px solid rgba(56,189,248,.5) !important; }
+  #stage > #controls #remotePad #prevBtn{ grid-column:1; grid-row:1; border-radius:9px 0 0 9px !important; border-right:none !important; }
+  #stage > #controls #remotePad #stopBtn{ grid-column:2; grid-row:1; }
+  #stage > #controls #remotePad #nextBtn{ grid-column:3; grid-row:1; border-radius:0 9px 9px 0 !important; border-left:none !important; }
+  #stage > #controls #remotePad #playBtn{ grid-column:1 / 4; grid-row:2; border-radius:9px !important; }
   #stage > #controls #remotePad #playBtn:not(.playing){ background:#0284c7 !important; }
-  #stage > #controls #remotePad #stopBtn{ grid-column:2; grid-row:2; }
-  #stage > #controls #remotePad #nextBtn{ grid-column:3; grid-row:1 / 3; border-left:1px solid rgba(56,189,248,.5) !important; }
+  #stage > #controls #remotePad #playBtn.playing{ background:#dc2626 !important; border-color:#f87171 !important; }
   #remotePad svg{ width:12px; height:12px; fill:#fff; display:block; }
-  #remotePad #playBtn svg{ width:14px; height:14px; }
+  #remotePad #playBtn svg{ width:12px; height:12px; }
   #stage > #controls #remotePad > button:hover{ filter:brightness(1.2); }
   #stage > #controls #remotePad > button:active{ filter:brightness(1.4); }
   #stage > #controls #remotePad > button:focus-visible{ outline:2px solid #fde047; outline-offset:-2px; }
@@ -4150,6 +4152,57 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
 })();
 </script>
 <!-- ===================== /v112 ===================== -->
+
+<!-- ===================== v114: 영상 재생 중에는 위 도구줄 숨기기 ===================== -->
+<style>
+html.vplay:not(.vpeek) #topbar, html.vplay:not(.vpeek) #transBar{ display:none !important; }
+#vpeekBtn{ position:fixed; top:0; left:50%; transform:translate(-50%,-100%); z-index:2147481000;
+  background:rgba(3,105,161,.9); color:#fff; border:1px solid #38bdf8; border-top:none; border-radius:0 0 10px 10px;
+  padding:4px 14px; font-size:12px; font-weight:800; cursor:pointer; transition:transform .2s; font-family:inherit; }
+html.vplay:not(.vpeek) #vpeekBtn.show{ transform:translate(-50%,0); }
+#vpeekZone{ position:fixed; top:0; left:0; right:0; height:14px; z-index:2147480999; display:none; }
+html.vplay:not(.vpeek) #vpeekZone{ display:block; }
+</style>
+<script>
+(function(){
+  var v = document.getElementById('slideVideo');
+  if (!v) return;
+  var root = document.documentElement, hideT = null, btnT = null;
+  var btn = document.createElement('button');
+  btn.id = 'vpeekBtn'; btn.type = 'button'; btn.textContent = '▾ 도구줄 보기';
+  var zone = document.createElement('div'); zone.id = 'vpeekZone';
+  document.body.appendChild(zone); document.body.appendChild(btn);
+
+  function playing(){ return !v.paused && !v.ended && v.style.display !== 'none'; }
+  function sync(){
+    if (playing()){ root.classList.add('vplay'); flashBtn(); }
+    else { root.classList.remove('vplay', 'vpeek'); btn.classList.remove('show'); }
+  }
+  // 숨긴 직후 3초 동안 "도구줄 보기" 손잡이를 보여 줘서 어디서 꺼내는지 알려 줌
+  function flashBtn(){ btn.classList.add('show'); clearTimeout(btnT); btnT = setTimeout(function(){ btn.classList.remove('show'); }, 3000); }
+  function overBars(){
+    return ['topbar','transBar'].some(function(id){ var el = document.getElementById(id); return el && el.matches(':hover'); }) ||
+           !!document.querySelector('#brandMenu.open, #transLangPanel[style*="block"]');
+  }
+  function peek(){
+    root.classList.add('vpeek'); btn.classList.remove('show');
+    clearTimeout(hideT);
+    hideT = setTimeout(function again(){
+      if (!playing()) return;
+      if (overBars()){ hideT = setTimeout(again, 1500); return; }   // 도구줄을 쓰는 중이면 기다림
+      root.classList.remove('vpeek');
+    }, 5000);
+  }
+  ['play','playing','pause','ended','emptied','abort'].forEach(function(ev){ v.addEventListener(ev, sync); });
+  new MutationObserver(sync).observe(v, { attributes:true, attributeFilter:['style'] });
+  btn.addEventListener('click', peek);
+  zone.addEventListener('mouseenter', flashBtn);
+  zone.addEventListener('click', peek);
+  zone.addEventListener('touchstart', function(){ flashBtn(); }, { passive:true });
+  document.addEventListener('mousemove', function(e){ if (root.classList.contains('vplay') && e.clientY < 40) flashBtn(); });
+})();
+</script>
+<!-- ===================== /v114 ===================== -->
 
 </body>
 </html>
