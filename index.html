@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>안전 다있소 v118</title>
+<title>안전 다있네 v122</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -191,7 +191,7 @@
 <body>
 <div id="licLock" style="display:none;position:fixed;inset:0;z-index:99999;background:#0b1220;color:#e2e8f0;align-items:center;justify-content:center;padding:20px;">
   <div style="width:min(460px,94vw);background:#111c2e;border:2px solid #334155;border-radius:16px;padding:26px;box-shadow:0 20px 50px rgba(0,0,0,.6);">
-    <div style="font-size:22px;font-weight:900;margin-bottom:6px;">🔒 안전 다있소</div>
+    <div style="font-size:22px;font-weight:900;margin-bottom:6px;">🔒 안전 다있네</div>
     <div id="licLockSub" style="font-size:13px;color:#94a3b8;margin-bottom:18px;">암호를 입력해 주세요</div>
     <div id="licPwWrap">
       <input id="licPw" type="password" placeholder="암호" style="width:100%;padding:13px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:#fff;font-size:17px;">
@@ -260,7 +260,7 @@
 <!-- ===== 잠금화면 ===== -->
 <div id="lockScreen" style="position:fixed;inset:0;background:#05060a;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;">
   <div style="background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:26px;max-width:420px;width:100%;color:#e2e8f0;font-family:'Malgun Gothic',sans-serif;">
-    <div style="font-size:19px;font-weight:bold;color:#a78bfa;margin-bottom:6px;">🔒 안전 다있소</div>
+    <div style="font-size:19px;font-weight:bold;color:#a78bfa;margin-bottom:6px;">🔒 안전 다있네</div>
     <div id="lockInfo" style="font-size:13px;color:#94a3b8;margin-bottom:18px;line-height:1.7;"></div>
 
     <div id="lockPwArea">
@@ -494,7 +494,7 @@
       document.getElementById('licSetPw').value = '';
     };
     document.getElementById('licAsk').onclick = function(){
-      const txt = '[안전 다있소] 사용기간 연장 요청합니다.\n요청번호: ' + lic.chal;
+      const txt = '[안전 다있네] 사용기간 연장 요청합니다.\n요청번호: ' + lic.chal;
       if(navigator.clipboard) navigator.clipboard.writeText(txt).catch(function(){});
       window.open('sms:?&body=' + encodeURIComponent(txt), '_blank');
       const el = document.getElementById('licPanelMsg');
@@ -674,7 +674,7 @@
 
 
   <div id="topbar">
-    <h1>🔊 안전 다있소</h1>
+    <h1>🔊 안전 다있네</h1>
     <label class="fileBtn">
       📂 데이터 불러오기(JSON)
       <input type="file" id="fileInput" style="display:none;"><!-- v118: 휴대폰에서 JSON이 회색으로 막히지 않게 파일 종류 제한을 없앰 -->
@@ -3322,7 +3322,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
       <!-- 1. 사진음성슬라이드 열기 -->
       <div class="gv-scene" data-s="0">
         <div class="gv-top">
-          <span class="t">🔊 안전 다있소</span>
+          <span class="t">🔊 안전 다있네</span>
           <span class="gv-b gv-green">📂 데이터 불러오기(JSON)</span>
           <span class="gv-b gv-purple" data-target>📸 사진음성슬라이드 열기</span>
           <span class="gv-b gv-teal">🎬 가이드 영상</span>
@@ -3609,7 +3609,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
   document.addEventListener('webkitfullscreenchange', sync);
 })();
 </script>
-<!-- ===================== v95: 안전 다있소 — 카테고리별 바로가기 ===================== -->
+<!-- ===================== v95: 안전 다있네 — 카테고리별 바로가기 ===================== -->
 <style>
 #brandWrap{position:relative;display:flex;align-items:center;gap:6px}
 #topbar h1#brandTitle{cursor:pointer;background:#facc15 !important;color:#000 !important;border-radius:8px;padding:5px 12px;margin:0;user-select:none;font-weight:900;box-shadow:0 2px 0 #a16207;transition:transform .08s}
@@ -3694,13 +3694,13 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
   var wrap = document.createElement('div'); wrap.id = 'brandWrap';
   h1.parentNode.insertBefore(wrap, h1); wrap.appendChild(h1);
   h1.id = 'brandTitle';
-  h1.innerHTML = '<span class="bt-ic">🔊</span><span class="bt-tx">안전 다있소</span><span class="caret" aria-hidden="true"><svg viewBox="0 0 12 8"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  h1.innerHTML = '<span class="bt-ic">🔊</span><span class="bt-tx">안전 다있네</span><span class="caret" aria-hidden="true"><svg viewBox="0 0 12 8"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
   h1.setAttribute('aria-haspopup','true'); h1.setAttribute('aria-expanded','false');
   h1.title = '눌러서 카테고리별 바로가기 열기';
   h1.setAttribute('role','button'); h1.tabIndex = 0;
 
   var menu = document.createElement('div'); menu.id = 'brandMenu';
-  menu.innerHTML = '<div class="bm-top"><b>안전 다있소</b><input id="bmSearch" placeholder="🔍 이름·주소로 찾기"><button id="bmEdit" type="button">✏️ 편집</button><button id="bmAdd" type="button">➕ 추가</button></div>' +
+  menu.innerHTML = '<div class="bm-top"><b>안전 다있네</b><input id="bmSearch" placeholder="🔍 이름·주소로 찾기"><button id="bmEdit" type="button">✏️ 편집</button><button id="bmAdd" type="button">➕ 추가</button></div>' +
                    '<div class="bm-body"><div class="bm-cats" id="bmCats"></div><div class="bm-list" id="bmList"></div></div>';
   wrap.appendChild(menu);
   var catsEl = menu.querySelector('#bmCats'), listEl = menu.querySelector('#bmList'),
@@ -3854,7 +3854,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
   [catIn, nameIn, urlIn].forEach(function(el){ el.addEventListener('keydown', function(e){ if (e.key==='Enter') submit(false); }); });
 })();
 </script>
-<!-- ===================== /v95 안전 다있소 ===================== -->
+<!-- ===================== /v95 안전 다있네 ===================== -->
 
 <!-- ===================== v96: 아래 버튼줄 → 왼쪽 세로 도구줄 (넓은 화면) ===================== -->
 <style>
@@ -3914,7 +3914,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
 </script>
 <!-- ===================== /v96 ===================== -->
 
-<!-- ===================== v98: 버튼 색 통일 (영상·자막 열기 색) — 안전 다있소·암호·기간 제외 ===================== -->
+<!-- ===================== v98: 버튼 색 통일 (영상·자막 열기 색) — 안전 다있네·암호·기간 제외 ===================== -->
 <style id="v98unify">
 #guideBtn,
 #transLangBtn, #fsToggleBtn, #srtOpenBtn,
@@ -3939,7 +3939,7 @@ setTimeout(function(){ try{ srtSetStatus(); }catch(e){} }, 300);
   filter:brightness(1.15);
 }
 #guideBtn.gv-new{ animation:none !important; }
-/* v101: 자주 쓰는 두 버튼 — 연한 보라 (안전 다있소보다 튀지 않게) */
+/* v101: 자주 쓰는 두 버튼 — 연한 보라 (안전 다있네보다 튀지 않게) */
 #topbar .fileBtn, #openPvsBtn{
   background:#4c3a7a !important; background-image:none !important;
   color:#ede9fe !important; border:1px solid #8b7bc4 !important;
@@ -4210,6 +4210,116 @@ html.vplay:not(.vpeek) #vpeekZone{ display:block; }
 })();
 </script>
 <!-- ===================== /v114 ===================== -->
+
+<!-- ===================== v119: 전체화면에서는 위 도구줄을 숨기고, 필요할 때 위에서 내려오게 ===================== -->
+<style>
+#fsBars{ flex-shrink:0; }
+html.fsbars.fsbars #fsBars{ position:fixed; top:0; left:0; right:0; z-index:2147482000;
+  transform:translateY(-100%); transition:transform .25s ease, box-shadow .25s; }
+html.fsbars.fsbars.fspeek #fsBars{ transform:none; box-shadow:0 8px 24px rgba(0,0,0,.55); }
+/* v114(영상 재생 중 숨김)과 겹치지 않게 — 전체화면에서는 이 방식만 사용 */
+html.fsbars.fsbars #topbar{ display:flex !important; }
+html.fsbars.fsbars #transBar{ display:flex !important; }
+html.fsbars #vpeekBtn, html.fsbars #vpeekZone{ display:none !important; }
+#fsPeekBtn{ display:none; position:fixed; top:0; left:50%; transform:translateX(-50%); z-index:2147482001;
+  background:rgba(3,105,161,.92); color:#fff; border:1px solid #38bdf8; border-top:none; border-radius:0 0 12px 12px;
+  padding:5px 18px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; opacity:1; transition:opacity .4s; }
+html.fsbars #fsPeekBtn{ display:block; }
+html.fsbars #fsPeekBtn.dim{ opacity:.18; }
+html.fsbars.fspeek #fsPeekBtn{ display:none; }
+#fsPeekZone{ display:none; position:fixed; top:0; left:0; right:0; height:16px; z-index:2147481999; }
+html.fsbars:not(.fspeek) #fsPeekZone{ display:block; }
+</style>
+<script>
+(function(){
+  var tb = document.getElementById('topbar'), tr = document.getElementById('transBar');
+  if (!tb || !tr) return;
+  // 제목줄 + 도구줄을 하나로 묶음 (평소 화면은 그대로)
+  var bars = document.createElement('div'); bars.id = 'fsBars';
+  tb.parentNode.insertBefore(bars, tb); bars.appendChild(tb); bars.appendChild(tr);
+
+  var root = document.documentElement, hideT = null, dimT = null;
+  var btn = document.createElement('button'); btn.id = 'fsPeekBtn'; btn.type = 'button'; btn.textContent = '▾ 도구줄';
+  var zone = document.createElement('div'); zone.id = 'fsPeekZone';
+  document.body.appendChild(zone); document.body.appendChild(btn);
+
+  function isFs(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function panelOpen(){
+    if (document.querySelector('#brandMenu.open')) return true;
+    return ['transLangPanel','glossaryPanel','aiVoicePanel'].some(function(id){
+      var el = document.getElementById(id); return el && getComputedStyle(el).display !== 'none';
+    });
+  }
+  function busy(){
+    var a = document.activeElement;
+    return bars.matches(':hover') || panelOpen() || (a && bars.contains(a) && /INPUT|SELECT|TEXTAREA/.test(a.tagName));
+  }
+  function dimLater(){ btn.classList.remove('dim'); clearTimeout(dimT); dimT = setTimeout(function(){ btn.classList.add('dim'); }, 3000); }
+  function hideLater(ms){
+    clearTimeout(hideT);
+    hideT = setTimeout(function again(){
+      if (!isFs()) return;
+      if (busy()){ hideT = setTimeout(again, 1200); return; }   // 도구줄을 쓰는 중이면 기다림
+      root.classList.remove('fspeek'); dimLater();
+    }, ms || 3000);
+  }
+  function show(){ if (!isFs()) return; root.classList.add('fspeek'); hideLater(3500); }
+  function hide(){ clearTimeout(hideT); root.classList.remove('fspeek'); dimLater(); }
+  function sync(){
+    if (isFs()){ root.classList.add('fsbars'); hide(); }
+    else { root.classList.remove('fsbars','fspeek'); clearTimeout(hideT); }
+    setTimeout(function(){ window.dispatchEvent(new Event('resize')); }, 300);
+  }
+  document.addEventListener('fullscreenchange', sync);
+  document.addEventListener('webkitfullscreenchange', sync);
+
+  btn.addEventListener('click', show);
+  zone.addEventListener('mouseenter', show);
+  zone.addEventListener('click', show);
+  zone.addEventListener('touchstart', show, { passive:true });
+  bars.addEventListener('mouseleave', function(){ if (root.classList.contains('fspeek')) hideLater(1500); });
+  bars.addEventListener('pointerdown', function(){ if (root.classList.contains('fspeek')) hideLater(4000); });
+  // 마우스를 화면 맨 위로 올리면 내려옴
+  document.addEventListener('mousemove', function(e){
+    if (!root.classList.contains('fsbars')) return;
+    if (e.clientY < 12 && !root.classList.contains('fspeek')) show();
+    else if (!root.classList.contains('fspeek')) dimLater();
+  });
+  // 휴대폰: 화면을 한 번 톡 치면 손잡이가 진하게 보임 → 손잡이를 누르면 도구줄이 내려옴
+  document.addEventListener('touchstart', function(e){
+    if (!root.classList.contains('fsbars') || root.classList.contains('fspeek')) return;
+    if (!bars.contains(e.target)) dimLater();
+  }, { passive:true });
+  // 도구줄 밖을 누르면 바로 다시 올라감
+  document.addEventListener('pointerdown', function(e){
+    if (!root.classList.contains('fspeek')) return;
+    if (bars.contains(e.target) || e.target === btn || e.target === zone || panelOpen()) return;
+    hide();
+  });
+})();
+</script>
+<!-- ===================== /v119 ===================== -->
+
+<!-- ===================== v120: 전체화면 버튼 → 왼쪽 재생 버튼과 번역 버튼 사이 ===================== -->
+<style>
+#controls #fsToggleBtn{ background:#1e293b; color:#fff; border:2px solid #0ea5e9 !important; }
+@media (min-width:901px){
+  #stage > #controls #fsToggleBtn{ flex:1 1 100%; width:100%; min-width:0; word-break:keep-all !important; overflow-wrap:normal !important; padding:7px 3px !important; }
+}
+</style>
+<script>
+(function(){
+  var fs = document.getElementById('fsToggleBtn'), mic = document.getElementById('bottomMicBtn');
+  if (!fs || !mic || !mic.parentNode) return;
+  mic.parentNode.insertBefore(fs, mic);
+  // 좁은 세로줄에서는 짧게: 바뀌는 글씨를 '전체화면' / '전체화면 끄기'로 유지 (줄바꿈 허용)
+})();
+</script>
+<!-- ===================== /v120 ===================== -->
+
+<!-- ===================== v122: 영상·자막 열기 버튼 숨김 (끌어다 놓기는 그대로 동작) ===================== -->
+<style>#srtOpenBtn{ display:none !important; }</style>
+<!-- ===================== /v122 ===================== -->
 
 </body>
 </html>
