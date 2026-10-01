@@ -109,7 +109,7 @@
   });
 })();
 </script>
-<title>안전 다있네 v129</title>
+<title>안전 다있네 v131</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -5367,10 +5367,12 @@ html.fsbars:not(.fspeek) #fsPeekZone{ display:block; }
 .v7qr .q{font-size:24px;font-weight:900;line-height:1.3;margin-bottom:4px}
 .v7qr .s{font-size:13px;color:#475569;margin-bottom:10px}
 .v7qr svg{width:100%;height:auto;max-width:380px;display:block;margin:0 auto}
+.v7qr.big svg{max-width:min(520px,62vh)}
+.v7qr.big .q{font-size:30px}
 .v7qr .r{margin-top:8px;font-size:15px;font-weight:900;color:#b91c1c}
 .v7card{background:#0f172a;border:2px solid #334155;border-radius:14px;padding:14px;margin-bottom:12px}
 .v7card h3{margin:0 0 10px;font-size:16px;color:#fde047}
-.v7n{font-size:46px;font-weight:900;color:#fff;line-height:1}
+.v7n{font-size:64px;font-weight:900;color:#fff;line-height:1}
 .v7n small{font-size:16px;color:#94a3b8;font-weight:700;margin-left:6px}
 .v7bar{display:flex;align-items:center;gap:8px;margin:8px 0;font-weight:900}
 .v7bar span:first-child{width:150px;flex:none}
@@ -5563,7 +5565,8 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
         return j;
       }).catch(function(e){ lastErr = String(e && e.message || e); return null; });
   }
-  function drawSheetBtn(){ var b = $('v7Sheet'); if (b) b.style.display = sheetUrl ? '' : 'none'; }
+  function drawSheetBtn(){ var b = $('v7Sheet'); if (b) b.style.display = cfg().url ? '' : 'none'; }
+  if (cfg().url && !sheetUrl) setTimeout(function(){ fetchStats('__test__'); }, 3000);
   function qrSvg(text){
     var q = qrcode(0, 'M'); q.addData(unescape(encodeURIComponent(text))); q.make();
     var n = q.getModuleCount(), m = 4, s = n + m * 2, p = '';
@@ -5629,13 +5632,13 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
   }
   function showSt(id){
     var el = $('v7St'); if (!el) return;
-    el.innerHTML = lastErr ? '<span style="color:#f87171">🔴 결과를 읽지 못했습니다 — ' + esc(lastErr) + '</span> <span style="color:#64748b">(교육ID ' + esc(id) + ')</span>'
-                           : '🟢 연결 정상 · ' + (lastOk ? new Date(lastOk).toLocaleTimeString('ko-KR') + ' 확인' : '') + ' <span style="color:#64748b">(교육ID ' + esc(id) + ')</span>';
+    el.innerHTML = lastErr ? '<span style="color:#64748b">⏳ 응답 기다리는 중… (안 바뀌면 ⚙️ 설정 → 🔌 연결 확인)</span>'
+                           : '<span style="color:#86efac">🟢 실시간 · ' + (lastOk ? new Date(lastOk).toLocaleTimeString('ko-KR') : '') + '</span>';
   }
   function drawQr(){
     clearInterval(pollT);
     if (!cfg().url){ drawSetup(); return; }
-    if (!cur){ drawEnded(); return; }
+    if (!cur){ lastTitle = 'TBM'; start('qr'); if (cur){ cur.title = 'TBM'; persist(); } }   // 누르면 바로 TBM QR + 참여 인원
     $('v7QrEnd').style.display = '';
     $('v7QrBody').innerHTML = '<div class="v7grid"><div>' +
       '<div class="v7qr"><div class="q" id="v7Q">오늘 <span style="color:#b91c1c">' + esc(cur.title) + '</span> 이해하셨습니까?</div><div class="s">QR을 찍고 대답해 주세요 · Quét mã QR · 扫码回答 · Scan the QR · สแกน QR</div>' + qrSvg(workerUrl()) +
@@ -5690,13 +5693,20 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
   qBtn.onclick = openQr;
   $('v7QrClose').onclick = closeQr;
   $('v7QrSet').onclick = function(){ drawSetup(); };
-  $('v7Sheet').onclick = function(){ if (sheetUrl) window.open(sheetUrl, '_blank', 'noopener'); };
+  $('v7Sheet').onclick = function(){
+    if (!sheetUrl){
+      var u = prompt('구글 시트 "안전다있네(QR참여)"의 주소를 붙여넣어 주세요. (처음 한 번만)\n시트를 열고 주소창의 주소를 복사하면 됩니다.');
+      if (!u || !/^https:\/\/docs\.google\.com\/spreadsheets\//.test(u.trim())){ if (u) alert('docs.google.com/spreadsheets/ 로 시작하는 주소가 필요합니다.'); return; }
+      sheetUrl = u.trim(); setJ('eduSheetUrl', sheetUrl);
+    }
+    window.open(sheetUrl, '_blank', 'noopener');
+  };
   $('v7QrEnd').onclick = function(){
     if (!cur){ drawQr(); return; }
     if (!confirm('교육을 끝내고 기록을 저장할까요?')) return;
     clearInterval(pollT);
-    $('v7QrBody').innerHTML = '<div class="v7card"><h3>⏳ 결과를 모으는 중…</h3></div>';
-    finish('end').then(function(r){ drawEnded(r); });
+    $('v7QrBody').innerHTML = '<div class="v7card"><h3>⏳ 기록 저장 중…</h3></div>';
+    finish('end').then(function(){ closeQr(); });
   };
 
   // ---------- 교육 기록 화면 ----------
