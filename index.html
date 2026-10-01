@@ -109,7 +109,7 @@
   });
 })();
 </script>
-<title>안전 다있네 v127</title>
+<title>안전 다있네 v129</title>
 <style>
   :root{ --ink:#0f172a; }
   *{box-sizing:border-box;}
@@ -5403,7 +5403,7 @@ html.fsbars:not(.fspeek) #fsPeekZone{ display:block; }
 
 <div id="v7Qr" class="v7ov" role="dialog" aria-modal="true">
   <div class="v7wrap">
-    <div class="v7head"><h2>📱 QR 근로자 참여</h2><button type="button" id="v7QrSet">⚙️ 설정</button><button type="button" id="v7QrEnd" class="v7b r">⏹ 교육 종료·기록 저장</button><button type="button" id="v7QrClose">닫기</button></div>
+    <div class="v7head"><h2>📱 QR 근로자 참여</h2><button type="button" id="v7Sheet" style="display:none">📄 시트 열기</button><button type="button" id="v7QrSet">⚙️ 설정</button><button type="button" id="v7QrEnd" class="v7b r">⏹ 교육 종료·기록 저장</button><button type="button" id="v7QrClose">닫기</button></div>
     <div id="v7QrBody"></div>
   </div>
 </div>
@@ -5427,7 +5427,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 <script>
 (function(){
   if (window.__DAINNE_WORKER__) return;
-  var GS = "/**\n * \uc548\uc804 \ub2e4\uc788\ub124 \u2014 QR \uadfc\ub85c\uc790 \ucc38\uc5ec \u00b7 \uc704\ud5d8 \uc2e0\uace0 \uc218\uc2e0 (Google Apps Script)\n * \uc124\uce58: \uc0c8 \uad6c\uae00 \uc2dc\ud2b8 \u2192 \ud655\uc7a5 \ud504\ub85c\uadf8\ub7a8 \u2192 Apps Script \u2192 \uc774 \ub0b4\uc6a9 \uc804\uccb4 \ubd99\uc5ec\ub123\uae30 \u2192 \uc800\uc7a5\n *       \u2192 \ubc30\ud3ec \u2192 \uc0c8 \ubc30\ud3ec \u2192 \uc720\ud615: \uc6f9 \uc571 \u2192 \uc2e4\ud589: \ub098 / \uc561\uc138\uc2a4 \uad8c\ud55c: \ubaa8\ub4e0 \uc0ac\uc6a9\uc790 \u2192 \ubc30\ud3ec\n *       \u2192 \ub098\uc628 \uc6f9 \uc571 \uc8fc\uc18c(/exec)\ub97c \uc548\uc804 \ub2e4\uc788\ub124 [\ud83d\udcf1 QR \ucc38\uc5ec \u2192 \u2699\ufe0f \uc124\uc815]\uc5d0 \ubd99\uc5ec\ub123\uae30\n * \uace0\uce60 \ub54c\ub294 \"\ubc30\ud3ec \uad00\ub9ac \u2192 \uc218\uc815(\uc5f0\ud544) \u2192 \uc0c8 \ubc84\uc804\"\uc73c\ub85c \ud574\uc57c \uc8fc\uc18c\uac00 \ubc14\ub00c\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.\n */\nvar SHEET = '\uad50\uc721\ubc18\uc751';\nvar FOLDER = '\uc548\uc804\ub2e4\uc788\ub124_\uc704\ud5d8\uc2e0\uace0\uc0ac\uc9c4';\n\nfunction sheet_(){\n  var ss = SpreadsheetApp.getActiveSpreadsheet();\n  var sh = ss.getSheetByName(SHEET) || ss.insertSheet(SHEET);\n  if (sh.getLastRow() === 0){\n    sh.appendRow(['\uc2dc\uac01', '\uad50\uc721ID', '\uad50\uc721\uba85', '\uae30\uae30', '\uc751\ub2f5', '\uc5b8\uc5b4', '\uc774\ub984', '\ub0b4\uc6a9', '\uc0ac\uc9c4']);\n    sh.setFrozenRows(1);\n  }\n  return sh;\n}\nfunction folder_(){\n  var it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\nfunction out_(o){\n  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);\n}\n\nfunction doPost(e){\n  var lock = LockService.getScriptLock(); lock.waitLock(20000);\n  try{\n    var d = JSON.parse(e.postData.contents || '{}');\n    var photo = '';\n    if (d.photo && String(d.photo).indexOf('base64,') > 0){\n      var bytes = Utilities.base64Decode(String(d.photo).split('base64,')[1]);\n      var f = folder_().createFile(Utilities.newBlob(bytes, 'image/jpeg', (d.sid || 'x') + '_' + Date.now() + '.jpg'));\n      try{ f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); }catch(err){}\n      photo = 'https://drive.google.com/thumbnail?id=' + f.getId() + '&sz=w600';\n    }\n    var ans = { ok:'\uc774\ud574\ud588\uc2b5\ub2c8\ub2e4', unsure:'\uc798 \ubaa8\ub974\uaca0\uc2b5\ub2c8\ub2e4', question:'\uc9c8\ubb38', hazard:'\uc704\ud5d8 \uc2e0\uace0' }[d.ans] || d.ans;\n    sheet_().appendRow([new Date(), d.sid || '', d.title || '', d.did || '', ans, d.lang || '', d.name || '', d.text || '', photo]);\n    return out_({ ok:true });\n  } finally { lock.releaseLock(); }\n}\n\nfunction doGet(e){\n  var sid = (e.parameter && e.parameter.sid) || '';\n  if (!sid) return out_({ ok:true, msg:'\uc548\uc804 \ub2e4\uc788\ub124 \uc218\uc2e0 \uc11c\ubc84\uac00 \uc815\uc0c1 \uc791\ub3d9 \uc911\uc785\ub2c8\ub2e4.' });\n  var v = sheet_().getDataRange().getValues(), dev = {}, last = {}, q = 0, hz = 0, items = [];\n  for (var i = 1; i < v.length; i++){\n    var r = v[i]; if (String(r[1]) !== sid) continue;\n    dev[r[3]] = 1;\n    if (r[4] === '\uc774\ud574\ud588\uc2b5\ub2c8\ub2e4' || r[4] === '\uc798 \ubaa8\ub974\uaca0\uc2b5\ub2c8\ub2e4') last[r[3]] = r[4];\n    if (r[4] === '\uc9c8\ubb38') q++;\n    if (r[4] === '\uc704\ud5d8 \uc2e0\uace0') hz++;\n    if (r[4] === '\uc9c8\ubb38' || r[4] === '\uc704\ud5d8 \uc2e0\uace0') items.push({ t: new Date(r[0]).getTime(), ans:r[4], lang:r[5], name:r[6], text:r[7], photo:r[8] });\n  }\n  var ok = 0, un = 0;\n  for (var k in last){ if (last[k] === '\uc774\ud574\ud588\uc2b5\ub2c8\ub2e4') ok++; else un++; }\n  return out_({ ok:true, n:Object.keys(dev).length, understood:ok, unsure:un, question:q, hazard:hz, items:items.slice(-30).reverse() });\n}\n";
+  var GS = "/**\n * \uc548\uc804 \ub2e4\uc788\ub124 \u2014 QR \uadfc\ub85c\uc790 \ucc38\uc5ec \u00b7 \uc704\ud5d8 \uc2e0\uace0 \uc218\uc2e0 (Google Apps Script) \u00b7 v2\n * \uc124\uce58: \uc0c8 \uad6c\uae00 \uc2dc\ud2b8 \u2192 \ud655\uc7a5 \ud504\ub85c\uadf8\ub7a8 \u2192 Apps Script \u2192 \uc774 \ub0b4\uc6a9 \uc804\uccb4 \ubd99\uc5ec\ub123\uae30 \u2192 \uc800\uc7a5\n *       \u2192 \ubc30\ud3ec \u2192 \uc0c8 \ubc30\ud3ec \u2192 \uc720\ud615: \uc6f9 \uc571 \u2192 \uc2e4\ud589: \ub098 / \uc561\uc138\uc2a4 \uad8c\ud55c: \ubaa8\ub4e0 \uc0ac\uc6a9\uc790 \u2192 \ubc30\ud3ec\n *       \u2192 \ub098\uc628 \uc6f9 \uc571 \uc8fc\uc18c(/exec)\ub97c \uc548\uc804 \ub2e4\uc788\ub124 [\ud83d\udcf1 QR \ucc38\uc5ec \u2192 \u2699\ufe0f \uc124\uc815]\uc5d0 \ubd99\uc5ec\ub123\uae30\n * \uace0\uce60 \ub54c\ub294 \"\ubc30\ud3ec \uad00\ub9ac \u2192 \uc218\uc815(\uc5f0\ud544) \u2192 \uc0c8 \ubc84\uc804\"\uc73c\ub85c \ud574\uc57c \uc8fc\uc18c\uac00 \ubc14\ub00c\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.\n */\nvar SHEET = '\uad50\uc721\ubc18\uc751';\nvar FOLDER = '\uc548\uc804\ub2e4\uc788\ub124_\uc704\ud5d8\uc2e0\uace0\uc0ac\uc9c4';\n\nfunction sheet_(){\n  var ss = SpreadsheetApp.getActiveSpreadsheet();\n  var sh = ss.getSheetByName(SHEET) || ss.insertSheet(SHEET);\n  if (sh.getLastRow() === 0){\n    sh.appendRow(['\uc2dc\uac01', '\uad50\uc721ID', '\uad50\uc721\uba85', '\uae30\uae30', '\uc751\ub2f5', '\uc5b8\uc5b4', '\uc774\ub984', '\ub0b4\uc6a9', '\uc0ac\uc9c4']);\n    sh.setFrozenRows(1);\n  }\n  return sh;\n}\nfunction folder_(){\n  var it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\nfunction out_(o){\n  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);\n}\n\nfunction doPost(e){\n  var lock = LockService.getScriptLock(); lock.waitLock(20000);\n  try{\n    var d = JSON.parse(e.postData.contents || '{}');\n    var photo = '';\n    if (d.photo && String(d.photo).indexOf('base64,') > 0){\n      var bytes = Utilities.base64Decode(String(d.photo).split('base64,')[1]);\n      var f = folder_().createFile(Utilities.newBlob(bytes, 'image/jpeg', (d.sid || 'x') + '_' + Date.now() + '.jpg'));\n      try{ f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); }catch(err){}\n      photo = 'https://drive.google.com/thumbnail?id=' + f.getId() + '&sz=w600';\n    }\n    var ans = { ok:'\uc774\ud574\ud588\uc2b5\ub2c8\ub2e4', unsure:'\uc798 \ubaa8\ub974\uaca0\uc2b5\ub2c8\ub2e4', question:'\uc9c8\ubb38', hazard:'\uc704\ud5d8 \uc2e0\uace0' }[d.ans] || d.ans;\n    sheet_().appendRow([new Date(), d.sid || '', d.title || '', d.did || '', ans, d.lang || '', d.name || '', d.text || '', photo]);\n    return out_({ ok:true });\n  } finally { lock.releaseLock(); }\n}\n\nfunction doGet(e){\n  var p = (e && e.parameter) || {}, sid = p.sid || '', cb = p.callback || '';\n  var res = { ok:true, v:2, sheet: SpreadsheetApp.getActiveSpreadsheet().getUrl() };\n  if (!sid){\n    res.msg = '\uc548\uc804 \ub2e4\uc788\ub124 \uc218\uc2e0 \uc11c\ubc84\uac00 \uc815\uc0c1 \uc791\ub3d9 \uc911\uc785\ub2c8\ub2e4.';\n  } else {\n    var v = sheet_().getDataRange().getValues(), dev = {}, last = {}, q = 0, hz = 0, items = [];\n    for (var i = 1; i < v.length; i++){\n      var r = v[i]; if (String(r[1]) !== sid) continue;\n      dev[r[3]] = 1;\n      if (r[4] === '\uc774\ud574\ud588\uc2b5\ub2c8\ub2e4' || r[4] === '\uc798 \ubaa8\ub974\uaca0\uc2b5\ub2c8\ub2e4') last[r[3]] = r[4];\n      if (r[4] === '\uc9c8\ubb38') q++;\n      if (r[4] === '\uc704\ud5d8 \uc2e0\uace0') hz++;\n      if (r[4] === '\uc9c8\ubb38' || r[4] === '\uc704\ud5d8 \uc2e0\uace0') items.push({ t: new Date(r[0]).getTime(), ans:r[4], lang:r[5], name:r[6], text:r[7], photo:r[8] });\n    }\n    var ok = 0, un = 0;\n    for (var k in last){ if (last[k] === '\uc774\ud574\ud588\uc2b5\ub2c8\ub2e4') ok++; else un++; }\n    res.n = Object.keys(dev).length; res.understood = ok; res.unsure = un; res.question = q; res.hazard = hz; res.items = items.slice(-30).reverse();\n  }\n  if (cb && /^[A-Za-z0-9_$.]+$/.test(cb)){   // \ud654\uba74\uc5d0\uc11c \uc9c1\uc811 \ubabb \uc77d\uc744 \ub54c\ub97c \uc704\ud55c JSONP\n    return ContentService.createTextOutput(cb + '(' + JSON.stringify(res) + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);\n  }\n  return out_(res);\n}\n";
   var REC = 'eduRecords', CFG = 'eduQrCfg', IDLE = 15 * 60000;
   function $(id){ return document.getElementById(id); }
   function getJ(k, d){ try{ var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; }catch(e){ return d; } }
@@ -5467,7 +5467,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
   function start(why){
     if (cur){ touch(); return; }
     var t = Date.now();
-    cur = { id:'e' + t.toString(36), start:t, end:t, title:lastTitle || '안전교육', langs:langText(), slides:slidesTotal(), seen:[], videos:0, attend:0, qr:null, note:'', auto:true };
+    cur = { id:'e' + t.toString(36), start:t, end:t, title:lastTitle || 'TBM', langs:langText(), slides:slidesTotal(), seen:[], videos:0, attend:0, qr:null, note:'', auto:true };
     videos = {}; persist(); arm();
     toast('🔴 교육 기록 시작 — ' + esc(cur.title));
   }
@@ -5480,20 +5480,22 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
   }
   function arm(){ clearTimeout(idleT); idleT = setTimeout(function(){ finish('idle'); }, IDLE); }
   function finish(why){
-    if (!cur) return;
+    if (!cur) return Promise.resolve(null);
     var r = cur; cur = null; clearTimeout(idleT);
     if (why !== 'idle') r.end = Date.now();
-    var a = recs();
-    if ((r.end - r.start) < 60000 && (r.seen || []).length < 2 && !r.videos && !(r.qr && r.qr.n)){
-      saveRecs(a.filter(function(x){ return x.id !== r.id; })); drawBtn(); drawCur(); return;   // 1분 미만 · 거의 안 본 것은 기록 안 함
-    }
-    var done = function(){
-      var b = recs(), i = b.findIndex(function(x){ return x.id === r.id; });
+    drawBtn();
+    return fetchStats(r.id).then(function(s){
+      if (s && s.ok){ r.qr = { n:s.n, ok:s.understood, un:s.unsure, q:s.question, hz:s.hazard }; if (!r.attendManual) r.attend = Math.max(r.attend || 0, s.n || 0); }
+      var b = recs();
+      if ((r.end - r.start) < 60000 && (r.seen || []).length < 2 && !r.videos && !(r.qr && r.qr.n)){
+        saveRecs(b.filter(function(x){ return x.id !== r.id; })); drawBtn(); drawCur(); return r;   // 1분 미만 · 아무 응답 없는 것은 기록 안 함
+      }
+      var i = b.findIndex(function(x){ return x.id === r.id; });
       if (i >= 0) b[i] = r; else b.push(r);
       saveRecs(b); drawBtn(); drawCur(); if ($('v7Rec').classList.contains('open')) drawRec();
       toast('📊 교육 기록 저장 — ' + esc(r.title) + ' · ' + mins(r) + '분' + (r.attend ? ' · 참석 ' + r.attend + '명' : ''));
-    };
-    fetchStats(r.id).then(function(s){ if (s && s.ok){ r.qr = { n:s.n, ok:s.understood, un:s.unsure, q:s.question, hz:s.hazard }; if (!r.attendManual) r.attend = Math.max(r.attend || 0, s.n || 0); } done(); }, done);
+      return r;
+    });
   }
   function tick(){ clearInterval(tickT); tickT = setInterval(function(){
     var pb = $('playBtn'), playing = pb && /재생 중/.test(pb.textContent);
@@ -5536,11 +5538,32 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
     else { rBtn.classList.remove('rec'); rBtn.textContent = '📊 교육 기록'; }
   }
 
-  // ---------- QR 서버 통신 ----------
+  // ---------- QR 서버 통신 (v128: 일반 읽기 → 안 되면 JSONP로 다시 시도, 상태 표시) ----------
+  var lastErr = '', lastOk = 0, sheetUrl = getJ('eduSheetUrl', '');
+  function jsonp(u){
+    return new Promise(function(res, rej){
+      var cb = '__v7cb' + Date.now() + Math.floor(Math.random() * 1000), s = document.createElement('script'), done = false;
+      function clean(){ done = true; clearTimeout(t); try{ delete window[cb]; }catch(e){ window[cb] = undefined; } if (s.parentNode) s.parentNode.removeChild(s); }
+      var t = setTimeout(function(){ if (!done){ clean(); rej(new Error('응답 없음')); } }, 12000);
+      window[cb] = function(j){ if (done) return; clean(); res(j); };
+      s.onerror = function(){ if (!done){ clean(); rej(new Error('불러오기 실패')); } };
+      s.onload = function(){ setTimeout(function(){ if (!done){ clean(); rej(new Error('Code.gs 업데이트 필요')); } }, 300); };
+      s.src = u + '&callback=' + cb; document.head.appendChild(s);
+    });
+  }
   function fetchStats(sid){
     var u = cfg().url; if (!u) return Promise.resolve(null);
-    return fetch(u + (u.indexOf('?') < 0 ? '?' : '&') + 'sid=' + encodeURIComponent(sid) + '&_=' + Date.now()).then(function(r){ return r.json(); }).catch(function(){ return null; });
+    var q = u + (u.indexOf('?') < 0 ? '?' : '&') + 'sid=' + encodeURIComponent(sid) + '&_=' + Date.now();
+    return fetch(q).then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .catch(function(e1){ return jsonp(q).catch(function(e2){ throw new Error((e1 && e1.message || e1) + ' / ' + (e2 && e2.message || e2)); }); })
+      .then(function(j){
+        if (!j || !j.ok) throw new Error('응답 이상');
+        lastOk = Date.now(); lastErr = '';
+        if (j.sheet && j.sheet !== sheetUrl){ sheetUrl = j.sheet; setJ('eduSheetUrl', sheetUrl); drawSheetBtn(); }
+        return j;
+      }).catch(function(e){ lastErr = String(e && e.message || e); return null; });
   }
+  function drawSheetBtn(){ var b = $('v7Sheet'); if (b) b.style.display = sheetUrl ? '' : 'none'; }
   function qrSvg(text){
     var q = qrcode(0, 'M'); q.addData(unescape(encodeURIComponent(text))); q.make();
     var n = q.getModuleCount(), m = 4, s = n + m * 2, p = '';
@@ -5553,6 +5576,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
     return base + (base.indexOf('?') < 0 ? '?' : '&') + 'w=1&s=' + encodeURIComponent(cur.id) + '&t=' + encodeURIComponent(cur.title) + '&u=' + encodeURIComponent(c.url);
   }
   function drawSetup(){
+    clearInterval(pollT);
     var c = cfg();
     $('v7QrBody').innerHTML = '<div class="v7card"><h3>⚙️ QR 참여 설정 (처음 한 번만)</h3>' +
       '<div class="v7tip">근로자 휴대폰의 대답과 사진은 대표님 <b>구글 시트·구글 드라이브</b>로 모입니다. 아래 순서대로 한 번만 만들어 두면 모든 현장에서 같이 씁니다.</div>' +
@@ -5560,10 +5584,11 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       '<li>시트 메뉴 <b>확장 프로그램 → Apps Script</b> → 원래 내용을 지우고 아래 <b>Code.gs</b>를 붙여넣고 저장</li>' +
       '<li><b>배포 → 새 배포 → 웹 앱</b> · 실행: <b>나</b> · 액세스 권한: <b>모든 사용자</b> → 배포 → 권한 허용</li>' +
       '<li>나온 <b>웹 앱 주소(…/exec)</b>를 아래 칸에 붙여넣고 저장</li></ol>' +
+      '<div class="v7tip">이미 배포했다면 Code.gs를 고친 뒤 <b>배포 → 배포 관리 → ✏️ 수정 → 버전: 새 버전 → 배포</b> (주소 그대로 유지)</div>' +
       '<button type="button" class="v7b" id="v7Gs">📋 Code.gs 복사</button> <button type="button" class="v7b" id="v7GsDl">⬇ Code.gs 파일로 받기</button>' +
       '<label class="v7lab">웹 앱 주소 (/exec)</label><input id="v7Url" class="v7in" placeholder="https://script.google.com/macros/s/…/exec" value="' + esc(c.url) + '">' +
       '<label class="v7lab">근로자가 열 페이지 주소 (GitHub)</label><input id="v7Base" class="v7in" value="' + esc(c.base || 'https://cys9228.github.io/multilang-safety/') + '">' +
-      '<div class="v7tip">GitHub에 v127 이후 버전이 올라가 있어야 근로자 화면이 열립니다.</div>' +
+      '<div class="v7tip">GitHub에 v128 이후 버전이 올라가 있어야 근로자 화면이 열립니다.</div>' +
       '<div style="margin-top:12px"><button type="button" class="v7b y" id="v7SaveCfg">💾 저장</button> <button type="button" class="v7b" id="v7Test">🔌 연결 확인</button> <span id="v7CfgMsg" class="v7tip"></span></div></div>';
     $('v7Gs').onclick = function(){ (navigator.clipboard ? navigator.clipboard.writeText(GS) : Promise.reject()).then(function(){ toast('📋 Code.gs 복사됨'); }, function(){ prompt('복사하세요', GS); }); };
     $('v7GsDl').onclick = function(){ var b = new Blob([GS], { type:'text/plain;charset=utf-8' }), x = document.createElement('a'); x.href = URL.createObjectURL(b); x.download = 'Code.gs'; document.body.appendChild(x); x.click(); x.remove(); };
@@ -5573,55 +5598,106 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       setJ(CFG, { url:u, base:$('v7Base').value.trim() }); $('v7CfgMsg').textContent = '✅ 저장됨'; if (u) setTimeout(drawQr, 400);
     };
     $('v7Test').onclick = function(){
-      var u = $('v7Url').value.trim(); $('v7CfgMsg').textContent = '⏳ 확인 중…';
-      fetch(u).then(function(r){ return r.json(); }).then(function(j){ $('v7CfgMsg').textContent = j && j.ok ? '✅ 연결 정상' : '⚠️ 응답이 이상합니다'; }, function(){ $('v7CfgMsg').textContent = '⚠️ 연결 실패 — 주소·배포(모든 사용자)를 확인하세요'; });
+      var u = $('v7Url').value.trim(); if (!u) return;
+      setJ(CFG, { url:u, base:$('v7Base').value.trim() });
+      $('v7CfgMsg').textContent = '⏳ 확인 중…';
+      fetchStats('__test__').then(function(j){
+        $('v7CfgMsg').textContent = j ? '✅ 연결 정상 (읽기까지 OK)' + (j.v ? '' : ' · Code.gs는 예전 버전') : '⚠️ 읽기 실패 — ' + lastErr;
+      });
     };
+  }
+  function bar(k, label, color){ return '<div class="v7bar"><span>' + label + '</span><i><b id="v7B_' + k + '" style="background:' + color + '"></b></i><em id="v7E_' + k + '">0</em></div>'; }
+  function statsBlock(){
+    return '<div class="v7card"><h3>👥 참여</h3><div class="v7n" id="v7N">0<small>명</small></div><div class="v7tip" id="v7St">⏳ 연결 확인 중…</div></div>' +
+      '<div class="v7card"><h3>📋 대답</h3>' + bar('ok', '✅ 이해했습니다', '#22c55e') + bar('un', '🤔 잘 모르겠습니다', '#eab308') + bar('q', '❓ 질문', '#3b82f6') + '</div>' +
+      '<div class="v7card"><h3>💬 질문</h3><div class="v7items" id="v7Items"><div class="v7tip">아직 없습니다.</div></div></div>';
+  }
+  function showStats(s){
+    if (!$('v7N')) return;
+    $('v7N').innerHTML = (s.n || 0) + '<small>명</small>';
+    var tot = Math.max(1, s.n || 0);
+    [['ok', s.understood], ['un', s.unsure], ['q', s.question]].forEach(function(x){
+      $('v7E_' + x[0]).textContent = x[1] || 0; $('v7B_' + x[0]).style.width = Math.min(100, Math.round((x[1] || 0) / tot * 100)) + '%';
+    });
+    var qs = (s.items || []).filter(function(it){ return it.ans === '질문'; });   // TV에는 질문만 (위험 신고는 시트·드라이브에 저장)
+    var key = JSON.stringify(qs); if (key === lastItems) return; lastItems = key;
+    $('v7Items').innerHTML = qs.length ? qs.map(function(it){
+      return '<div class="v7it">' + (it.photo ? '<a href="' + esc(it.photo.replace('&sz=w600', '&sz=w1600')) + '" target="_blank" rel="noopener"><img src="' + esc(it.photo) + '" alt=""></a>' : '') +
+             '<div><div class="m">' + (it.ans === '위험 신고' ? '⚠️ 위험 신고' : '❓ 질문') + ' · ' + tstr(it.t) + ' · ' + esc(it.lang || '') + (it.name ? ' · ' + esc(it.name) : '') + '</div>' +
+             '<div class="x">' + (esc(it.text) || '<span class="m">(사진만)</span>') + '</div></div></div>';
+    }).join('') : '<div class="v7tip">아직 없습니다.</div>';
+  }
+  function showSt(id){
+    var el = $('v7St'); if (!el) return;
+    el.innerHTML = lastErr ? '<span style="color:#f87171">🔴 결과를 읽지 못했습니다 — ' + esc(lastErr) + '</span> <span style="color:#64748b">(교육ID ' + esc(id) + ')</span>'
+                           : '🟢 연결 정상 · ' + (lastOk ? new Date(lastOk).toLocaleTimeString('ko-KR') + ' 확인' : '') + ' <span style="color:#64748b">(교육ID ' + esc(id) + ')</span>';
   }
   function drawQr(){
     clearInterval(pollT);
     if (!cfg().url){ drawSetup(); return; }
-    if (!cur) start('qr');
+    if (!cur){ drawEnded(); return; }
+    $('v7QrEnd').style.display = '';
     $('v7QrBody').innerHTML = '<div class="v7grid"><div>' +
-      '<div class="v7qr"><div class="q">오늘 안전교육 이해하셨습니까?</div><div class="s">QR을 찍고 대답해 주세요 · Quét mã QR · 扫码回答 · Scan the QR · สแกน QR</div>' + qrSvg(workerUrl()) +
+      '<div class="v7qr"><div class="q" id="v7Q">오늘 <span style="color:#b91c1c">' + esc(cur.title) + '</span> 이해하셨습니까?</div><div class="s">QR을 찍고 대답해 주세요 · Quét mã QR · 扫码回答 · Scan the QR · สแกน QR</div>' + qrSvg(workerUrl()) +
       '<div class="r">📷 현장의 위험요인을 사진으로 신고하세요</div></div>' +
       '<label class="v7lab">교육명 (근로자 화면에도 나옵니다)</label><div style="display:flex;gap:6px"><input id="v7Title" class="v7in" maxlength="40" value="' + esc(cur.title) + '"><button type="button" class="v7b" id="v7TitleOk">바꾸기</button></div>' +
-      '</div><div>' +
-      '<div class="v7card"><h3>👥 참여</h3><div class="v7n" id="v7N">0<small>명</small></div></div>' +
-      '<div class="v7card"><h3>📋 대답</h3>' +
-      bar('ok', '✅ 이해했습니다', '#22c55e') + bar('un', '🤔 잘 모르겠습니다', '#eab308') + bar('q', '❓ 질문', '#3b82f6') + bar('hz', '⚠️ 위험 신고', '#ef4444') + '</div>' +
-      '<div class="v7card"><h3>💬 질문 · 위험 신고</h3><div class="v7items" id="v7Items"><div class="v7tip">아직 없습니다.</div></div></div>' +
-      '</div></div>';
-    $('v7TitleOk').onclick = function(){ var t = $('v7Title').value.trim(); if (!t || !cur) return; cur.title = t; lastTitle = t; persist(); drawQr(); toast('✏️ 교육명 변경 — QR이 새로 만들어졌습니다'); };
+      '<div class="v7tip" style="margin-top:6px">⚠️ 교육명을 바꾸면 QR이 바뀝니다. 근로자가 찍기 <b>전에</b> 바꿔 주세요.</div>' +
+      '</div><div>' + statsBlock() + '</div></div>';
+    $('v7TitleOk').onclick = function(){ var t = $('v7Title').value.trim(); if (!t || !cur) return; if (t === cur.title){ toast('같은 교육명입니다'); return; } cur.title = t; lastTitle = t; persist(); drawQr(); toast('✏️ 교육명 변경 — 제목과 QR이 함께 바뀌었습니다'); };
+    $('v7Title').addEventListener('input', function(){ var t = $('v7Title').value.trim() || '…'; $('v7Q').innerHTML = '오늘 <span style="color:#b91c1c">' + esc(t) + '</span> 이해하셨습니까?' + (t !== cur.title ? ' <small style="font-size:13px;color:#64748b">(바꾸기를 눌러야 QR에 반영)</small>' : ''); });
+    $('v7Title').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('v7TitleOk').click(); });
     lastItems = ''; poll(); pollT = setInterval(poll, 4000);
   }
-  function bar(k, label, color){ return '<div class="v7bar"><span>' + label + '</span><i><b id="v7B_' + k + '" style="background:' + color + '"></b></i><em id="v7E_' + k + '">0</em></div>'; }
+  // 교육이 끝난 뒤: 새 QR을 바로 만들지 않고 방금 결과를 보여 줌
+  function drawEnded(r){
+    clearInterval(pollT);
+    $('v7QrEnd').style.display = 'none';
+    if (!r){ r = recs().filter(function(x){ return x.qr || x.auto; }).sort(function(a, b){ return b.start - a.start; })[0]; }
+    var top = '<div class="v7card" style="border-color:#22c55e"><h3>📱 새 교육 QR 만들기</h3>' +
+      '<label class="v7lab">교육명</label><div style="display:flex;gap:6px;flex-wrap:wrap"><input id="v7NewT" class="v7in" style="flex:1;min-width:200px" maxlength="40" value="TBM" placeholder="예: TBM, 형틀작업 안전교육">' +
+      '<button type="button" class="v7b g" id="v7NewGo">▶ 교육 시작 · QR 띄우기</button></div></div>';
+    if (!r){ $('v7QrBody').innerHTML = top; bindNew(); return; }
+    $('v7QrBody').innerHTML = top + '<div class="v7card"><h3>✅ 지난 교육 결과 — ' + esc(r.title) + ' · ' + dstr(r.start) + ' ' + tstr(r.start) + ' · ' + mins(r) + '분</h3><div class="v7tip">이 결과는 📊 교육 기록에도 저장되어 있습니다.</div></div>' + statsBlock();
+    bindNew();
+    var id = r.id; lastItems = '';
+    fetchStats(id).then(function(s){
+      showSt(id);
+      if (!s) return;
+      showStats(s);
+      var a = recs(), i = a.findIndex(function(x){ return x.id === id; });
+      if (i >= 0){ a[i].qr = { n:s.n, ok:s.understood, un:s.unsure, q:s.question, hz:s.hazard }; if (!a[i].attendManual) a[i].attend = Math.max(a[i].attend || 0, s.n || 0); saveRecs(a); }
+    });
+  }
+  function bindNew(){
+    $('v7NewT').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('v7NewGo').click(); });
+    $('v7NewGo').onclick = function(){ var t = $('v7NewT').value.trim() || 'TBM'; lastTitle = t; start('qr'); if (cur) cur.title = t; persist(); drawQr(); };
+  }
   function poll(){
     if (!cur || !$('v7Qr').classList.contains('open')) return;
     var id = cur.id;
     fetchStats(id).then(function(s){
-      if (!s || !s.ok || !cur || cur.id !== id || !$('v7N')) return;
-      $('v7N').innerHTML = (s.n || 0) + '<small>명</small>';
-      var tot = Math.max(1, s.n || 0);
-      [['ok', s.understood], ['un', s.unsure], ['q', s.question], ['hz', s.hazard]].forEach(function(x){
-        $('v7E_' + x[0]).textContent = x[1] || 0; $('v7B_' + x[0]).style.width = Math.min(100, Math.round((x[1] || 0) / tot * 100)) + '%';
-      });
+      if (!cur || cur.id !== id) return;
+      showSt(id);
+      if (!s) return;
+      showStats(s);
       cur.qr = { n:s.n, ok:s.understood, un:s.unsure, q:s.question, hz:s.hazard };
       if (!cur.attendManual) cur.attend = Math.max(cur.attend || 0, s.n || 0);
       persist();
-      var key = JSON.stringify(s.items || []); if (key === lastItems) return; lastItems = key;
-      $('v7Items').innerHTML = (s.items || []).length ? s.items.map(function(it){
-        return '<div class="v7it">' + (it.photo ? '<a href="' + esc(it.photo.replace('&sz=w600', '&sz=w1600')) + '" target="_blank" rel="noopener"><img src="' + esc(it.photo) + '" alt=""></a>' : '') +
-               '<div><div class="m">' + (it.ans === '위험 신고' ? '⚠️ 위험 신고' : '❓ 질문') + ' · ' + tstr(it.t) + ' · ' + esc(it.lang || '') + (it.name ? ' · ' + esc(it.name) : '') + '</div>' +
-               '<div class="x">' + (esc(it.text) || '<span class="m">(사진만)</span>') + '</div></div></div>';
-      }).join('') : '<div class="v7tip">아직 없습니다.</div>';
     });
   }
-  function openQr(){ $('v7Qr').classList.add('open'); drawQr(); }
+  function openQr(){ $('v7Qr').classList.add('open'); drawSheetBtn(); drawQr(); }
   function closeQr(){ $('v7Qr').classList.remove('open'); clearInterval(pollT); }
   qBtn.onclick = openQr;
   $('v7QrClose').onclick = closeQr;
-  $('v7QrSet').onclick = function(){ clearInterval(pollT); drawSetup(); };
-  $('v7QrEnd').onclick = function(){ if (!cur){ closeQr(); return; } if (confirm('교육을 끝내고 기록을 저장할까요?')){ finish('end'); closeQr(); } };
+  $('v7QrSet').onclick = function(){ drawSetup(); };
+  $('v7Sheet').onclick = function(){ if (sheetUrl) window.open(sheetUrl, '_blank', 'noopener'); };
+  $('v7QrEnd').onclick = function(){
+    if (!cur){ drawQr(); return; }
+    if (!confirm('교육을 끝내고 기록을 저장할까요?')) return;
+    clearInterval(pollT);
+    $('v7QrBody').innerHTML = '<div class="v7card"><h3>⏳ 결과를 모으는 중…</h3></div>';
+    finish('end').then(function(r){ drawEnded(r); });
+  };
 
   // ---------- 교육 기록 화면 ----------
   var ym = (function(){ var d = new Date(); return [d.getFullYear(), d.getMonth()]; })(), editId = null;
