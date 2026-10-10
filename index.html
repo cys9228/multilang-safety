@@ -197,6 +197,18 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
 .agree input{width:17px;height:17px;flex:none;margin-top:1px;accent-color:var(--go)}
 .askx{display:none;width:100%;margin-top:10px;background:#ca8a04;color:#000;border:0;border-radius:10px;padding:13px;font-size:16px;font-weight:bold;cursor:pointer}
 @media (max-width:360px){.g2{grid-template-columns:1fr;gap:0}}
+.gf{width:100%}
+.gq{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px}
+.gq.gh{border-top:8px solid #7c3aed}.gq.gh h2{margin:0 0 8px;font-size:21px}.gq.gh p{margin:0;color:var(--mu);font-size:13px;line-height:1.65}
+.gq .req{color:var(--er);font-size:12px;margin-top:10px}
+.gq .q{display:block;font-size:15px;font-weight:bold;color:#fff;margin-bottom:4px}.gq .q i{color:var(--er);font-style:normal}
+.gq .qd{font-size:12px;color:var(--dim);margin-bottom:8px}
+.gq input:not([type=checkbox]){width:100%;padding:11px 2px;border:0;border-bottom:2px solid var(--line2);background:transparent;color:#fff;font-size:16px;outline:none;margin-top:4px;border-radius:0}
+.gq input:not([type=checkbox]):focus{border-bottom-color:var(--pu)}
+.gq .agree{margin:8px 0 2px}
+.gq.bad{border-color:var(--er)}
+.gbar{margin-top:6px}.gl{border:0;padding:6px 4px 0}
+.wrap.wide{max-width:560px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -221,28 +233,29 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
     <div class="links"><a id="ask">📩 이용 신청 · 문의</a><a id="upTog">관리자</a></div>
   </div>
 
-  <div class="card" id="vSignup" hidden>
-    <h2 class="sh">회원가입 <span style="font-size:14px;color:var(--pu)">🎁 7일 무료 체험</span></h2>
-    <p class="sp" id="spLive">아이디·비밀번호를 직접 정하면 <b>바로 열립니다.</b> 오늘부터 <b class="tdays">7</b>일 동안 모든 기능을 써 볼 수 있고, 기간이 끝나면 자동으로 잠깁니다. (한 기기·한 연락처당 한 번)</p>
-    <p class="sp" id="spApply" hidden>아래 내용을 적고 <b>가입 신청</b>을 누르면 메일로 접수됩니다. 확인 후 <b>7일 무료 체험</b> 아이디·비밀번호를 보내 드립니다.</p>
-    <form id="fSign" autocomplete="on">
-      <label class="f" for="sId">아이디 (영문 소문자·숫자 3자 이상)</label>
-      <div class="in"><input id="sId" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="예: suji01" required></div>
-      <div class="g2" id="pwRow">
-        <div><label class="f" for="sPw">비밀번호 (6자 이상)</label><div class="in"><input id="sPw" type="password" autocomplete="new-password" required></div></div>
-        <div><label class="f" for="sPw2">비밀번호 확인</label><div class="in"><input id="sPw2" type="password" autocomplete="new-password" required></div></div>
+  <div id="vSignup" class="gf" hidden>
+    <div class="gq gh">
+      <h2>회원가입 · <span class="tdays">7</span>일 무료 체험</h2>
+      <p id="spLive">아래 내용을 적고 <b>가입하고 바로 시작</b>을 누르면 <b>승인 없이 바로</b> 쓸 수 있습니다.<br>오늘부터 <b class="tdays">7</b>일 동안 모든 기능을 써 볼 수 있고, 기간이 끝나면 자동으로 잠깁니다.<br>※ 한 기기 · 한 휴대폰 · 한 이메일당 한 번만 체험할 수 있습니다.</p>
+      <p id="spApply" hidden>아래 내용을 적고 <b>가입 신청 보내기</b>를 누르면 메일로 접수됩니다. 확인 후 <b><span class="tdays">7</span>일 무료 체험</b> 아이디·비밀번호를 보내 드립니다.</p>
+      <div class="req">* 표시는 필수 항목입니다</div>
+    </div>
+    <form id="fSign" autocomplete="on" novalidate>
+      <div class="gq"><label class="q" for="sId">아이디 <i>*</i></label><div class="qd">영문 소문자 · 숫자 3자 이상</div><input id="sId" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="예: suji01"></div>
+      <div class="gq" id="pwRow"><label class="q" for="sPw">비밀번호 <i>*</i></label><div class="qd">6자 이상 · 로그인할 때 씁니다</div><input id="sPw" type="password" autocomplete="new-password" placeholder="비밀번호"><input id="sPw2" type="password" autocomplete="new-password" placeholder="비밀번호 한 번 더"></div>
+      <div class="gq"><label class="q" for="sPerson">담당자 이름 <i>*</i></label><input id="sPerson" autocomplete="name" placeholder="예: 홍길동"></div>
+      <div class="gq"><label class="q" for="sName">회사명 <i>*</i></label><input id="sName" autocomplete="organization" placeholder="예: OO건설"></div>
+      <div class="gq"><label class="q" for="sSite">현장명 <i>*</i></label><input id="sSite" placeholder="예: OO 신축공사"></div>
+      <div class="gq"><label class="q" for="sMail">이메일 주소 <i>*</i></label><div class="qd">이용 안내 · 아이디 찾기에 씁니다</div><input id="sMail" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="예: example@naver.com"></div>
+      <div class="gq"><label class="q" for="sPh">휴대폰 번호 <i>*</i></label><div class="qd">본인 확인 · 중복 체험 확인에 씁니다</div><input id="sPh" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000"></div>
+      <div class="gq"><div class="q">이용 안내 확인 <i>*</i></div>
+        <label class="agree"><input type="checkbox" id="sAgree"><span>체험 기간(<span class="tdays">7</span>일)이 끝나면 자동으로 잠기며, 계속 쓰려면 이용권을 구매해야 함을 확인했습니다.</span></label>
+        <label class="agree"><input type="checkbox" id="sAgree2"><span>프로그램을 무단으로 복제·배포하지 않겠습니다.</span></label>
       </div>
-      <div class="g2">
-        <div><label class="f" for="sName">회사명</label><div class="in"><input id="sName" autocomplete="organization" required></div></div>
-        <div><label class="f" for="sSite">현장명</label><div class="in"><input id="sSite" required></div></div>
-      </div>
-      <label class="f" for="sPh">연락처 (휴대폰)</label>
-      <div class="in"><input id="sPh" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" required></div>
-      <label class="agree"><input type="checkbox" id="sAgree"> 체험판을 무단으로 복제·배포하지 않으며, 체험 기간이 끝나면 이용권을 구매해야 계속 쓸 수 있음에 동의합니다.</label>
-      <button class="btn" id="sGo" type="submit">가입하고 바로 시작</button>
+      <div class="msg" id="sMsg"></div>
+      <div class="gbar"><button class="btn" id="sGo" type="submit">가입하고 바로 시작</button></div>
     </form>
-    <div class="msg" id="sMsg"></div>
-    <div class="links"><a id="sBack">← 로그인으로 돌아가기</a><a id="sAsk">📩 문의</a></div>
+    <div class="links gl"><a id="sBack">← 로그인으로 돌아가기</a><a id="sAsk">📩 문의</a></div>
   </div>
 
   <div class="card" id="vLoad" hidden><div class="load"><div class="spin"></div><b id="ldT">확인 중…</b><p id="ldS"></p></div></div>
@@ -267,6 +280,8 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
    ▼ 서버를 옮길 때(구글 → 개인 서버)는 이 한 줄만 바꾸면 됩니다.
    ============================================================ */
 var AUTH_URL = 'https://script.google.com/macros/s/AKfycbwOA8kgXkBJPw3pKUNixi6n4UfqywWcQruo-a-wE87RNkPk6bKjJDQQ_uehI19dzp3c/exec';
+/* ▼ 회원가입 서버(가입서버 v1) 주소 — 넣으면 가입 즉시 승인·사용, 비워 두면 메일 신청서 */
+var SIGNUP_URL = 'https://script.google.com/macros/s/여기에_가입서버_배포ID/exec';
 
 (function(){
   var CORE_MARK = 'DN_CORE_GUARD_v1', CONTACT = 'cys9228@naver.com';
@@ -288,7 +303,7 @@ var AUTH_URL = 'https://script.google.com/macros/s/AKfycbwOA8kgXkBJPw3pKUNixi6n4
   function setToken(t, keep){ ls('dnAuthTok', null); ss('dnAuthTok', null); if (t){ if (keep) ls('dnAuthTok', t); else ss('dnAuthTok', t); } }
 
   /* ---- 화면 ---- */
-  function view(v){ ['vLogin', 'vLoad', 'vSetup', 'vSignup'].forEach(function(id){ $(id).hidden = id !== v; }); $('vSetup').style.display = v === 'vSetup' ? 'block' : 'none'; }
+  function view(v){ ['vLogin', 'vLoad', 'vSetup', 'vSignup'].forEach(function(id){ $(id).hidden = id !== v; }); document.querySelector('.wrap').classList.toggle('wide', v === 'vSignup'); $('vSetup').style.display = v === 'vSetup' ? 'block' : 'none'; }
   function msg(t, ok){ var m = $('msg'); m.textContent = t || ''; m.className = 'msg' + (ok ? ' ok' : ''); }
   function loading(t, s){ view('vLoad'); $('ldT').textContent = t; $('ldS').textContent = s || ''; }
   function showLogin(t, ok){ view('vLogin'); msg(t, ok); $('go').disabled = false; $('askX').style.display = 'none'; trialInfo(); setTimeout(function(){ ($('uid').value ? $('upw') : $('uid')).focus(); }, 50); }
@@ -437,58 +452,77 @@ var AUTH_URL = 'https://script.google.com/macros/s/AKfycbwOA8kgXkBJPw3pKUNixi6n4
     }).catch(function(){ $('suMsg').className = 'msg'; $('suMsg').textContent = '이 주소에서 로그인 서버가 응답하지 않습니다. 배포 주소(/exec)와 액세스 「모든 사용자」를 확인하세요.'; });
   };
 
-  /* ---- 🎁 무료 체험 가입 (서버 Auth.gs v1.1 이상에서만 버튼이 보임) ---- */
-  var trialChecked = false, trialLive = false;
+  /* ---- 🎁 회원가입 · 무료 체험 ----
+     SIGNUP_URL(가입서버) 주소가 있으면 → 가입 즉시 등록·로그인 (승인 없음)
+     없으면 → 로그인 서버가 체험 가입을 지원하는지 확인, 둘 다 없으면 메일 신청서 */
+  var trialChecked = false, trialMode = '';   // 'sep' 가입서버 · 'auth' 로그인서버 · '' 메일 신청
+  function setDays(d){ [].forEach.call(document.querySelectorAll('.tdays'), function(e){ e.textContent = d; }); $('trialDays').textContent = d; }
+  function post(u, o){ return fetch(u, { method:'POST', body:JSON.stringify(o), redirect:'follow', cache:'no-store' }).then(function(r){ return r.json(); }); }
   function trialInfo(){
-    if (trialChecked || !url) return; trialChecked = true;
-    api({ a:'trialInfo' }).then(function(r){
-      if (!r || !r.ok || !r.on) return;
-      trialLive = true;
-      [].forEach.call(document.querySelectorAll('.tdays'), function(e){ e.textContent = r.days; }); $('trialDays').textContent = r.days;
-      $('trialGo').hidden = false;
+    if (trialChecked) return; trialChecked = true;
+    var su = /^https:\/\/script\.google\.com\//.test(SIGNUP_URL) && !/여기에_/.test(SIGNUP_URL) ? SIGNUP_URL : '';
+    var p = su ? post(su, { a:'trialInfo' }).then(function(r){ if (r && r.ok && r.on){ trialMode = 'sep'; setDays(r.days); } else throw 0; })
+               : Promise.reject(0);
+    p.catch(function(){
+      if (!url) return;
+      return api({ a:'trialInfo' }).then(function(r){ if (r && r.ok && r.on){ trialMode = 'auth'; setDays(r.days); } });
     }).catch(function(){});
   }
-  function sMsg(t){ $('sMsg').textContent = t || ''; }
+  function sMsg(t, ok){ $('sMsg').className = 'msg' + (ok ? ' ok' : ''); $('sMsg').textContent = t || ''; }
   function signMode(){
-    $('spLive').hidden = !trialLive; $('spApply').hidden = trialLive; $('pwRow').hidden = !trialLive;
-    $('sPw').required = $('sPw2').required = trialLive;
-    document.querySelector('label[for=sId]').textContent = trialLive ? '아이디 (영문 소문자·숫자 3자 이상)' : '원하는 아이디 (영문 소문자·숫자 3자 이상)';
-    $('sGo').textContent = trialLive ? '가입하고 바로 시작' : '📩 가입 신청 보내기';
+    var live = !!trialMode;
+    $('spLive').hidden = !live; $('spApply').hidden = live; $('pwRow').hidden = !live;
+    document.querySelector('label[for=sId]').firstChild.textContent = live ? '아이디 ' : '원하는 아이디 ';
+    $('sGo').textContent = live ? '가입하고 바로 시작' : '📩 가입 신청 보내기';
   }
-  $('trialGo').onclick = function(){ signMode(); view('vSignup'); sMsg(''); setTimeout(function(){ $('sId').focus(); }, 50); };
+  $('trialGo').onclick = function(){ signMode(); view('vSignup'); sMsg(''); window.scrollTo(0, 0); setTimeout(function(){ $('sId').focus(); }, 50); };
   $('sBack').onclick = function(){ showLogin(''); };
   $('sId').oninput = function(){ var v = this.value.toLowerCase().replace(/[^a-z0-9._@-]/g, ''); if (v !== this.value) this.value = v; };
   $('sPh').oninput = function(){ var d = this.value.replace(/[^0-9]/g, '').slice(0, 11); this.value = d.length > 7 ? d.slice(0, 3) + '-' + d.slice(3, d.length - 4) + '-' + d.slice(-4) : d.length > 3 ? d.slice(0, 3) + '-' + d.slice(3) : d; };
+  function bad(id, t){ [].forEach.call(document.querySelectorAll('.gq.bad'), function(e){ e.classList.remove('bad'); }); var el = $(id); if (el){ var g = el.closest('.gq'); if (g){ g.classList.add('bad'); g.scrollIntoView({ block:'center', behavior:'smooth' }); } try{ el.focus({ preventScroll:true }); }catch(e){} } sMsg(t); }
   $('fSign').onsubmit = function(e){
     e.preventDefault();
-    var id = $('sId').value.trim(), pw = $('sPw').value, ph = $('sPh').value.replace(/[^0-9]/g, '');
-    if (!/^[a-z0-9._@-]{3,30}$/.test(id)) return sMsg('아이디는 영문 소문자·숫자 3자 이상으로 정해 주세요.');
-    if (trialLive && pw.length < 6) return sMsg('비밀번호는 6자 이상으로 정해 주세요.');
-    if (trialLive && pw !== $('sPw2').value) return sMsg('비밀번호 확인이 다릅니다.');
-    if (!$('sName').value.trim() || !$('sSite').value.trim()) return sMsg('회사명과 현장명을 넣어 주세요.');
-    if (ph.length < 10 || ph.length > 11) return sMsg('연락처(휴대폰 번호)를 정확히 넣어 주세요.');
-    if (!$('sAgree').checked) return sMsg('아래 동의에 체크해 주세요.');
-    if (!trialLive){
-      var t = '[안전 다있네] 회원가입(7일 무료 체험) 신청합니다.\n원하는 아이디: ' + id + '\n회사명: ' + $('sName').value.trim() + '\n현장명: ' + $('sSite').value.trim() + '\n연락처: ' + $('sPh').value;
+    var live = !!trialMode;
+    var id = $('sId').value.trim(), pw = $('sPw').value, ph = $('sPh').value.replace(/[^0-9]/g, ''), mail = $('sMail').value.trim().toLowerCase();
+    if (!/^[a-z0-9._@-]{3,40}$/.test(id)) return bad('sId', '아이디는 영문 소문자·숫자 3자 이상으로 정해 주세요.');
+    if (live && pw.length < 6) return bad('sPw', '비밀번호는 6자 이상으로 정해 주세요.');
+    if (live && pw !== $('sPw2').value) return bad('sPw2', '비밀번호 확인이 다릅니다.');
+    if (!$('sPerson').value.trim()) return bad('sPerson', '담당자 이름을 넣어 주세요.');
+    if (!$('sName').value.trim()) return bad('sName', '회사명을 넣어 주세요.');
+    if (!$('sSite').value.trim()) return bad('sSite', '현장명을 넣어 주세요.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return bad('sMail', '이메일 주소를 정확히 넣어 주세요.');
+    if (ph.length < 10 || ph.length > 11) return bad('sPh', '휴대폰 번호를 정확히 넣어 주세요.');
+    if (!$('sAgree').checked || !$('sAgree2').checked) return bad('sAgree', '이용 안내 두 가지에 모두 체크해 주세요.');
+    bad('', '');
+    if (!live){
+      var t = '[안전 다있네] 회원가입(7일 무료 체험) 신청합니다.\n원하는 아이디: ' + id + '\n담당자: ' + $('sPerson').value.trim() + '\n회사명: ' + $('sName').value.trim() + '\n현장명: ' + $('sSite').value.trim() + '\n이메일: ' + mail + '\n휴대폰: ' + $('sPh').value;
       try{ navigator.clipboard && navigator.clipboard.writeText(t); }catch(e){}
       location.href = 'mailto:' + CONTACT + '?subject=' + encodeURIComponent('[안전 다있네] 회원가입 신청') + '&body=' + encodeURIComponent(t);
-      $('sMsg').className = 'msg ok'; sMsg('메일 신청서가 열렸습니다. 보내기를 누르면 접수됩니다. (메일이 안 열리면 신청 내용이 복사돼 있으니 cys9228@naver.com 으로 붙여 보내 주세요.) 확인 후 아이디·비밀번호를 보내 드립니다.');
+      sMsg('메일 신청서가 열렸습니다. 보내기를 누르면 접수됩니다. (메일이 안 열리면 신청 내용이 복사돼 있으니 cys9228@naver.com 으로 붙여 보내 주세요.) 확인 후 아이디·비밀번호를 보내 드립니다.', true);
       return;
     }
-    $('sMsg').className = 'msg'; $('sGo').disabled = true; sMsg('');
+    var form = { id:id, pw:pw, person:$('sPerson').value.trim(), name:$('sName').value.trim(), site:$('sSite').value.trim(), email:mail, phone:ph, dev:dev, devName:devName(), have:'' };
+    $('sGo').disabled = true;
     loading('가입하는 중…', '처음 열 때는 10~30초 걸릴 수 있습니다');
-    api({ a:'signup', id:id, pw:pw, name:$('sName').value.trim(), site:$('sSite').value.trim(), phone:ph, dev:dev, devName:devName(), have:'' }).then(function(r){
+    function back(m){ $('sGo').disabled = false; view('vSignup'); sMsg(m); }
+    var step = trialMode === 'sep'
+      ? post(SIGNUP_URL, Object.assign({ a:'signup' }, form)).then(function(r){
+          if (!r || !r.ok) return r || { ok:false };
+          $('ldT').textContent = '✅ 가입 완료 — 로그인하는 중…'; $('ldS').textContent = '아이디 ' + id + ' · 사용기간 ' + r.exp + '까지';
+          return api({ a:'login', id:id, pw:pw, dev:dev, devName:devName(), have:'' }).then(function(r2){ if (r2) r2.__exp = r.exp; return r2; });
+        })
+      : api(Object.assign({ a:'signup' }, form));
+    step.then(function(r){
       $('sGo').disabled = false;
       if (!r || !r.ok){
-        view('vSignup'); sMsg((r && r.msg) || '가입하지 못했습니다.');
-        if (r && r.code === 'BAD_ACTION') sMsg('서버가 아직 체험 가입을 지원하지 않습니다. 관리자에게 문의하세요.');
-        return;
+        if (r && r.code && /^(INPUT|DUP|USED|BUSY|CLOSED|ERR|BAD)$/.test(r.code)) return back(r.msg);
+        if (r && r.__exp === undefined && trialMode === 'sep' && r.msg) return back(r.msg);
+        $('uid').value = id; return showLogin(r && r.msg ? '가입은 되었습니다. ' + r.msg : '가입은 되었습니다. 아이디·비밀번호로 로그인해 주세요.', true);
       }
       setToken(r.token, true); $('uid').value = id; $('sPw').value = $('sPw2').value = '';
       $('ldT').textContent = '✅ 가입 완료 — 프로그램 여는 중…';
-      $('ldS').textContent = '아이디 ' + id + ' · ' + ((r.user && r.user.exp) || (r.lic && r.lic.exp) ? '사용기간 ' + ((r.user && r.user.exp) || r.lic.exp) + '까지' : '');
       return launch(r, null);
-    }).catch(function(e){ $('sGo').disabled = false; view('vSignup'); sMsg('서버에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 해 주세요.'); });
+    }).catch(function(){ back('서버에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 해 주세요.'); });
   };
 
   start();
