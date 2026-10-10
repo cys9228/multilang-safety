@@ -175,7 +175,7 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
 .btn{width:100%;background:var(--go);color:#fff;border:0;border-radius:10px;padding:14px;font-size:17px;font-weight:bold;cursor:pointer}
 .btn:hover{background:var(--go2)}.btn:disabled{opacity:.6;cursor:wait}
 .btn.sub{background:#1e293b;border:1px solid var(--line2);font-size:14px;padding:11px;margin-top:8px}
-.msg{min-height:20px;margin-top:12px;font-size:14px;color:var(--er);line-height:1.5;text-align:center}
+.msg{white-space:pre-line;min-height:20px;margin-top:12px;font-size:14px;color:var(--er);line-height:1.5;text-align:center}
 .msg.ok{color:var(--ok)}
 .links{display:flex;justify-content:space-between;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:13px}
 .links a{color:var(--dim);text-decoration:none;cursor:pointer}.links a:hover{color:var(--tx)}
@@ -207,6 +207,9 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
 .gq input:not([type=checkbox]):focus{border-bottom-color:var(--pu)}
 .gq .agree{margin:8px 0 2px}
 .gq.bad{border-color:var(--er)}
+.gq .q2{display:block;margin-top:16px;font-size:15px;font-weight:900;color:var(--yl)}
+.gq input::placeholder{color:#cbd5e1;opacity:1;font-weight:600}
+.gq input:not([type=checkbox]){border-bottom-color:#64748b}
 .gbar{margin-top:6px}.gl{border:0;padding:6px 4px 0}
 .wrap.wide{max-width:560px}
 [hidden]{display:none!important}
@@ -222,7 +225,7 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
       <div class="in"><input id="uid" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
       <label class="f" for="upw">비밀번호</label>
       <div class="in"><input id="upw" name="password" type="password" autocomplete="current-password" required><button type="button" class="eye" id="eye" aria-label="비밀번호 보기">👁</button></div>
-      <label class="keep"><input type="checkbox" id="keep" checked> 이 기기에서 로그인 유지 (30일)</label>
+      <label class="keep"><input type="checkbox" id="keep" checked> 이 기기에서 로그인 유지 (7일)</label>
       <button class="btn" id="go" type="submit">로그인</button>
     </form>
     <div class="up" id="upBox">📦 <b>관리자: 새 버전 올리기</b><br>관리자 아이디로 로그인하면, 고른 <b>app_core</b> 파일을 서버(구글 드라이브)에 올립니다.<br><button type="button" class="btn sub" id="upPick">📂 app_core 파일 고르기</button><div id="upName" style="margin-top:6px"></div></div>
@@ -242,7 +245,7 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
     </div>
     <form id="fSign" autocomplete="on" novalidate>
       <div class="gq"><label class="q" for="sId">아이디 <i>*</i></label><div class="qd">영문 소문자 · 숫자 3자 이상</div><input id="sId" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="예: suji01"></div>
-      <div class="gq" id="pwRow"><label class="q" for="sPw">비밀번호 <i>*</i></label><div class="qd">6자 이상 · 로그인할 때 씁니다</div><input id="sPw" type="password" autocomplete="new-password" placeholder="비밀번호"><input id="sPw2" type="password" autocomplete="new-password" placeholder="비밀번호 한 번 더"></div>
+      <div class="gq" id="pwRow"><label class="q" for="sPw">비밀번호 <i>*</i></label><div class="qd">6자 이상 · 로그인할 때 씁니다</div><input id="sPw" type="password" autocomplete="new-password" placeholder="비밀번호 입력"><label class="q2" for="sPw2">🔁 비밀번호 확인 (한 번 더 입력)</label><input id="sPw2" type="password" autocomplete="new-password" placeholder="위와 같은 비밀번호를 한 번 더 입력"></div>
       <div class="gq"><label class="q" for="sPerson">담당자 이름 <i>*</i></label><input id="sPerson" autocomplete="name" placeholder="예: 홍길동"></div>
       <div class="gq"><label class="q" for="sName">회사명 <i>*</i></label><input id="sName" autocomplete="organization" placeholder="예: OO건설"></div>
       <div class="gq"><label class="q" for="sSite">현장명 <i>*</i></label><input id="sSite" placeholder="예: OO 신축공사"></div>
@@ -274,7 +277,7 @@ label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
 
 <script>
 /* ============================================================
-   안전 다있네 — 공개 로그인 화면 (v145.5 — 🎁 무료 체험 가입)
+   안전 다있네 — 공개 로그인 화면 (v145.8 — 🎁 무료 체험 가입)
    이 파일에는 프로그램 본체가 없습니다. 본체는 로그인 서버(구글 드라이브)에 있고,
    아이디·비밀번호·이용권이 확인된 사람에게만 보내집니다.
    ▼ 서버를 옮길 때(구글 → 개인 서버)는 이 한 줄만 바꾸면 됩니다.
@@ -299,8 +302,13 @@ var SIGNUP_URL = 'https://script.google.com/macros/s/AKfycbwcJBPYKjS3T-ymVwtFXIs
     var br = /Edg\//.test(u) ? '엣지' : /SamsungBrowser/.test(u) ? '삼성인터넷' : /Whale/.test(u) ? '웨일' : /Chrome\//.test(u) ? '크롬' : /Safari\//.test(u) ? '사파리' : /Firefox/.test(u) ? '파이어폭스' : '브라우저';
     return os + ' · ' + br;
   }
-  function token(){ return ls('dnAuthTok') || ss('dnAuthTok') || ''; }
-  function setToken(t, keep){ ls('dnAuthTok', null); ss('dnAuthTok', null); if (t){ if (keep) ls('dnAuthTok', t); else ss('dnAuthTok', t); } }
+  var KEEP_DAYS = 7;   // 로그인 유지 기간 (일) — 지나면 아이디·비밀번호를 다시 넣어야 함
+  function token(){
+    var t = ls('dnAuthTok');
+    if (t && Date.now() - (+ls('dnAuthTokT') || 0) > KEEP_DAYS * 86400000){ ls('dnAuthTok', null); ls('dnAuthTokT', null); t = ''; }
+    return t || ss('dnAuthTok') || '';
+  }
+  function setToken(t, keep){ ls('dnAuthTok', null); ls('dnAuthTokT', null); ss('dnAuthTok', null); if (t){ if (keep){ ls('dnAuthTok', t); ls('dnAuthTokT', String(Date.now())); } else ss('dnAuthTok', t); } }
 
   /* ---- 화면 ---- */
   function view(v){ ['vLogin', 'vLoad', 'vSetup', 'vSignup'].forEach(function(id){ $(id).hidden = id !== v; }); document.querySelector('.wrap').classList.toggle('wide', v === 'vSignup'); $('vSetup').style.display = v === 'vSetup' ? 'block' : 'none'; }
@@ -309,7 +317,10 @@ var SIGNUP_URL = 'https://script.google.com/macros/s/AKfycbwcJBPYKjS3T-ymVwtFXIs
   function showLogin(t, ok){ view('vLogin'); msg(t, ok); $('go').disabled = false; $('askX').style.display = 'none'; trialInfo(); setTimeout(function(){ ($('uid').value ? $('upw') : $('uid')).focus(); }, 50); }
 
   /* ---- 서버 ---- */
-  function api(o){
+  function api(o, retried){
+    return api1(o).catch(function(e){ if (retried || /응답/.test(e && e.message || '')) throw e; return new Promise(function(r){ setTimeout(r, 1500); }).then(function(){ return api(o, true); }); });
+  }
+  function api1(o){
     return fetch(url, { method:'POST', body:JSON.stringify(o), redirect:'follow', cache:'no-store' })
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
       .then(function(t){ try{ return JSON.parse(t); }catch(e){ throw new Error('서버 응답이 올바르지 않습니다 (웹 앱 배포의 액세스가 「모든 사용자」인지 확인)'); } });
@@ -368,7 +379,7 @@ var SIGNUP_URL = 'https://script.google.com/macros/s/AKfycbwcJBPYKjS3T-ymVwtFXIs
     showLogin((r && r.msg) || '로그인하지 못했습니다.');
     if (r && /^(EXPIRED|USED|CLOSED)$/.test(r.code)){ lastId = r.code === 'USED' ? '' : ($('uid').value || ''); $('askX').style.display = 'block'; }
   }
-  function netFail(e){ showLogin('서버에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 해 주세요.' + (e && e.message && /응답/.test(e.message) ? '\n' + e.message : '')); }
+  function netFail(e){ showLogin('서버에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 해 주세요.' + (e && e.message ? '\n(오류 내용: ' + String(e.message).slice(0, 120) + ')' : '')); }
 
   /* ---- 시작 ---- */
   function start(){
