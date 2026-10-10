@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script>
+/* v127: QR로 들어온 근로자 화면 — ?w=1 이면 이 화면만 보이고 본 프로그램(암호 화면 포함)은 실행하지 않음 */
+(function(){
+  var Q; try{ Q = new URLSearchParams(location.search); }catch(e){ return; }
+  if (Q.get('w') !== '1') return;
+  window.__DAINNE_WORKER__ = true;
+  document.write('<plaintext style="display:none">');   // 나머지 본문은 실행하지 않고 글자로만 읽힘
+  var L = {
+    ko:{n:'한국어',q:'오늘 안전교육 이해하셨습니까?',ok:'이해했습니다',unsure:'잘 모르겠습니다',question:'질문이 있습니다',hazard:'위험한 곳이 있습니다',name:'이름 (선택)',qText:'질문을 적어 주세요',hzText:'어디가 위험한가요? (선택)',photo:'사진 찍기',send:'보내기',thanks:'감사합니다! 전달되었습니다.',report:'현장의 위험요인을 사진으로 신고하세요',more:'하나 더 보내기',fail:'전송 실패. 인터넷을 확인하세요.',back:'처음으로'},
+    vi:{n:'Tiếng Việt',q:'Bạn đã hiểu buổi đào tạo an toàn hôm nay chưa?',ok:'Tôi đã hiểu',unsure:'Tôi chưa hiểu rõ',question:'Tôi có câu hỏi',hazard:'Có chỗ nguy hiểm',name:'Tên (không bắt buộc)',qText:'Hãy viết câu hỏi của bạn',hzText:'Chỗ nào nguy hiểm? (không bắt buộc)',photo:'Chụp ảnh',send:'Gửi',thanks:'Cảm ơn! Đã gửi thành công.',report:'Hãy chụp ảnh báo cáo mối nguy hiểm tại công trường',more:'Gửi thêm',fail:'Gửi thất bại. Hãy kiểm tra Internet.',back:'Quay lại'},
+    zh:{n:'中文',q:'今天的安全教育您理解了吗？',ok:'我理解了',unsure:'我不太明白',question:'我有问题',hazard:'有危险的地方',name:'姓名（可选）',qText:'请写下您的问题',hzText:'哪里危险？（可选）',photo:'拍照',send:'发送',thanks:'谢谢！已发送。',report:'请拍照举报现场的危险因素',more:'再发送一个',fail:'发送失败，请检查网络。',back:'返回'},
+    en:{n:'English',q:'Did you understand today\'s safety training?',ok:'I understood',unsure:'I\'m not sure',question:'I have a question',hazard:'There is a danger',name:'Name (optional)',qText:'Please write your question',hzText:'Where is the danger? (optional)',photo:'Take photo',send:'Send',thanks:'Thank you! Sent.',report:'Report site hazards with a photo',more:'Send another',fail:'Failed. Please check the internet.',back:'Back'},
+    th:{n:'ไทย',q:'คุณเข้าใจการอบรมความปลอดภัยวันนี้หรือไม่?',ok:'เข้าใจแล้ว',unsure:'ยังไม่ค่อยเข้าใจ',question:'มีคำถาม',hazard:'มีจุดที่อันตราย',name:'ชื่อ (ไม่บังคับ)',qText:'กรุณาเขียนคำถาม',hzText:'อันตรายตรงไหน? (ไม่บังคับ)',photo:'ถ่ายรูป',send:'ส่ง',thanks:'ขอบคุณ! ส่งแล้ว',report:'ถ่ายรูปแจ้งจุดอันตรายในไซต์งาน',more:'ส่งอีก',fail:'ส่งไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต',back:'กลับ'},
+    ru:{n:'Русский',q:'Вы поняли сегодняшний инструктаж по безопасности?',ok:'Понял(а)',unsure:'Не совсем понял(а)',question:'У меня есть вопрос',hazard:'Есть опасное место',name:'Имя (необязательно)',qText:'Напишите ваш вопрос',hzText:'Где опасно? (необязательно)',photo:'Сделать фото',send:'Отправить',thanks:'Спасибо! Отправлено.',report:'Сообщите об опасности на площадке с фото',more:'Отправить ещё',fail:'Ошибка. Проверьте интернет.',back:'Назад'},
+    km:{n:'ខ្មែរ',q:'តើអ្នកយល់ការបណ្តុះបណ្តាលសុវត្ថិភាពថ្ងៃនេះទេ?',ok:'ខ្ញុំយល់ហើយ',unsure:'ខ្ញុំមិនសូវយល់',question:'ខ្ញុំមានសំណួរ',hazard:'មានកន្លែងគ្រោះថ្នាក់',name:'ឈ្មោះ (មិនចាំបាច់)',qText:'សូមសរសេរសំណួររបស់អ្នក',hzText:'កន្លែងណាគ្រោះថ្នាក់? (មិនចាំបាច់)',photo:'ថតរូប',send:'ផ្ញើ',thanks:'អរគុណ! បានផ្ញើហើយ។',report:'ថតរូបរាយការណ៍ពីគ្រោះថ្នាក់នៅការដ្ឋាន',more:'ផ្ញើម្តងទៀត',fail:'ផ្ញើមិនបាន។ សូមពិនិត្យអ៊ីនធឺណិត។',back:'ត្រឡប់'},
+    ne:{n:'नेपाली',q:'के तपाईंले आजको सुरक्षा तालिम बुझ्नुभयो?',ok:'मैले बुझें',unsure:'राम्रोसँग बुझिनँ',question:'मेरो प्रश्न छ',hazard:'खतरनाक ठाउँ छ',name:'नाम (ऐच्छिक)',qText:'आफ्नो प्रश्न लेख्नुहोस्',hzText:'कहाँ खतरा छ? (ऐच्छिक)',photo:'फोटो खिच्नुहोस्',send:'पठाउनुहोस्',thanks:'धन्यवाद! पठाइयो।',report:'साइटको खतरा फोटो खिचेर रिपोर्ट गर्नुहोस्',more:'अर्को पठाउनुहोस्',fail:'पठाउन सकिएन। इन्टरनेट जाँच गर्नुहोस्।',back:'फर्कनुहोस्'}
+  };
+  var L2 = {
+    ko:{hq:'현장에서 발견된 위험요인이 있습니까?',hn:'없음',hy:'있음 — 사진 찍고 알리기',here:'여기에 서명하세요',sg:'정자로 이름을 쓰세요',nmReq:'이름 입력 (처음 한 번만)',clr:'지우기',sub:'✍️ 서명하고 보내기',need:'이름을 쓰고 서명해 주세요.'},
+    vi:{hq:'Bạn có phát hiện mối nguy nào tại hiện trường không?',hn:'Không có',hy:'Có — chụp ảnh và báo',here:'Ký tên tại đây',sg:'Hãy viết tên của bạn thật rõ ràng',nmReq:'Nhập tên (chỉ lần đầu)',clr:'Xóa',sub:'✍️ Ký và gửi',need:'Hãy nhập tên và ký.'},
+    zh:{hq:'现场是否发现危险因素？',hn:'没有',hy:'有 — 拍照报告',here:'在此签名',sg:'请工整地手写您的姓名',nmReq:'输入姓名（仅首次）',clr:'清除',sub:'✍️ 签名并发送',need:'请填写姓名并签名。'},
+    en:{hq:'Did you find any hazard on site?',hn:'No',hy:'Yes — take a photo & report',here:'Sign here',sg:'Write your name clearly by hand',nmReq:'Type your name (first time only)',clr:'Clear',sub:'✍️ Sign & send',need:'Please enter your name and sign.'},
+    th:{hq:'พบอันตรายในหน้างานหรือไม่?',hn:'ไม่มี',hy:'มี — ถ่ายรูปและแจ้ง',here:'เซ็นชื่อที่นี่',sg:'กรุณาเขียนชื่อด้วยลายมือให้ชัดเจน',nmReq:'พิมพ์ชื่อ (ครั้งแรกเท่านั้น)',clr:'ล้าง',sub:'✍️ เซ็นและส่ง',need:'กรุณาใส่ชื่อและเซ็นชื่อ'},
+    ru:{hq:'Обнаружили опасность на площадке?',hn:'Нет',hy:'Да — сфотографировать и сообщить',here:'Распишитесь здесь',sg:'Напишите своё имя от руки разборчиво',nmReq:'Введите имя (только в первый раз)',clr:'Стереть',sub:'✍️ Подписать и отправить',need:'Введите имя и распишитесь.'},
+    km:{hq:'តើអ្នករកឃើញគ្រោះថ្នាក់នៅការដ្ឋានទេ?',hn:'គ្មាន',hy:'មាន — ថតរូប ហើយរាយការណ៍',here:'ចុះហត្ថលេខានៅទីនេះ',sg:'សូមសរសេរឈ្មោះរបស់អ្នកដោយដៃឱ្យច្បាស់',nmReq:'វាយឈ្មោះ (តែលើកដំបូង)',clr:'លុប',sub:'✍️ ចុះហត្ថលេខា ហើយផ្ញើ',need:'សូមបញ្ចូលឈ្មោះ និងចុះហត្ថលេខា។'},
+    ne:{hq:'साइटमा कुनै खतरा भेटियो?',hn:'छैन',hy:'छ — फोटो खिचेर जानकारी दिनुहोस्',here:'यहाँ हस्ताक्षर गर्नुहोस्',sg:'आफ्नो नाम हातले स्पष्ट लेख्नुहोस्',nmReq:'नाम टाइप गर्नुहोस् (पहिलो पटक मात्र)',clr:'मेटाउनुहोस्',sub:'✍️ हस्ताक्षर गरेर पठाउनुहोस्',need:'नाम लेखेर हस्ताक्षर गर्नुहोस्।'}
+  };
+  for (var lk in L2) for (var kk in L2[lk]) L[lk][kk] = L2[lk][kk];
+  var sig = '', pendAns = '', hasInk = false;
+  var url = Q.get('u') || '', sid = Q.get('s') || '', title = Q.get('t') || '안전교육';
+  function ls(k, v){ try{ if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){} return null; }
+  var did = ls('dnWorkerId'); if (!did){ did = 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); ls('dnWorkerId', did); }
+  var lang = ls('dnWorkerLang');
+  if (!L[lang]){ var nl = (navigator.language || 'ko').slice(0,2).toLowerCase(); lang = L[nl] ? nl : 'ko'; }
+  var photo = '', mode = /위험요인|위험신고|개선조치/.test(title || '') ? 'hazard' : 'home';   // v138.2: 위험요인 교육명이면 위험신고 화면부터
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function T(k){ return L[lang][k]; }
+  function send(ans, text){
+    var body = JSON.stringify({ sid:sid, title:title, did:did, ans:ans, lang:L[lang].n, name:(document.getElementById('wName') || {}).value || ls('dnWorkerName') || '', text:text || '', photo:photo, sig:sig });
+    return fetch(url, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:body });
+  }
+  function draw(){
+    var app = document.getElementById('wApp'), h = '';
+    h += '<div class="lg">' + Object.keys(L).map(function(k){ return '<button data-l="' + k + '"' + (k === lang ? ' class="on"' : '') + '>' + L[k].n + '</button>'; }).join('') + '</div>';
+    h += '<div class="tt">🦺 ' + esc(title) + '</div>';
+    if (mode === 'home'){
+      h += '<h1>' + T('q') + '</h1>' +
+           '<button class="b ok" data-a="ok">✅ ' + T('ok') + '</button>' +
+           '<button class="b un" data-a="unsure">🤔 ' + T('unsure') + '</button>' +
+           '<button class="b qu" data-m="question">❓ ' + T('question') + '</button>' +
+           '<button class="b hz" data-m="hazard">⚠️ ' + T('hazard') + '</button>' +
+           '<button class="rp" data-m="hazard">📷 ' + T('report') + '</button>' +
+           '<input id="wName" maxlength="20" placeholder="' + esc(T('name')) + '" value="' + esc(ls('dnWorkerName') || '') + '">';
+    } else if (mode === 'sign'){
+      h += '<div class="pa">' + (pendAns === 'ok' ? '✅ ' + T('ok') : '🤔 ' + T('unsure')) + '</div><h1>✍️ ' + T('sg') + '</h1>' +
+           '<input id="wName" class="big" maxlength="20" placeholder="' + esc(T('nmReq')) + '" value="' + esc(ls('dnWorkerName') || '') + '">' +
+           '<div class="padw"><canvas id="wPad"></canvas><span id="wPadHint">✍️ ' + T('here') + '</span></div><button class="lk" data-clr="1">↺ ' + T('clr') + '</button>' +
+           '<button class="b ok" data-sub="1">' + T('sub') + '</button><button class="lk" data-m="home">← ' + T('back') + '</button>';
+    } else if (mode === 'hzask'){   // v138.0: 서명 뒤 위험요인 확인
+      h += '<div class="ty">✅</div><h1>⚠️ ' + T('hq') + '</h1>' +
+           '<button class="b ok" data-m="done">① ' + T('hn') + '</button>' +
+           '<button class="b hzy" data-m="hazard">② 📷 ' + T('hy') + '</button>';
+    } else if (mode === 'question' || mode === 'hazard'){
+      var hz = mode === 'hazard';
+      h += '<h1>' + (hz ? '⚠️ ' + T('report') : '❓ ' + T('question')) + '</h1>' +
+           '<textarea id="wText" rows="4" placeholder="' + esc(hz ? T('hzText') : T('qText')) + '"></textarea>' +
+           (hz ? '<div class="phs"><label class="ph">📷 ' + T('photo') + '<input type="file" id="wPhoto" accept="image/*" capture="environment"></label><label class="ph">🖼️ ' + ({ko:'앨범에서 고르기',vi:'Chọn từ album',zh:'从相册选择',en:'From album',th:'เลือกจากอัลบั้ม',ru:'Из галереи',km:'ជ្រើសពីអាល់ប៊ុម',ne:'एल्बमबाट छान्नुहोस्'}[lang] || '앨범') + '<input type="file" id="wPhotoA" accept="image/*"></label></div><img id="wPrev" alt="">' : '') +
+           '<input id="wName" maxlength="20" placeholder="' + esc(T('name')) + '" value="' + esc(ls('dnWorkerName') || '') + '">' +
+           '<button class="b ok" data-s="' + mode + '">📨 ' + T('send') + '</button><button class="lk" data-m="home">← ' + T('back') + '</button>';
+    } else {
+      h += '<div class="ty">🙏</div><h1>' + T('thanks') + '</h1>' +
+           '<button class="rp" data-m="hazard">📷 ' + T('report') + '</button><button class="lk" data-m="home">↺ ' + T('more') + '</button>';
+    }
+    h += '<div class="er" id="wErr"></div>';
+    app.innerHTML = h;
+    if (mode === 'sign') initPad();
+    if (photo && document.getElementById('wPrev')){ var im = document.getElementById('wPrev'); im.src = photo; im.style.display = 'block'; }
+  }
+  function initPad(){
+    var c = document.getElementById('wPad'); if (!c) return; hasInk = false;
+    var r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    c.width = Math.round(r.width * dpr); c.height = Math.round(r.height * dpr);
+    var g = c.getContext('2d'); g.scale(dpr, dpr); g.clearRect(0, 0, r.width, r.height);   // 안내선은 CSS 배경 (저장 그림에는 안 들어감)
+    g.lineWidth = 2.8; g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = '#000';
+    var dn = false, lx = 0, ly = 0;
+    function pt(e){ var b = c.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; }
+    var hint = document.getElementById('wPadHint'); if (hint) hint.style.display = '';
+    c.onpointerdown = function(e){ if (hint) hint.style.display = 'none'; dn = true; try{ c.setPointerCapture(e.pointerId); }catch(_){} var p = pt(e); lx = p[0]; ly = p[1]; g.beginPath(); g.arc(lx, ly, 1.3, 0, 7); g.fillStyle = '#000'; g.fill(); hasInk = true; e.preventDefault(); };
+    c.onpointermove = function(e){ if (!dn) return; var p = pt(e); g.beginPath(); g.moveTo(lx, ly); g.lineTo(p[0], p[1]); g.stroke(); lx = p[0]; ly = p[1]; e.preventDefault(); };
+    c.onpointerup = c.onpointercancel = function(){ dn = false; };
+  }
+  function padData(){
+    var c = document.getElementById('wPad'), o = document.createElement('canvas'); o.width = 360; o.height = 140;
+    var g = o.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, 360, 140); g.drawImage(c, 0, 0, 360, 140);
+    return o.toDataURL('image/png');
+  }
+  function shrink(f){
+    return new Promise(function(res){
+      var fr = new FileReader();
+      fr.onload = function(){
+        var img = new Image();
+        img.onload = function(){
+          var m = 1280, w = img.width, h = img.height, r = Math.min(1, m / Math.max(w, h));
+          var c = document.createElement('canvas'); c.width = Math.round(w * r); c.height = Math.round(h * r);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', 0.72));
+        };
+        img.onerror = function(){ res(''); }; img.src = fr.result;
+      };
+      fr.readAsDataURL(f);
+    });
+  }
+  function go(ans, text, btn){
+    var n = document.getElementById('wName'); if (n) ls('dnWorkerName', n.value.trim());
+    if (!url){ document.getElementById('wErr').textContent = 'QR 설정 오류 (주소 없음)'; return; }
+    if (btn){ btn.disabled = true; btn.textContent = '⏳ …'; }
+    send(ans, text).then(function(){ photo = ''; sig = ''; mode = (ans === 'ok' || ans === 'unsure') ? 'hzask' : 'done'; draw(); window.scrollTo(0, 0); }, function(){ if (btn){ btn.disabled = false; btn.textContent = T('send'); } document.getElementById('wErr').textContent = T('fail'); });
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.title = '안전교육 참여';
+    var vp = document.createElement('meta'); vp.name = 'viewport'; vp.content = 'width=device-width,initial-scale=1'; document.head.appendChild(vp);
+    var st = document.createElement('style');
+    st.textContent = 'html,body{overflow-x:hidden;max-width:100%}body{margin:0;background:#0f172a;color:#fff;font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif}#wApp{max-width:520px;margin:0 auto;padding:14px 16px 40px;box-sizing:border-box}#wPad{box-sizing:border-box}' +
+      '.lg{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.lg button{background:#1e293b;color:#cbd5e1;border:1.5px solid #334155;border-radius:16px;padding:6px 10px;font-size:14px}.lg button.on{background:#facc15;color:#000;border-color:#facc15;font-weight:900}' +
+      '.tt{color:#fde047;font-weight:900;font-size:15px;margin-bottom:6px}h1{font-size:22px;line-height:1.35;margin:6px 0 16px}' +
+      '.b{display:block;width:100%;border:none;border-radius:14px;padding:18px;font-size:20px;font-weight:900;margin-bottom:10px;color:#fff;text-align:left}.b.ok{background:#16a34a}.b.un{background:#ca8a04}.b.qu{background:#2563eb}.b.hz{background:#dc2626}' +
+      '.rp{display:block;width:100%;background:#fffbeb;color:#000;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900;margin:8px 0 12px}' +
+      '.lk{display:block;width:100%;background:none;color:#94a3b8;border:none;padding:12px;font-size:15px}' +
+      'input,textarea{width:100%;box-sizing:border-box;background:#1e293b;color:#fff;border:1.5px solid #475569;border-radius:10px;padding:12px;font-size:16px;margin-bottom:10px;font-family:inherit}' +
+      '.ph{display:block;text-align:center;background:#1e293b;border:2px dashed #facc15;color:#fde047;border-radius:12px;padding:16px;font-size:17px;font-weight:900;margin-bottom:10px}.ph input{display:none}.phs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.phs .ph{padding:16px 6px}' +
+      '.b.hzy{background:#b91c1c;color:#fff}#wPad{width:100%;height:170px;background:#fff linear-gradient(to bottom,transparent 72%,#cbd5e1 72%,#cbd5e1 73%,transparent 73%);border-radius:12px;display:block;touch-action:none;margin-bottom:4px}.pa{font-size:17px;font-weight:900;color:#86efac;margin:0 0 6px}#wName.big{font-size:32px;font-weight:900;padding:20px 14px;letter-spacing:2px}.padw{position:relative}#wPadHint{position:absolute;left:0;right:0;top:38%;text-align:center;color:#94a3b8;font-size:18px;font-weight:800;pointer-events:none}' +
+      '#wPrev{display:none;width:100%;border-radius:10px;margin-bottom:10px}.ty{font-size:64px;text-align:center;margin-top:20px}.er{color:#fbbf24;font-weight:800;margin-top:6px}';
+    document.head.appendChild(st);
+    document.body.innerHTML = '<div id="wApp"></div>';
+    draw();
+    document.body.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.l){ lang = b.dataset.l; ls('dnWorkerLang', lang); draw(); return; }
+      if (b.dataset.a){ var n0 = document.getElementById('wName'); if (n0) ls('dnWorkerName', n0.value.trim()); pendAns = b.dataset.a; mode = 'sign'; draw(); window.scrollTo(0, 0); return; }   // v134.1: 대답 → 이름·서명
+      if (b.dataset.clr){ initPad(); return; }
+      if (b.dataset.sub){ var nm = (document.getElementById('wName') || {}).value || ''; if (!nm.trim() || !hasInk){ document.getElementById('wErr').textContent = T('need'); return; } sig = padData(); go(pendAns, '', b); return; }
+      if (b.dataset.m){ var n = document.getElementById('wName'); if (n) ls('dnWorkerName', n.value.trim()); mode = b.dataset.m; if (mode === 'home') photo = ''; draw(); window.scrollTo(0, 0); return; }
+      if (b.dataset.s){ var t = (document.getElementById('wText') || {}).value || ''; go(b.dataset.s, t.trim(), b); }
+    });
+    document.body.addEventListener('change', function(e){
+      if ((e.target.id !== 'wPhoto' && e.target.id !== 'wPhotoA') || !e.target.files[0]) return;
+      shrink(e.target.files[0]).then(function(d){ photo = d; var im = document.getElementById('wPrev'); if (im && d){ im.src = d; im.style.display = 'block'; } });
+    });
+  });
+})();
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>안전 다있네 — 로그인</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--bg:#05060a;--card:#0f172a;--line:#1e293b;--line2:#334155;--tx:#e2e8f0;--mu:#94a3b8;--dim:#64748b;--pu:#a78bfa;--go:#16a34a;--go2:#15803d;--er:#f87171;--ok:#4ade80;--yl:#fde047}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif}
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px 16px;background:radial-gradient(circle at 50% 0%,#1e1b4b 0,#05060a 60%)}
+.wrap{width:100%;max-width:400px}
+.brand{text-align:center;margin-bottom:18px}
+.brand h1{margin:0;font-size:30px;letter-spacing:1px}
+.brand p{margin:6px 0 0;color:var(--mu);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 22px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+label.f{display:block;font-size:13px;color:var(--mu);margin:0 0 6px}
+.in{position:relative;margin-bottom:14px}
+.in input{width:100%;padding:13px 14px;border-radius:10px;border:2px solid var(--line2);background:#1e293b;color:#fff;font-size:16px;outline:none}
+.in input:focus{border-color:var(--pu)}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--mu);font-size:18px;cursor:pointer;padding:8px}
+.keep{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mu);margin:2px 0 16px;cursor:pointer;user-select:none}
+.keep input{width:18px;height:18px;accent-color:var(--go)}
+.btn{width:100%;background:var(--go);color:#fff;border:0;border-radius:10px;padding:14px;font-size:17px;font-weight:bold;cursor:pointer}
+.btn:hover{background:var(--go2)}.btn:disabled{opacity:.6;cursor:wait}
+.btn.sub{background:#1e293b;border:1px solid var(--line2);font-size:14px;padding:11px;margin-top:8px}
+.msg{min-height:20px;margin-top:12px;font-size:14px;color:var(--er);line-height:1.5;text-align:center}
+.msg.ok{color:var(--ok)}
+.links{display:flex;justify-content:space-between;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:13px}
+.links a{color:var(--dim);text-decoration:none;cursor:pointer}.links a:hover{color:var(--tx)}
+.foot{text-align:center;color:var(--dim);font-size:12px;margin-top:16px;line-height:1.6}
+.load{text-align:center;padding:16px 4px}
+.spin{width:46px;height:46px;border:4px solid var(--line2);border-top-color:var(--pu);border-radius:50%;margin:4px auto 16px;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.load b{font-size:16px}.load p{color:var(--mu);font-size:13px;margin:8px 0 0}
+.up{margin-top:14px;padding:12px;border:1px dashed #a16207;border-radius:10px;background:#1c1917;color:var(--yl);font-size:13px;line-height:1.6;display:none}
+.setup{display:none}.setup textarea{width:100%;height:70px;border-radius:10px;border:2px solid var(--line2);background:#1e293b;color:#fff;padding:10px;font-size:13px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><h1>🔊 안전 다있네</h1><p>현장 안전활동 통합 프로그램 · SafeTree</p></div>
+
+  <div class="card" id="vLogin" hidden>
+    <form id="fLogin" autocomplete="on">
+      <label class="f" for="uid">아이디</label>
+      <div class="in"><input id="uid" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+      <label class="f" for="upw">비밀번호</label>
+      <div class="in"><input id="upw" name="password" type="password" autocomplete="current-password" required><button type="button" class="eye" id="eye" aria-label="비밀번호 보기">👁</button></div>
+      <label class="keep"><input type="checkbox" id="keep" checked> 이 기기에서 로그인 유지 (30일)</label>
+      <button class="btn" id="go" type="submit">로그인</button>
+    </form>
+    <div class="up" id="upBox">📦 <b>관리자: 새 버전 올리기</b><br>관리자 아이디로 로그인하면, 고른 <b>app_core</b> 파일을 서버(구글 드라이브)에 올립니다.<br><button type="button" class="btn sub" id="upPick">📂 app_core 파일 고르기</button><div id="upName" style="margin-top:6px"></div></div>
+    <div class="msg" id="msg"></div>
+    <div class="links"><a id="ask">📩 이용 신청 · 문의</a><a id="upTog">관리자</a></div>
+  </div>
+
+  <div class="card" id="vLoad" hidden><div class="load"><div class="spin"></div><b id="ldT">확인 중…</b><p id="ldS"></p></div></div>
+
+  <div class="card setup" id="vSetup">
+    <b>⚙️ 로그인 서버 주소 넣기 (관리자 처음 한 번)</b>
+    <p style="color:var(--mu);font-size:13px;line-height:1.6">구글 Apps Script 「배포 → 웹 앱」 주소(…/exec)를 붙여넣으세요.<br>※ 회원에게 나눠 주기 전에는 이 파일의 <b>AUTH_URL</b> 줄에 주소를 넣어 두세요.</p>
+    <textarea id="suUrl" placeholder="https://script.google.com/macros/s/…/exec"></textarea>
+    <button class="btn" id="suGo" type="button" style="margin-top:10px">저장하고 시작</button>
+    <div class="msg" id="suMsg"></div>
+  </div>
+
+  <div class="foot">문의 cys9228@naver.com · © SafeTree 세이프트리<br>무단 복제·배포를 금지합니다.</div>
+</div>
+<input type="file" id="upFile" accept=".html,.htm,text/html" hidden>
+
+<script>
+/* ============================================================
+   안전 다있네 — 공개 로그인 화면 (v145.0)
+   이 파일에는 프로그램 본체가 없습니다. 본체는 로그인 서버(구글 드라이브)에 있고,
+   아이디·비밀번호·이용권이 확인된 사람에게만 보내집니다.
+   ▼ 서버를 옮길 때(구글 → 개인 서버)는 이 한 줄만 바꾸면 됩니다.
+   ============================================================ */
+var AUTH_URL = 'https://script.google.com/macros/s/여기에_로그인서버_배포ID/exec';
+
+(function(){
+  var CORE_MARK = 'DN_CORE_GUARD_v1', CONTACT = 'cys9228@naver.com';
+  var $ = function(id){ return document.getElementById(id); };
+  function ls(k, v){ try{ if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){} return null; }
+  function ss(k, v){ try{ if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); }catch(e){} return null; }
+  var url = /여기에_|^\s*$/.test(AUTH_URL) ? (ls('dnAuthUrl') || '') : AUTH_URL.trim();
+  var upMode = false, upHtml = '', upFileName = '';
+
+  /* ---- 기기 번호 · 이름 ---- */
+  var dev = ls('dnDev');
+  if (!dev){ dev = 'd' + Date.now().toString(36) + Array.from(crypto.getRandomValues(new Uint8Array(10)), function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); ls('dnDev', dev); }
+  function devName(){
+    var u = navigator.userAgent, os = /Android/.test(u) ? '안드로이드' : /iPhone|iPad/.test(u) ? '아이폰/아이패드' : /Windows/.test(u) ? '윈도우 PC' : /Mac/.test(u) ? '맥' : '기기';
+    var br = /Edg\//.test(u) ? '엣지' : /SamsungBrowser/.test(u) ? '삼성인터넷' : /Whale/.test(u) ? '웨일' : /Chrome\//.test(u) ? '크롬' : /Safari\//.test(u) ? '사파리' : /Firefox/.test(u) ? '파이어폭스' : '브라우저';
+    return os + ' · ' + br;
+  }
+  function token(){ return ls('dnAuthTok') || ss('dnAuthTok') || ''; }
+  function setToken(t, keep){ ls('dnAuthTok', null); ss('dnAuthTok', null); if (t){ if (keep) ls('dnAuthTok', t); else ss('dnAuthTok', t); } }
+
+  /* ---- 화면 ---- */
+  function view(v){ ['vLogin', 'vLoad', 'vSetup'].forEach(function(id){ $(id).hidden = id !== v; }); $('vSetup').style.display = v === 'vSetup' ? 'block' : 'none'; }
+  function msg(t, ok){ var m = $('msg'); m.textContent = t || ''; m.className = 'msg' + (ok ? ' ok' : ''); }
+  function loading(t, s){ view('vLoad'); $('ldT').textContent = t; $('ldS').textContent = s || ''; }
+  function showLogin(t, ok){ view('vLogin'); msg(t, ok); $('go').disabled = false; setTimeout(function(){ ($('uid').value ? $('upw') : $('uid')).focus(); }, 50); }
+
+  /* ---- 서버 ---- */
+  function api(o){
+    return fetch(url, { method:'POST', body:JSON.stringify(o), redirect:'follow', cache:'no-store' })
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function(t){ try{ return JSON.parse(t); }catch(e){ throw new Error('서버 응답이 올바르지 않습니다 (웹 앱 배포의 액세스가 「모든 사용자」인지 확인)'); } });
+  }
+
+  /* ---- 본체 보관 (이 기기, 암호화) — 서버가 주는 열쇠 없이는 열 수 없음 ---- */
+  var DB = 'dnCore', ST = 'c';
+  function idb(){ return new Promise(function(res, rej){ if (!window.indexedDB) return rej(new Error('no idb')); var q = indexedDB.open(DB, 1); q.onupgradeneeded = function(){ q.result.createObjectStore(ST); }; q.onsuccess = function(){ res(q.result); }; q.onerror = function(){ rej(q.error); }; }); }
+  function idbGet(){ return idb().then(function(db){ return new Promise(function(res){ var r = db.transaction(ST).objectStore(ST).get('core'); r.onsuccess = function(){ res(r.result || null); }; r.onerror = function(){ res(null); }; }); }).catch(function(){ return null; }); }
+  function idbPut(v){ return idb().then(function(db){ return new Promise(function(res){ var t = db.transaction(ST, 'readwrite'); t.objectStore(ST).put(v, 'core'); t.oncomplete = function(){ res(true); }; t.onerror = function(){ res(false); }; }); }).catch(function(){ return false; }); }
+  function idbDel(){ return idb().then(function(db){ return new Promise(function(res){ var t = db.transaction(ST, 'readwrite'); t.objectStore(ST).delete('core'); t.oncomplete = function(){ res(true); }; t.onerror = function(){ res(false); }; }); }).catch(function(){ return false; }); }
+  function keyOf(b64){ var raw = Uint8Array.from(atob(b64), function(c){ return c.charCodeAt(0); }); return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']); }
+  function encStore(ver, key, html){
+    if (!window.crypto || !crypto.subtle || !key) return Promise.resolve();
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    return keyOf(key).then(function(k){ return crypto.subtle.encrypt({ name:'AES-GCM', iv:iv }, k, new TextEncoder().encode(html)); })
+      .then(function(buf){ return idbPut({ ver:ver, iv:iv, data:buf, t:Date.now() }); }).catch(function(){});
+  }
+  function decLoad(c, key){
+    if (!c || !key || !window.crypto || !crypto.subtle) return Promise.resolve(null);
+    return keyOf(key).then(function(k){ return crypto.subtle.decrypt({ name:'AES-GCM', iv:c.iv }, k, c.data); })
+      .then(function(buf){ return new TextDecoder().decode(buf); }).catch(function(){ return null; });
+  }
+
+  /* ---- 본체 실행 ---- */
+  function run(r, html){
+    if (!html || html.indexOf(CORE_MARK) < 0){ showLogin('본체 파일이 올바르지 않습니다. 관리자에게 문의하세요.'); return; }
+    var boot = { url:url, token:token(), dev:dev, user:r.user, lic:r.lic, ver:r.ver, t:Date.now() };
+    var inj = '<script>window.__DN_BOOT=' + JSON.stringify(boot).replace(/</g, '\\u003c') + ';<\/script>';
+    var i = html.indexOf('<!--DN_BOOT-->');
+    if (i < 0){ var h = html.search(/<head[^>]*>/i); i = h < 0 ? 0 : html.indexOf('>', h) + 1; }
+    html = html.slice(0, i) + inj + html.slice(i);
+    setTimeout(function(){ document.open(); document.write(html); document.close(); }, 0);
+  }
+  function launch(r, cached, retried){
+    if (r.nocore){
+      if (r.user && r.user.role === '관리자'){ showLogin(''); upToggle(true); msg('서버에 아직 본체가 없습니다. 아래에서 app_core 파일을 골라 올려 주세요.'); }
+      else showLogin('프로그램 준비 중입니다. 관리자에게 문의하세요.');
+      return;
+    }
+    if (r.html){
+      loading('프로그램 여는 중…', '');
+      return encStore(r.ver, r.key, r.html).then(function(){ run(r, r.html); });
+    }
+    loading('프로그램 여는 중…', '');
+    return decLoad(cached, r.key).then(function(html){
+      if (html) return run(r, html);
+      if (retried){ showLogin('본체를 열지 못했습니다. 다시 로그인해 주세요.'); return; }
+      return idbDel().then(function(){ loading('프로그램 받는 중…', '처음 한 번은 10~30초 걸릴 수 있습니다'); return api({ a:'boot', token:token(), dev:dev, have:'' }); })
+        .then(function(r2){ if (r2 && r2.ok) return launch(r2, null, true); fail(r2); });
+    });
+  }
+  function fail(r){
+    if (r && /^(SESSION|NOUSER)$/.test(r.code)) setToken('');
+    if (r && /^(STOP|EXPIRED)$/.test(r.code)) setToken('');
+    showLogin((r && r.msg) || '로그인하지 못했습니다.');
+  }
+  function netFail(e){ showLogin('서버에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 해 주세요.' + (e && e.message && /응답/.test(e.message) ? '\n' + e.message : '')); }
+
+  /* ---- 시작 ---- */
+  function start(){
+    if (!url){ view('vSetup'); return; }
+    var t = token();
+    if (!t){ showLogin(''); return; }
+    loading('로그인 확인 중…', '');
+    idbGet().then(function(c){
+      var slow = setTimeout(function(){ $('ldS').textContent = '처음 열 때나 새 버전이 있을 때는 10~30초 걸릴 수 있습니다'; }, 3000);
+      return api({ a:'boot', token:t, dev:dev, have:c && c.ver || '' }).then(function(r){
+        clearTimeout(slow);
+        if (r && r.ok) return launch(r, c);
+        fail(r);
+      });
+    }).catch(netFail);
+  }
+
+  $('fLogin').onsubmit = function(e){
+    e.preventDefault();
+    var id = $('uid').value.trim(), pw = $('upw').value;
+    if (!id || !pw){ msg('아이디와 비밀번호를 넣어 주세요.'); return; }
+    if (upMode && !upHtml){ msg('먼저 올릴 app_core 파일을 골라 주세요.'); return; }
+    $('go').disabled = true; msg('');
+    loading('로그인 중…', '');
+    idbGet().then(function(c){
+      var slow = setTimeout(function(){ $('ldS').textContent = '프로그램을 받는 중입니다. 처음에는 10~30초 걸릴 수 있습니다'; }, 3000);
+      return api({ a:'login', id:id, pw:pw, dev:dev, devName:devName(), have:c && c.ver || '' }).then(function(r){
+        clearTimeout(slow);
+        if (!r || !r.ok) return fail(r);
+        setToken(r.token, $('keep').checked); $('upw').value = '';
+        if (upMode && upHtml) return doUpload(r);
+        if (r.kicked) $('ldS').textContent = '같은 아이디로 쓰던 다른 기기 ' + r.kicked + '대는 로그아웃되었습니다';
+        return launch(r, c);
+      });
+    }).catch(netFail);
+  };
+
+  /* ---- 관리자: 새 버전 올리기 ---- */
+  function upToggle(on){ upMode = on == null ? !upMode : on; $('upBox').style.display = upMode ? 'block' : 'none'; $('go').textContent = upMode ? '로그인하고 올리기' : '로그인'; }
+  $('upTog').onclick = function(){ upToggle(); };
+  $('upPick').onclick = function(){ $('upFile').click(); };
+  $('upFile').onchange = function(){
+    var f = this.files && this.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function(){ var t = String(rd.result || '');
+      if (t.indexOf(CORE_MARK) < 0){ upHtml = ''; $('upName').textContent = '❌ 로그인 보호용 본체(app_core) 파일이 아닙니다.'; return; }
+      upHtml = t; upFileName = f.name; $('upName').textContent = '✅ ' + f.name + ' (' + Math.round(f.size / 1024) + ' KB)'; };
+    rd.readAsText(f, 'utf-8');
+  };
+  function doUpload(r){
+    if (!r.user || r.user.role !== '관리자'){ showLogin('관리자 계정만 새 버전을 올릴 수 있습니다.'); return; }
+    loading('새 버전 올리는 중…', '1~2분 걸릴 수 있습니다. 창을 닫지 마세요.');
+    return api({ a:'admin', token:token(), dev:dev, op:'uploadCore', data:{ html:upHtml, name:upFileName } }).then(function(d){
+      if (!d || !d.ok){ showLogin('❌ ' + ((d && d.msg) || '올리지 못했습니다')); return; }
+      upHtml = ''; upToggle(false); $('upName').textContent = '';
+      loading('✅ 올렸습니다 — 새 버전으로 여는 중…', '');
+      return api({ a:'boot', token:token(), dev:dev, have:'' }).then(function(r2){ if (r2 && r2.ok) return launch(r2, null, true); fail(r2); });
+    }).catch(netFail);
+  }
+
+  $('eye').onclick = function(){ var p = $('upw'); p.type = p.type === 'password' ? 'text' : 'password'; };
+  $('ask').onclick = function(){
+    var t = '[안전 다있네] 이용 신청합니다.\n회사명: \n현장명: \n담당자 연락처: \n원하는 요금제: ';
+    var mob = /Android|iPhone|iPad/.test(navigator.userAgent);
+    if (mob) location.href = 'sms:?&body=' + encodeURIComponent(t);
+    else location.href = 'mailto:' + CONTACT + '?subject=' + encodeURIComponent('[안전 다있네] 이용 신청') + '&body=' + encodeURIComponent(t);
+  };
+  $('suGo').onclick = function(){
+    var u = $('suUrl').value.trim();
+    if (!/^https?:\/\/\S+$/.test(u)){ $('suMsg').textContent = '주소 형식이 맞지 않습니다.'; return; }
+    $('suMsg').className = 'msg ok'; $('suMsg').textContent = '연결 확인 중…';
+    fetch(u + (u.indexOf('?') < 0 ? '?' : '&') + 'a=ping', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(d){
+      if (!d || !d.ok) throw new Error();
+      ls('dnAuthUrl', u); url = u; start();
+    }).catch(function(){ $('suMsg').className = 'msg'; $('suMsg').textContent = '이 주소에서 로그인 서버가 응답하지 않습니다. 배포 주소(/exec)와 액세스 「모든 사용자」를 확인하세요.'; });
+  };
+
+  start();
+})();
+</script>
+</body>
+</html>
