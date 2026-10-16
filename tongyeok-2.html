@@ -190,7 +190,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <div class="gd" style="margin-top:10px"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
   <div class="micw"><button id="mic"><span>🎙️</span>눌러서 시작</button></div>
   <div id="st"></div>
-  <button id="ptt"><span class="tt"><svg class="wt" viewBox="0 0 40 64" aria-hidden="true"><rect x="25" y="1" width="5" height="18" rx="2" fill="#facc15"/><rect x="6" y="15" width="28" height="47" rx="6" fill="#facc15"/><rect x="11" y="21" width="18" height="11" rx="2" fill="#111827"/><g fill="#111827"><rect x="11" y="37" width="18" height="2.5" rx="1.2"/><rect x="11" y="42" width="18" height="2.5" rx="1.2"/><rect x="11" y="47" width="18" height="2.5" rx="1.2"/></g><circle cx="20" cy="55.5" r="3" fill="#dc2626"/></svg>무전기 방식</span><small>누르고 있는 동안만 말하기<br>손 떼면 방송</small></button>
+  <button id="ptt" hidden><span class="tt"><svg class="wt" viewBox="0 0 40 64" aria-hidden="true"><rect x="25" y="1" width="5" height="18" rx="2" fill="#facc15"/><rect x="6" y="15" width="28" height="47" rx="6" fill="#facc15"/><rect x="11" y="21" width="18" height="11" rx="2" fill="#111827"/><g fill="#111827"><rect x="11" y="37" width="18" height="2.5" rx="1.2"/><rect x="11" y="42" width="18" height="2.5" rx="1.2"/><rect x="11" y="47" width="18" height="2.5" rx="1.2"/></g><circle cx="20" cy="55.5" r="3" fill="#dc2626"/></svg>무전기 방식</span><small>누르고 있는 동안만 말하기<br>손 떼면 방송</small></button>
   <div class="out" hidden><div id="srcT">한국어로 말하면 여기에 나옵니다</div><div id="dstT"></div></div>
   <div class="spd" hidden>
     <div class="r"><span>말하기 속도</span><span id="rv"></span></div>
@@ -424,6 +424,9 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   }
   var MALE_RE = /\bmale\b|\bman\b|남성|남자|david|mark|daniel|james|guy|aaron|fred|rishi|thomas|george|paul|ravi|alex|oliver|arthur|reed|rocko|eddy|grandpa|minsu|injoon|hyunsu/i;
   var FEMALE_RE = /female|woman|여성|여자|zira|samantha|karen|moira|tessa|victoria|susan|hazel|heami|yuna|sora|kyoko|ting-?ting|mei-?jia|grandma|shelley|sandy|flo/i;
+  /* 남성 = 중저음 앵커톤 (또렷하고 안정된 낮은 목소리) */
+  var MALE_PITCH = 0.85;              // 남성 목소리가 있을 때: 조금 낮게
+  var MALE_PITCH_FROM_FEMALE = 0.72;  // 남성 목소리가 없어 여성 목소리를 낮출 때 (너무 낮추면 기계음처럼 들림)
   function pickVoice(L){
     if (!voices.length) loadV();
     var t = L.t.toLowerCase(), p = t.split('-')[0], alt = p === 'he' ? 'iw' : p === 'fil' ? 'tl' : p;
@@ -433,11 +436,11 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     if (!list.length) return null;
     var want = GD === 'm' ? MALE_RE : FEMALE_RE, other = GD === 'm' ? FEMALE_RE : MALE_RE;
     var hit = list.filter(function(v){ return want.test(v.name) && !other.test(v.name); })[0];
-    if (hit) return { v:hit, pitch:1 };
+    if (hit) return { v:hit, pitch: GD === 'm' ? MALE_PITCH : 1 };
     // 이 폰에 그 성별 목소리가 없으면: 남성은 같은 목소리를 낮게, 여성은 보통 높이로
     var base = list[0];
     var baseIsMale = MALE_RE.test(base.name) && !FEMALE_RE.test(base.name);
-    if (GD === 'm') return { v:base, pitch: baseIsMale ? 1 : 0.6 };
+    if (GD === 'm') return { v:base, pitch: baseIsMale ? MALE_PITCH : MALE_PITCH_FROM_FEMALE };
     return { v:base, pitch: baseIsMale ? 1.5 : 1 };
   }
   function chunks(s, max){
@@ -475,7 +478,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     return new Promise(function(res){
       var done = false, fin = function(ok){ if (!done){ done = true; res(ok); } };
       AU.onended = function(){ fin(true); }; AU.onerror = function(){ fin(false); };
-      AU.src = u; try{ var low = GD === 'm'; AU.preservesPitch = !low; AU.mozPreservesPitch = !low; AU.webkitPreservesPitch = !low; AU.playbackRate = low ? rate * 0.8 : rate; }catch(e){}
+      AU.src = u; try{ var low = GD === 'm'; AU.preservesPitch = !low; AU.mozPreservesPitch = !low; AU.webkitPreservesPitch = !low; AU.playbackRate = low ? rate * 0.86 : rate; }catch(e){}
       var p = AU.play(); if (p && p.catch) p.catch(function(){ fin(false); });
       setTimeout(function(){ fin(true); }, 30000);
     });
@@ -492,7 +495,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   function speak(text, L){
     var pv = pickVoice(L);
     if (pv) return speakSynth(text, L, pv.v, pv.pitch);
-    return speakGoogle(text, L).then(function(ok){ if (!ok) return speakSynth(text, L, null, GD === 'm' ? 0.6 : 1); });
+    return speakGoogle(text, L).then(function(ok){ if (!ok) return speakSynth(text, L, null, GD === 'm' ? MALE_PITCH_FROM_FEMALE : 1); });
   }
   function unlock(){
     try{ if (SS){ var u = new SpeechSynthesisUtterance(' '); u.volume = 0; SS.speak(u); } }catch(e){}
