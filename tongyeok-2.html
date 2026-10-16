@@ -7,8 +7,16 @@
 <meta name="theme-color" content="#e8ecfb">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="통역방송">
+<meta name="apple-mobile-web-app-title" content="통역시스템">
 <title>안전교육 통역시스템</title>
+<meta name="description" content="한국어로 말하면 50개 언어로 번역해서 블루투스 스피커로 방송합니다.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="안전교육 통역시스템">
+<meta property="og:description" content="한국어로 말하면 50개 언어로 번역해서 블루투스 스피커로 방송합니다. (갤럭시는 크롬, 아이폰은 사파리로 열어 주세요)">
+<meta property="og:url" content="https://cys9228.github.io/multilang-safety/tongyeok-2.html">
+<meta property="og:image" content="https://cys9228.github.io/multilang-safety/tongyeok-og.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="400">
 <style>
 :root{--bg:#e8ecfb;--tx:#111827;--mu:#4b5563;--bl:#3b4ef0;--rd:#e11d48;--wh:#fff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -47,6 +55,8 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 .lg .opt{font-weight:600;font-size:13px;color:#94a3b8}
 .lg .bad{border-color:#e11d48!important;background:#fff1f2!important}
 .back2{display:block;margin:18px auto 0;background:none;border:0;color:var(--mu);font-size:16px;text-decoration:underline;cursor:pointer}
+.kshare{display:block;width:100%;margin-top:14px;background:#fee500;color:#191919;border:0;border-radius:14px;padding:16px;font-size:19px;font-weight:900;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#111827;color:#fff;padding:14px 18px;border-radius:12px;font-size:16px;font-weight:700;z-index:9;max-width:90vw;text-align:center;line-height:1.5}
 /* 언어 목록 */
 .list{position:fixed;inset:0;background:var(--bg);z-index:5;display:flex;flex-direction:column}
 .list .hd{max-width:520px;width:100%;margin:0 auto;padding:18px 22px 10px}
@@ -65,10 +75,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 #mic.on{background:var(--rd);box-shadow:0 0 0 12px rgba(225,29,72,.2);animation:pl 1.4s infinite}
 @keyframes pl{50%{box-shadow:0 0 0 26px rgba(225,29,72,.06)}}
 .mlab{text-align:center;color:var(--mu);font-size:14px;font-weight:700;margin-top:-6px;margin-bottom:6px}
-#ptt{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:166px;width:100%;margin:16px 0 4px;padding:20px 10px;border-radius:16px;border:0;background:#111827;color:#fff;font-size:40px;font-weight:900;line-height:1.3;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#ptt{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:166px;width:100%;margin:16px 0 4px;padding:20px 10px;border-radius:16px;border:0;background:#111827;color:#fff;font-size:min(40px, 10vw);font-weight:900;line-height:1.3;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #ptt .tt{display:flex;align-items:center;gap:12px}
 #ptt .wt{width:34px;height:54px;flex:none}
-#ptt small{display:block;margin-top:10px;font-size:28px;line-height:1.35;font-weight:600;opacity:.75}
+#ptt small{display:block;margin-top:10px;font-size:min(26px, 6vw);white-space:nowrap;line-height:1.35;font-weight:600;opacity:.75}
 #ptt.on{background:var(--rd);box-shadow:0 0 0 6px rgba(225,29,72,.2)}
 #st{text-align:center;font-size:60px;font-weight:900;color:var(--bl);min-height:28px;line-height:1.2;white-space:pre;overflow:hidden;margin:6px 0 10px}
 .out{background:var(--wh);border-radius:16px;padding:16px;margin:20px 0;min-height:120px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
@@ -82,6 +92,32 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 </style>
 </head>
 <body>
+<!-- 카톡·네이버 등 앱 안 브라우저로 열리면 → 크롬(아이폰은 사파리)으로 자동으로 다시 열기
+     (앱 안 브라우저는 마이크 허용을 기억하지 못해서 말할 때마다 허용 창이 뜸) -->
+<div id="inapp" hidden style="position:fixed;inset:0;z-index:20;background:#e8ecfb;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:system-ui,'Apple SD Gothic Neo',sans-serif">
+  <div style="font-size:26px;font-weight:900;line-height:1.4;margin-bottom:14px">크롬으로 열어 주세요</div>
+  <div style="font-size:17px;color:#4b5563;line-height:1.6;margin-bottom:26px">카톡 안에서 열면 마이크 허용을<br>계속 다시 물어봅니다.</div>
+  <a id="inappGo" href="#" style="display:block;width:100%;max-width:360px;background:#3b4ef0;color:#fff;text-decoration:none;border-radius:14px;padding:20px;font-size:21px;font-weight:900">크롬으로 열기</a>
+  <div style="font-size:14px;color:#6b7280;line-height:1.6;margin-top:18px">안 되면 오른쪽 위(또는 아래) <b>⋮</b> 메뉴 →<br><b>다른 브라우저로 열기</b>를 누르세요.</div>
+</div>
+<script>
+(function(){
+  var ua = navigator.userAgent || '';
+  var inApp = /KAKAOTALK|NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp|SamsungBrowser\/.*CrossApp/i.test(ua);
+  if (!inApp) return;
+  var url = location.href, android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua);
+  var go;
+  if (/KAKAOTALK/i.test(ua)) go = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+  else if (android) go = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+  else go = url;
+  document.getElementById('inapp').hidden = false;
+  var a = document.getElementById('inappGo');
+  a.href = go;
+  if (ios) a.textContent = '사파리로 열기';
+  if (ios) document.querySelector('#inapp div').textContent = '사파리로 열어 주세요';
+  setTimeout(function(){ location.href = go; }, 300);   // 자동으로 바로 이동
+})();
+</script>
 
 <!-- ⓪ 로그인 -->
 <div class="scr" id="s0" hidden>
@@ -95,6 +131,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     <button class="ok" id="lgo" type="submit">로그인</button>
     <div class="msg" id="lmsg"></div>
     <button class="sub2" id="toSign" type="button">회원가입</button>
+    <button class="kshare" data-share type="button">💬 카톡으로 앱 보내기</button>
   </form>
   <div class="lg" id="setup" hidden style="margin-top:14px">
     <label for="srv">⚙️ 서버 주소 (관리자 처음 한 번)</label>
@@ -141,6 +178,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <div class="gd"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
   <div class="ask">이 언어로 방송하시겠습니까?</div>
   <div class="btns"><button class="ok" id="go">확인</button><button class="gl" id="pick1" aria-label="언어 바꾸기">🌐</button></div>
+  <button class="kshare" data-share type="button">💬 카톡으로 앱 보내기</button>
   <button class="out2" id="logout" type="button">로그아웃</button>
 </div>
 
@@ -165,6 +203,8 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     <div class="e"><span>빨리 방송</span><span>길게 기다림</span></div>
   </div>
 </div>
+
+<div class="toast" id="toast" hidden></div>
 
 <!-- 언어 목록 -->
 <div class="list" id="lst" hidden>
@@ -724,6 +764,22 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   pB.addEventListener('pointerup', pttEnd);
   pB.addEventListener('pointercancel', pttEnd);
   pB.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  /* ---------- 💬 카톡으로 앱 보내기 ---------- */
+  function toast(t){ var el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ el.hidden = true; }, 3500); }
+  function appUrl(){ return location.protocol === 'file:' ? 'https://cys9228.github.io/multilang-safety/tongyeok-2.html' : location.origin + location.pathname; }
+  function shareApp(){
+    var url = appUrl();
+    var text = '[안전교육 통역시스템]\n한국어로 말하면 외국인 근로자 언어로 번역해서 블루투스 스피커로 방송해 줍니다.\n▶ 갤럭시는 크롬, 아이폰은 사파리로 열어 주세요.';
+    if (navigator.share){   // 휴대폰 공유 창 → 카카오톡 선택
+      navigator.share({ title:'안전교육 통역시스템', text:text, url:url }).catch(function(){});
+      return;
+    }
+    var all = text + '\n' + url;
+    function done(){ toast('📋 주소가 복사되었습니다.\n카톡 대화방에 붙여넣기 하세요.'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(all).then(done, function(){ prompt('아래 내용을 복사해서 카톡에 붙여넣기 하세요', all); });
+    else prompt('아래 내용을 복사해서 카톡에 붙여넣기 하세요', all);
+  }
+  [].forEach.call(document.querySelectorAll('[data-share]'), function(b){ b.onclick = shareApp; });
   boot();
 })();
 </script>
