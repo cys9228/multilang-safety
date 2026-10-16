@@ -70,7 +70,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 #ptt .wt{width:34px;height:54px;flex:none}
 #ptt small{display:block;margin-top:10px;font-size:28px;line-height:1.35;font-weight:600;opacity:.75}
 #ptt.on{background:var(--rd);box-shadow:0 0 0 6px rgba(225,29,72,.2)}
-#st{text-align:center;font-size:100px;font-weight:900;color:var(--bl);min-height:28px;line-height:1.15;overflow-wrap:anywhere;margin:6px 0 10px}
+#st{text-align:center;font-size:60px;font-weight:900;color:var(--bl);min-height:28px;line-height:1.2;white-space:pre;overflow:hidden;margin:6px 0 10px}
 .out{background:var(--wh);border-radius:16px;padding:16px;margin:20px 0;min-height:120px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 #srcT{color:var(--mu);font-size:16px;line-height:1.5;min-height:22px}
 #dstT{font-size:24px;font-weight:900;line-height:1.45;margin-top:8px;word-break:break-word}
@@ -468,7 +468,20 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   var STT_URL = '', USE_STT = false;   // 음성 인식은 휴대폰의 무료 구글 음성 인식 사용 (서버 비용 없음)
 
   var on = false, busy = false, wl = null;
-  function setSt(t){ $('st').textContent = t; }
+  /* 안내 글자: 두 줄로 나누고, 화면 폭에 꽉 차게 최대한 크게 */
+  function setSt(t){
+    var el = $('st');
+    t = String(t || '').replace(' 말씀하세요', '\n말씀하세요').replace(' — ', '\n').replace(' 말이 끝나면', '\n말이 끝나면');
+    el.textContent = t;
+    fitSt();
+  }
+  function fitSt(){
+    var el = $('st'); if (!el.textContent){ return; }
+    var w = el.clientWidth || (Math.min(window.innerWidth, 520) - 44), size = 110;
+    el.style.fontSize = size + 'px';
+    while (size > 18 && el.scrollWidth > w){ size -= 2; el.style.fontSize = size + 'px'; }
+  }
+  window.addEventListener('resize', fitSt);
   function micUI(){ $('mic').className = on ? 'on' : ''; $('mic').innerHTML = on ? '<span>⏹️</span>눌러서 멈춤' : '<span>🎙️</span>눌러서 시작'; if (!on) setSt(''); }
   function wake(o){ try{ if (o && navigator.wakeLock) navigator.wakeLock.request('screen').then(function(w){ wl = w; }).catch(function(){}); else if (!o && wl){ wl.release(); wl = null; } }catch(e){} }
   document.addEventListener('visibilitychange', function(){ if (on && document.visibilityState === 'visible') wake(true); });
