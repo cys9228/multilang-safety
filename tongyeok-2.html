@@ -337,6 +337,11 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   }
   function boot(){
     if (!SERVER){ toLogin(''); $('setup').hidden = false; return; }
+    if (/[?&]join=1/.test(location.search)){   // 카톡으로 받은 링크 → 저장된 로그인 지우고 회원가입 화면
+      setToken(''); setWho(null);
+      try{ history.replaceState(null, '', location.pathname); }catch(_){}
+      badF('', ''); show('s3'); return;
+    }
     var t = token();
     if (!t){ toLogin(''); return; }
     show('s1');   // 저장된 로그인으로 바로 시작하고, 뒤에서 확인
@@ -789,7 +794,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   function toast(t){ var el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ el.hidden = true; }, 3500); }
   function appUrl(){ return location.protocol === 'file:' ? 'https://cys9228.github.io/multilang-safety/tongyeok-2.html' : location.origin + location.pathname; }
   function shareApp(){
-    var url = appUrl();
+    var url = appUrl() + '?join=1';
     var text = '[안전교육 통역시스템]\n한국어로 말하면 외국인 근로자 언어로 번역해서 블루투스 스피커로 방송해 줍니다.\n▶ 갤럭시는 크롬, 아이폰은 사파리로 열어 주세요.';
     if (navigator.share){   // 휴대폰 공유 창 → 카카오톡 선택
       navigator.share({ title:'안전교육 통역시스템', text:text, url:url }).catch(function(){});
