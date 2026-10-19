@@ -96,6 +96,9 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 /* 📋 교육 기록 화면 */
 .lg input[type=date],.lg select{width:100%;padding:13px;border-radius:12px;border:2px solid #d6dcf5;font-size:18px;margin-bottom:14px;background:#f8f9ff;color:var(--tx);font-family:inherit}
 .recb{display:block;width:100%;margin-top:14px;background:#111827;color:#fff;border:0;border-radius:14px;padding:16px;font-size:19px;font-weight:900;cursor:pointer}
+.seg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:0 0 14px}
+.seg button{background:#fff;border:2px solid #d6dcf5;border-radius:12px;padding:12px 4px;font-size:17px;font-weight:900;color:var(--tx);cursor:pointer}
+.seg button.on{background:var(--bl);border-color:var(--bl);color:#fff}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 14px}
 .chips button{background:#fff;border:2px solid #d6dcf5;border-radius:999px;padding:7px 12px;font-size:14px;font-weight:800;color:var(--tx);cursor:pointer}
 .chips button.on{background:var(--bl);border-color:var(--bl);color:#fff}
@@ -261,7 +264,9 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <h1 style="margin:0 0 6px;font-size:28px">📋 교육 기록 · 증빙</h1>
   <p class="sub" style="margin:0 0 18px">방송한 내용이 이 휴대폰에 자동으로 쌓입니다</p>
   <div class="lg">
-    <label for="rDay">교육 날짜</label>
+    <label>출력 기간</label>
+    <div class="seg" id="rMode"><button type="button" data-m="d">하루</button><button type="button" data-m="w">일주일</button><button type="button" data-m="m">한 달</button></div>
+    <label for="rDay">날짜 <span class="opt">(일주일·한 달은 이 날짜가 들어 있는 주·달)</span></label>
     <input type="date" id="rDay">
     <div class="chips" id="rDays"></div>
     <label for="rKind">교육 구분</label>
@@ -277,7 +282,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <button class="ok" id="rXls" type="button">📊 엑셀로 받기 (편집 가능)</button>
   <button class="sub2" id="rPrint" type="button">🖨️ 바로 인쇄하기</button>
   <button class="sub2" id="rPdf" type="button">📄 PDF로 받기</button>
-  <div class="foot">1장 갑지 + 2장 참석자 서명지 (A4)<br>기록은 이 휴대폰에만 저장됩니다.</div>
+  <div class="foot">하루: 갑지 + 참석자 서명지 · 일주일·한 달: 요약 + 날짜별 갑지·서명지 (A4)<br>기록은 이 휴대폰에만 저장됩니다.</div>
 </div>
 <div id="printDoc"></div>
 
@@ -906,23 +911,56 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     $('rDay').value = all.some(function(r){ return dkey(r.t) === today; }) || !all.length ? today : dkey(all[all.length - 1].t);
     drawRec(); show('s4');
   }
+  /* 출력 기간: 하루(d) · 일주일(w, 월~일) · 한 달(m) */
+  var MODE = ({ d:1, w:1, m:1 })[ls('dnTrRecM')] ? ls('dnTrRecM') : 'd';
+  function addDays(day, n){ var d = new Date(day + 'T00:00:00'); d.setDate(d.getDate() + n); return dkey(d.getTime()); }
+  function md(day){ return (+day.slice(5, 7)) + '월 ' + (+day.slice(8)) + '일'; }
+  function wd(day){ return '일월화수목금토'.charAt(new Date(day + 'T00:00:00').getDay()); }
+  function range(){
+    var day = $('rDay').value, R;
+    if (MODE === 'w'){
+      var from = addDays(day, -((new Date(day + 'T00:00:00').getDay() + 6) % 7)), to = addDays(from, 6);
+      R = { from:from, to:to, kind:'주간', label:from.slice(0, 4) + '년 ' + md(from) + '(월) ~ ' + md(to) + '(일)', file:'week_' + from };
+    } else if (MODE === 'm'){
+      var ym = day.slice(0, 7), last = new Date(+ym.slice(0, 4), +ym.slice(5, 7), 0).getDate();
+      R = { from:ym + '-01', to:ym + '-' + p2(last), kind:'월간', label:ym.slice(0, 4) + '년 ' + (+ym.slice(5, 7)) + '월', file:'month_' + ym };
+    } else R = { from:day, to:day, kind:'', label:dayKo(day), file:day };
+    var cnt = {};
+    recAll().forEach(function(r){ var k = dkey(r.t); if (k >= R.from && k <= R.to) cnt[k] = (cnt[k] || 0) + 1; });
+    R.days = Object.keys(cnt).sort(); R.cnt = cnt;
+    R.total = R.days.reduce(function(a, k){ return a + cnt[k]; }, 0);
+    return R;
+  }
+  function paintMode(){ [].forEach.call(document.querySelectorAll('#rMode button'), function(b){ b.className = b.dataset.m === MODE ? 'on' : ''; }); }
   function drawRec(){
+    paintMode();
     var day = $('rDay').value, all = recAll(), cnt = {};
     all.forEach(function(r){ var k = dkey(r.t); cnt[k] = (cnt[k] || 0) + 1; });
     var days = Object.keys(cnt).sort().reverse().slice(0, 14);
     $('rDays').innerHTML = days.map(function(k){ return '<button type="button" data-day="' + k + '"' + (k === day ? ' class="on"' : '') + '>' + (+k.slice(5, 7)) + '/' + (+k.slice(8)) + ' · ' + cnt[k] + '건</button>'; }).join('');
-    var it = dayItems(day);
-    $('rPrint').disabled = $('rPdf').disabled = $('rXls').disabled = !it.length;
-    if (!it.length){ $('rList').innerHTML = '<div class="none">' + (day ? dayKo(day) : '') + '<br>이 날은 방송 기록이 없습니다.' + (days.length ? '<br>위의 날짜를 눌러 보세요.' : '<br>방송을 하면 여기에 자동으로 쌓입니다.') + '</div>'; return; }
-    $('rList').innerHTML = '<div class="rh">' + dayKo(day) + ' · ' + it.length + '건</div>' + it.map(function(r){
-      return '<div class="ri"><div class="rt"><span>' + hm(r.t) + ' · ' + r.fl + ' ' + esc(langOf(r)) + '</span><button type="button" data-del="' + r.t + '" aria-label="이 기록 빼기">✕</button></div><div class="rs">' + esc(r.s) + '</div><div class="rr">' + esc(r.r) + '</div></div>';
+    var R = range();
+    $('rPrint').disabled = $('rPdf').disabled = $('rXls').disabled = !R.total;
+    if (!R.total){ $('rList').innerHTML = '<div class="none">' + R.label + '<br>이 기간에는 방송 기록이 없습니다.' + (days.length ? '<br>위의 날짜를 눌러 보세요.' : '<br>방송을 하면 여기에 자동으로 쌓입니다.') + '</div>'; return; }
+    if (MODE === 'd'){
+      var it = dayItems(day);
+      $('rList').innerHTML = '<div class="rh">' + dayKo(day) + ' · ' + it.length + '건</div>' + it.map(function(r){
+        return '<div class="ri"><div class="rt"><span>' + hm(r.t) + ' · ' + r.fl + ' ' + esc(langOf(r)) + '</span><button type="button" data-del="' + r.t + '" aria-label="이 기록 빼기">✕</button></div><div class="rs">' + esc(r.s) + '</div><div class="rr">' + esc(r.r) + '</div></div>';
+      }).join('');
+      return;
+    }
+    $('rList').innerHTML = '<div class="rh">' + R.label + '<br><span style="font-size:15px;color:#4b5563">교육 ' + R.days.length + '일 · 방송 ' + R.total + '건 · 날짜를 누르면 내용을 봅니다</span></div>' + R.days.map(function(k){
+      var D = docData(k);
+      return '<div class="ri" data-go="' + k + '" style="cursor:pointer"><div class="rt"><span>' + md(k) + ' (' + wd(k) + ') · ' + D.span + '</span><span>' + R.cnt[k] + '건 ›</span></div><div class="rr" style="font-size:15px">' + esc(D.langs) + '</div></div>';
     }).join('');
   }
   $('recBtn').onclick = openRec;
   $('back4').onclick = function(){ show('s1'); };
   $('rDay').onchange = drawRec;
+  $('rMode').onclick = function(e){ var b = e.target.closest('[data-m]'); if (!b) return; MODE = b.dataset.m; ls('dnTrRecM', MODE); drawRec(); };
   $('rDays').onclick = function(e){ var b = e.target.closest('[data-day]'); if (!b) return; $('rDay').value = b.dataset.day; drawRec(); };
   $('rList').onclick = function(e){
+    var g = e.target.closest('[data-go]');
+    if (g){ $('rDay').value = g.dataset.go; MODE = 'd'; ls('dnTrRecM', MODE); drawRec(); window.scrollTo(0, 0); return; }
     var b = e.target.closest('[data-del]'); if (!b) return;
     if (!confirm('이 기록을 교육 기록에서 뺄까요?\n(잘못 방송한 내용일 때만 빼세요)')) return;
     var t = +b.dataset.del; recPut(recAll().filter(function(r){ return r.t !== t; })); drawRec();
@@ -933,12 +971,13 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     var langs = []; it.forEach(function(r){ if (langs.indexOf(r.fn) < 0) langs.push(r.fn); });
     return { day:day, dk:dayKo(day), it:it, F:F, langs:langs.join(', '), span:it.length ? hm(it[0].t) + ' ~ ' + hm(it[it.length - 1].t) : '', n:+F.rRows || 0 };
   }
+  function formNow(){ var F = {}; RF.forEach(function(k){ F[k] = $(k).value.trim(); }); return F; }
   var OKTXT = '위와 같이 근로자가 이해할 수 있는 언어로 안전교육을 실시하였음을 확인합니다.';
   function signBox(){ return '<table class="pd-sign"><tr><th rowspan="2" class="sv">결<br>재</th><th>담당</th><th>소장</th><th>대표이사</th></tr><tr><td></td><td></td><td></td></tr></table>'; }
-  /* 인쇄·PDF 용 HTML — 1장: 갑지 / 2장: 참석자 서명지 */
-  function buildDoc(day){
-    var D = docData(day), F = D.F, h = '<div class="pd">';
-    h += '<div class="pg"><div class="pd-h"><div class="pd-title">다국어 안전교육 실시 기록</div>' + signBox() + '</div>';
+  /* 인쇄·PDF 용 HTML — 한 장씩 (요약 · 갑지 · 참석자 서명지) */
+  function pagesFor(day){
+    var D = docData(day), F = D.F, out = [], h = '';
+    h += '<div class="pd-h"><div class="pd-title">다국어 안전교육 실시 기록</div>' + signBox() + '</div>';
     h += '<table class="pd-info"><tr><th>교육 일자</th><td>' + D.dk + '</td><th>교육 구분</th><td>' + esc(F.rKind) + '</td></tr>';
     h += '<tr><th>현장명</th><td>' + esc(F.rSite) + '</td><th>회사명</th><td>' + esc(F.rCo) + '</td></tr>';
     h += '<tr><th>교육 시간</th><td>' + D.span + '</td><th>교육 장소</th><td>' + esc(F.rPlace) + '</td></tr>';
@@ -949,20 +988,45 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     D.it.forEach(function(r, i){ h += '<tr><td class="c">' + (i + 1) + '</td><td class="c">' + hm(r.t) + '</td><td class="c">' + esc(langOf(r)) + '</td><td>' + esc(r.s) + '</td><td>' + esc(r.r) + '</td></tr>'; });
     for (var b = D.it.length; b < 16; b++) h += '<tr class="blank"><td></td><td></td><td></td><td></td><td></td></tr>';   // 짧으면 빈 줄로 A4를 채움
     h += '</tbody></table>';
-    h += '<div class="pd-ok">' + OKTXT + '<br>교육 실시자 : ' + esc(F.rWho || '') + ' &nbsp; &nbsp; (서명)</div></div>';
+    h += '<div class="pd-ok">' + OKTXT + '<br>교육 실시자 : ' + esc(F.rWho || '') + ' &nbsp; &nbsp; (서명)</div>';
+    out.push(h);
     if (D.n){
       var rows = D.n / 2, rh = Math.max(7, Math.min(15, (212 / rows))).toFixed(1);   // 서명 칸 높이: A4 한 장에 꽉 차게
-      h += '<div class="pg pg2"><div class="pd-h"><div class="pd-title">참석자 서명지</div>' + signBox() + '</div>';
+      h = '<div class="pd-h"><div class="pd-title">참석자 서명지</div>' + signBox() + '</div>';
       h += '<table class="pd-info"><tr><th>교육 일자</th><td>' + D.dk + '</td><th>교육 구분</th><td>' + esc(F.rKind) + '</td></tr>';
       h += '<tr><th>현장명</th><td>' + esc(F.rSite) + '</td><th>교육 실시자</th><td>' + esc(F.rWho) + '</td></tr></table>';
       h += '<table class="pd-att" style="margin-top:4mm"><thead><tr>';
       for (var c = 0; c < 2; c++) h += '<th style="width:11mm">번호</th><th>성명</th><th style="width:22mm">국적</th><th>서명</th>';
       h += '</tr></thead><tbody>';
       for (var i = 1; i <= rows; i++) h += '<tr style="height:' + rh + 'mm"><td>' + i + '</td><td></td><td></td><td></td><td>' + (i + rows) + '</td><td></td><td></td><td></td></tr>';
-      h += '</tbody></table></div>';
+      h += '</tbody></table>';
+      out.push(h);
     }
-    return h + '</div>';
+    return out;
   }
+  function sumPage(R){
+    var F = formNow(), h = '', langs = [];
+    R.days.forEach(function(k){ docData(k).langs.split(', ').forEach(function(l){ if (l && langs.indexOf(l) < 0) langs.push(l); }); });
+    h += '<div class="pd-h"><div class="pd-title">다국어 안전교육 ' + R.kind + ' 실시 현황</div>' + signBox() + '</div>';
+    h += '<table class="pd-info"><tr><th>기간</th><td colspan="3">' + R.label + '</td></tr>';
+    h += '<tr><th>현장명</th><td>' + esc(F.rSite) + '</td><th>회사명</th><td>' + esc(F.rCo) + '</td></tr>';
+    h += '<tr><th>교육 실시자</th><td>' + esc(F.rWho) + '</td><th>교육 구분</th><td>' + esc(F.rKind) + '</td></tr>';
+    h += '<tr><th>교육 일수</th><td>' + R.days.length + '일</td><th>총 방송 횟수</th><td>' + R.total + '회</td></tr>';
+    h += '<tr><th>교육 언어</th><td colspan="3">' + esc(langs.join(', ')) + '</td></tr></table>';
+    h += '<div class="pd-cap">■ 일자별 교육 실시 현황</div>';
+    h += '<table class="pd-list"><thead><tr><th style="width:10mm">No</th><th style="width:38mm">교육 일자</th><th style="width:28mm">교육 시간</th><th>교육 언어</th><th style="width:20mm">방송 횟수</th><th style="width:22mm">비고</th></tr></thead><tbody>';
+    R.days.forEach(function(k, i){ var D = docData(k); h += '<tr><td class="c">' + (i + 1) + '</td><td class="c">' + D.dk + '</td><td class="c">' + D.span + '</td><td>' + esc(D.langs) + '</td><td class="c">' + R.cnt[k] + '회</td><td></td></tr>'; });
+    for (var b = R.days.length; b < 18; b++) h += '<tr class="blank"><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+    h += '</tbody></table>';
+    h += '<div class="pd-ok">붙임 : 일자별 다국어 안전교육 실시 기록 및 참석자 서명지 각 ' + R.days.length + '부</div>';
+    return h;
+  }
+  function allPages(){
+    var R = range(), pages = MODE === 'd' ? [] : [sumPage(R)];
+    R.days.forEach(function(k){ pages = pages.concat(pagesFor(k)); });
+    return { R:R, pages:pages };
+  }
+  function pageHTML(pg, brk){ return '<div class="pg' + (brk ? ' pg2' : '') + '">' + pg + '</div>'; }
   function loadJS(src, g){
     return new Promise(function(ok, no){
       if (window[g]) return ok();
@@ -977,27 +1041,36 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     a.href = u; a.download = name; document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(u); a.remove(); }, 4000);
   }
-  function printNow(day){ $('printDoc').innerHTML = buildDoc(day); setTimeout(function(){ window.print(); }, 80); }
-  $('rPrint').onclick = function(){ var day = $('rDay').value; if (!dayItems(day).length) return; saveForm(); printNow(day); };
+  function printNow(){
+    var A = allPages();
+    $('printDoc').innerHTML = '<div class="pd">' + A.pages.map(function(pg, i){ return pageHTML(pg, i > 0); }).join('') + '</div>';
+    setTimeout(function(){ window.print(); }, 80);
+  }
+  $('rPrint').onclick = function(){ if (!range().total) return; saveForm(); printNow(); };
   $('rPdf').onclick = function(){
-    var day = $('rDay').value; if (!dayItems(day).length) return;
-    saveForm(); var done = busyBtn(this, '📄 PDF 만드는 중…');
+    var A = allPages(); if (!A.R.total) return;
+    saveForm(); var done = busyBtn(this, '📄 PDF 만드는 중… (' + A.pages.length + '장)');
     loadJS('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js', 'html2pdf').then(function(){
       window.scrollTo(0, 0);   // 화면이 내려가 있으면 PDF 위쪽이 비어 나옴 → 맨 위로
-      return window.html2pdf().set({
-        margin:[12, 12, 12, 12], filename:'SafeTree_EduRecord_' + day + '.pdf',
-        image:{ type:'jpeg', quality:0.96 }, html2canvas:{ scale:2, useCORS:true, backgroundColor:'#ffffff', scrollX:0, scrollY:0 },
-        jsPDF:{ unit:'mm', format:'a4', orientation:'portrait' }, pagebreak:{ mode:['css', 'legacy'], before:'.pg2', avoid:['tr', '.pd-h'] }
-      }).from(buildDoc(day)).save();
-    }).then(function(){ done(); toast('📄 PDF를 저장했습니다.\n다운로드 폴더를 확인하세요.'); })
-      .catch(function(){ done(); toast('PDF를 바로 만들지 못해 인쇄 화면을 엽니다.\n「PDF로 저장」을 고르세요.'); setTimeout(function(){ printNow(day); }, 600); });
+      var opt = {
+        margin:[12, 12, 12, 12], filename:'SafeTree_EduRecord_' + A.R.file + '.pdf',
+        image:{ type:'jpeg', quality:0.95 }, html2canvas:{ scale:2, useCORS:true, backgroundColor:'#ffffff', scrollX:0, scrollY:0 },
+        jsPDF:{ unit:'mm', format:'a4', orientation:'portrait' }, pagebreak:{ mode:['css', 'legacy'], avoid:['tr', '.pd-h'] }
+      };
+      function one(pg){ return '<div class="pd">' + pageHTML(pg, false) + '</div>'; }
+      var w = window.html2pdf().set(opt).from(one(A.pages[0])).toPdf();   // 한 장씩 그려서 붙임 (한 달치도 휴대폰에서 가능)
+      A.pages.slice(1).forEach(function(pg){ w = w.get('pdf').then(function(pdf){ pdf.addPage(); }).from(one(pg)).toContainer().toCanvas().toPdf(); });
+      return w.save();
+    }).then(function(){ done(); toast('📄 PDF를 저장했습니다. (' + A.pages.length + '장)\n다운로드 폴더를 확인하세요.'); })
+      .catch(function(){ done(); toast('PDF를 바로 만들지 못해 인쇄 화면을 엽니다.\n「PDF로 저장」을 고르세요.'); setTimeout(printNow, 600); });
   };
 
-  /* 📊 엑셀 (편집 가능) — 시트1 갑지 · 시트2 참석자 서명지 / A4 세로, 상하좌우 같은 여백, 한 장에 꽉 차게 */
+  /* 📊 엑셀 (편집 가능) — 하루: 갑지·서명지 / 일주일·한 달: 요약 + 날짜별 갑지·서명지
+     A4 세로, 상하좌우 같은 여백, 한 장에 꽉 차게 */
   function wlen(s){ var n = 0; String(s).replace(/[\s\S]/g, function(ch){ n += /[ᄀ-ᇿ⺀-鿿가-힯＀-￯]/.test(ch) ? 2 : 1; return ch; }); return n; }
   function nLines(s, w){ return String(s || '').split('\n').reduce(function(a, p){ return a + Math.max(1, Math.ceil(wlen(p) / w)); }, 0); }
-  function buildXlsx(day){
-    var D = docData(day), F = D.F, wb = new window.ExcelJS.Workbook();
+  function buildXlsx(R){
+    var wb = new window.ExcelJS.Workbook();
     wb.creator = 'SafeTree 안전교육 통역시스템'; wb.created = new Date();
     var FONT = '맑은 고딕', LN = { style:'thin', color:{ argb:'FF333333' } }, BD = { top:LN, left:LN, bottom:LN, right:LN };
     var PAGE_H = 772;   // A4 세로 - 여백 (pt)
@@ -1032,57 +1105,88 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     }
     function lab(ws, r, c1, c2, t){ box(ws, r, c1, r, c2, t, { fill:1, bold:true }); }
     function val(ws, r, c1, c2, t){ box(ws, r, c1, r, c2, t, { h:'left' }); }
+    var COLS = [5.5, 7.5, 12.5, 17, 15, 5, 10, 10, 11];
 
-    /* ── 시트1 갑지 : A No · B 시각 · C 언어 · D~E 말한 내용 · F~I 방송한 내용 ── */
-    var ws = sheet('갑지', [5.5, 7.5, 12.5, 17, 15, 5, 10, 10, 11], false), used = head(ws, '다국어 안전교육 실시 기록', 5, 6);
-    var info = [['교육 일자', D.dk, '교육 구분', F.rKind], ['현장명', F.rSite, '회사명', F.rCo], ['교육 시간', D.span, '교육 장소', F.rPlace], ['교육 실시자', F.rWho, '방송 횟수', D.it.length + '회']];
-    info.forEach(function(a, i){ var r = 4 + i; lab(ws, r, 1, 2, a[0]); val(ws, r, 3, 5, a[1]); lab(ws, r, 6, 7, a[2]); val(ws, r, 8, 9, a[3]); ws.getRow(r).height = 24; });
-    lab(ws, 8, 1, 2, '교육 언어'); val(ws, 8, 3, 9, D.langs); ws.getRow(8).height = 24;
-    ws.getRow(9).height = 10;
-    box(ws, 10, 1, 10, 9, '■ 교육 내용 (방송 기록)', { h:'left', bold:true, size:11, border:false }); ws.getCell(10, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws.getRow(10).height = 22;
-    lab(ws, 11, 1, 1, 'No'); lab(ws, 11, 2, 2, '시각'); lab(ws, 11, 3, 3, '언어'); lab(ws, 11, 4, 5, '말한 내용'); lab(ws, 11, 6, 9, '방송한 내용 (번역)'); ws.getRow(11).height = 24;
-    used += 24 * 5 + 10 + 22 + 24;
-    var r = 12;
-    D.it.forEach(function(x, i){
-      box(ws, r, 1, r, 1, i + 1); box(ws, r, 2, r, 2, hm(x.t)); box(ws, r, 3, r, 3, langOf(x));
-      box(ws, r, 4, r, 5, x.s, { h:'left' }); box(ws, r, 6, r, 9, x.r, { h:'left' });
-      var hgt = Math.max(30, Math.max(nLines(x.s, 28), nLines(x.r, 31)) * 14 + 8);
-      ws.getRow(r).height = hgt; used += hgt; r++;
-    });
-    var tail = 10 + 26 + 26;
-    while (used + 26 + tail <= PAGE_H){ for (var k = 1; k <= 9; k++) box(ws, r, k, r, k, ''); ws.mergeCells(r, 4, r, 5); ws.mergeCells(r, 6, r, 9); ws.getRow(r).height = 26; used += 26; r++; }   // 빈 줄로 한 장을 꽉 채움
-    ws.getRow(r).height = 10; r++;
-    box(ws, r, 1, r, 9, OKTXT, { border:false, size:11 }); ws.getRow(r).height = 26; r++;
-    box(ws, r, 1, r, 9, '교육 실시자 :  ' + (F.rWho || '') + '          (서명)', { border:false, size:11 }); ws.getRow(r).height = 26;
-    ws.pageSetup.printTitlesRow = '11:11';
-    ws.pageSetup.printArea = 'A1:I' + r;
-
-    /* ── 시트2 참석자 서명지 : 번호 · 성명 · 국적 · 서명 × 2 ── */
-    if (D.n){
-      var w2 = sheet('참석자 서명지', [6, 14, 10, 15, 6, 14, 10, 15], true), u2 = head(w2, '참석자 서명지', 4, 5);
-      lab(w2, 4, 1, 2, '교육 일자'); val(w2, 4, 3, 4, D.dk); lab(w2, 4, 5, 6, '교육 구분'); val(w2, 4, 7, 8, F.rKind);
-      lab(w2, 5, 1, 2, '현장명'); val(w2, 5, 3, 4, F.rSite); lab(w2, 5, 5, 6, '교육 실시자'); val(w2, 5, 7, 8, F.rWho);
-      w2.getRow(4).height = 24; w2.getRow(5).height = 24; w2.getRow(6).height = 10;
-      ['번호', '성명', '국적', '서명', '번호', '성명', '국적', '서명'].forEach(function(t, i){ lab(w2, 7, i + 1, i + 1, t); });
-      w2.getRow(7).height = 24; u2 += 24 * 3 + 10;
-      var rows = D.n / 2, rh = Math.max(20, Math.min(60, Math.floor((PAGE_H - u2 - 4) / rows)));
-      for (var i = 1; i <= rows; i++){
-        var rr = 7 + i;
-        box(w2, rr, 1, rr, 1, i); box(w2, rr, 5, rr, 5, i + rows);
-        [2, 3, 4, 6, 7, 8].forEach(function(k){ box(w2, rr, k, rr, k, ''); });
-        w2.getRow(rr).height = rh;
-      }
-      w2.pageSetup.printArea = 'A1:H' + (7 + rows);
+    /* ── 요약 (일주일·한 달) ── */
+    if (MODE !== 'd'){
+      var F0 = formNow(), langs = [];
+      R.days.forEach(function(k){ docData(k).langs.split(', ').forEach(function(l){ if (l && langs.indexOf(l) < 0) langs.push(l); }); });
+      var ws0 = sheet(R.kind + ' 요약', COLS, true), u0 = head(ws0, '다국어 안전교육 ' + R.kind + ' 실시 현황', 5, 6);
+      lab(ws0, 4, 1, 2, '기간'); val(ws0, 4, 3, 9, R.label);
+      [['현장명', F0.rSite, '회사명', F0.rCo], ['교육 실시자', F0.rWho, '교육 구분', F0.rKind], ['교육 일수', R.days.length + '일', '총 방송 횟수', R.total + '회']].forEach(function(a, i){
+        var r = 5 + i; lab(ws0, r, 1, 2, a[0]); val(ws0, r, 3, 5, a[1]); lab(ws0, r, 6, 7, a[2]); val(ws0, r, 8, 9, a[3]);
+      });
+      lab(ws0, 8, 1, 2, '교육 언어'); val(ws0, 8, 3, 9, langs.join(', '));
+      for (var q = 4; q <= 8; q++) ws0.getRow(q).height = 24;
+      ws0.getRow(9).height = 10;
+      box(ws0, 10, 1, 10, 9, '■ 일자별 교육 실시 현황', { h:'left', bold:true, size:11, border:false }); ws0.getCell(10, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws0.getRow(10).height = 22;
+      lab(ws0, 11, 1, 1, 'No'); lab(ws0, 11, 2, 3, '교육 일자'); lab(ws0, 11, 4, 4, '교육 시간'); lab(ws0, 11, 5, 6, '교육 언어'); lab(ws0, 11, 7, 7, '방송 횟수'); lab(ws0, 11, 8, 9, '비고'); ws0.getRow(11).height = 24;
+      u0 += 24 * 5 + 10 + 22 + 24;
+      var r0 = 12;
+      R.days.forEach(function(k, i){
+        var D = docData(k);
+        box(ws0, r0, 1, r0, 1, i + 1); box(ws0, r0, 2, r0, 3, D.dk); box(ws0, r0, 4, r0, 4, D.span); box(ws0, r0, 5, r0, 6, D.langs, { h:'left' }); box(ws0, r0, 7, r0, 7, R.cnt[k] + '회'); box(ws0, r0, 8, r0, 9, '');
+        ws0.getRow(r0).height = 24; u0 += 24; r0++;
+      });
+      while (u0 + 24 + 46 <= PAGE_H){ box(ws0, r0, 1, r0, 1, ''); box(ws0, r0, 2, r0, 3, ''); box(ws0, r0, 4, r0, 4, ''); box(ws0, r0, 5, r0, 6, ''); box(ws0, r0, 7, r0, 7, ''); box(ws0, r0, 8, r0, 9, ''); ws0.getRow(r0).height = 24; u0 += 24; r0++; }
+      ws0.getRow(r0).height = 10; r0++;
+      box(ws0, r0, 1, r0, 9, '붙임 : 일자별 다국어 안전교육 실시 기록 및 참석자 서명지 각 ' + R.days.length + '부', { border:false, size:11, h:'left' }); ws0.getRow(r0).height = 26;
+      ws0.pageSetup.printArea = 'A1:I' + r0;
     }
+
+    R.days.forEach(function(day){
+      var D = docData(day), F = D.F, tag = MODE === 'd' ? '' : (+day.slice(5, 7)) + '-' + (+day.slice(8)) + ' ';
+      /* ── 갑지 : A No · B 시각 · C 언어 · D~E 말한 내용 · F~I 방송한 내용 ── */
+      var ws = sheet(tag + '갑지', COLS, false), used = head(ws, '다국어 안전교육 실시 기록', 5, 6);
+      var info = [['교육 일자', D.dk, '교육 구분', F.rKind], ['현장명', F.rSite, '회사명', F.rCo], ['교육 시간', D.span, '교육 장소', F.rPlace], ['교육 실시자', F.rWho, '방송 횟수', D.it.length + '회']];
+      info.forEach(function(a, i){ var r = 4 + i; lab(ws, r, 1, 2, a[0]); val(ws, r, 3, 5, a[1]); lab(ws, r, 6, 7, a[2]); val(ws, r, 8, 9, a[3]); ws.getRow(r).height = 24; });
+      lab(ws, 8, 1, 2, '교육 언어'); val(ws, 8, 3, 9, D.langs); ws.getRow(8).height = 24;
+      ws.getRow(9).height = 10;
+      box(ws, 10, 1, 10, 9, '■ 교육 내용 (방송 기록)', { h:'left', bold:true, size:11, border:false }); ws.getCell(10, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws.getRow(10).height = 22;
+      lab(ws, 11, 1, 1, 'No'); lab(ws, 11, 2, 2, '시각'); lab(ws, 11, 3, 3, '언어'); lab(ws, 11, 4, 5, '말한 내용'); lab(ws, 11, 6, 9, '방송한 내용 (번역)'); ws.getRow(11).height = 24;
+      used += 24 * 5 + 10 + 22 + 24;
+      var r = 12;
+      D.it.forEach(function(x, i){
+        box(ws, r, 1, r, 1, i + 1); box(ws, r, 2, r, 2, hm(x.t)); box(ws, r, 3, r, 3, langOf(x));
+        box(ws, r, 4, r, 5, x.s, { h:'left' }); box(ws, r, 6, r, 9, x.r, { h:'left' });
+        var hgt = Math.max(30, Math.max(nLines(x.s, 28), nLines(x.r, 31)) * 14 + 8);
+        ws.getRow(r).height = hgt; used += hgt; r++;
+      });
+      var tail = 10 + 26 + 26;
+      while (used + 26 + tail <= PAGE_H){ for (var k = 1; k <= 9; k++) box(ws, r, k, r, k, ''); ws.mergeCells(r, 4, r, 5); ws.mergeCells(r, 6, r, 9); ws.getRow(r).height = 26; used += 26; r++; }   // 빈 줄로 한 장을 꽉 채움
+      ws.getRow(r).height = 10; r++;
+      box(ws, r, 1, r, 9, OKTXT, { border:false, size:11 }); ws.getRow(r).height = 26; r++;
+      box(ws, r, 1, r, 9, '교육 실시자 :  ' + (F.rWho || '') + '          (서명)', { border:false, size:11 }); ws.getRow(r).height = 26;
+      ws.pageSetup.printTitlesRow = '11:11';
+      ws.pageSetup.printArea = 'A1:I' + r;
+
+      /* ── 참석자 서명지 : 번호 · 성명 · 국적 · 서명 × 2 ── */
+      if (D.n){
+        var w2 = sheet(tag + (tag ? '서명지' : '참석자 서명지'), [6, 14, 10, 15, 6, 14, 10, 15], true), u2 = head(w2, '참석자 서명지', 4, 5);
+        lab(w2, 4, 1, 2, '교육 일자'); val(w2, 4, 3, 4, D.dk); lab(w2, 4, 5, 6, '교육 구분'); val(w2, 4, 7, 8, F.rKind);
+        lab(w2, 5, 1, 2, '현장명'); val(w2, 5, 3, 4, F.rSite); lab(w2, 5, 5, 6, '교육 실시자'); val(w2, 5, 7, 8, F.rWho);
+        w2.getRow(4).height = 24; w2.getRow(5).height = 24; w2.getRow(6).height = 10;
+        ['번호', '성명', '국적', '서명', '번호', '성명', '국적', '서명'].forEach(function(t, i){ lab(w2, 7, i + 1, i + 1, t); });
+        w2.getRow(7).height = 24; u2 += 24 * 3 + 10;
+        var rows = D.n / 2, rh = Math.max(20, Math.min(60, Math.floor((PAGE_H - u2 - 4) / rows)));
+        for (var i = 1; i <= rows; i++){
+          var rr = 7 + i;
+          box(w2, rr, 1, rr, 1, i); box(w2, rr, 5, rr, 5, i + rows);
+          [2, 3, 4, 6, 7, 8].forEach(function(k){ box(w2, rr, k, rr, k, ''); });
+          w2.getRow(rr).height = rh;
+        }
+        w2.pageSetup.printArea = 'A1:H' + (7 + rows);
+      }
+    });
     return wb.xlsx.writeBuffer();
   }
   $('rXls').onclick = function(){
-    var day = $('rDay').value; if (!dayItems(day).length) return;
+    var R = range(); if (!R.total) return;
     saveForm(); var done = busyBtn(this, '📊 엑셀 만드는 중…');
     loadJS('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js', 'ExcelJS')
-      .then(function(){ return buildXlsx(day); })
+      .then(function(){ return buildXlsx(R); })
       .then(function(buf){
-        saveBlob(new Blob([buf], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), 'SafeTree_EduRecord_' + day + '.xlsx');
+        saveBlob(new Blob([buf], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), 'SafeTree_EduRecord_' + R.file + '.xlsx');
         done(); toast('📊 엑셀 파일을 저장했습니다.\n다운로드 폴더에서 열어 고칠 수 있습니다.');
       })
       .catch(function(){ done(); toast('엑셀을 만들지 못했습니다.\n인터넷 연결을 확인하고 다시 눌러 주세요.'); });
