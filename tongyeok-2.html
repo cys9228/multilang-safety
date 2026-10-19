@@ -57,6 +57,9 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 .back2{display:block;margin:18px auto 0;background:none;border:0;color:var(--mu);font-size:16px;text-decoration:underline;cursor:pointer}
 .kshare{display:block;width:100%;margin-top:14px;background:#fee500;color:#191919;border:0;border-radius:14px;padding:16px;font-size:19px;font-weight:900;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#111827;color:#fff;padding:14px 18px;border-radius:12px;font-size:16px;font-weight:700;z-index:9;max-width:90vw;text-align:center;line-height:1.5}
+.dir{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:420px;width:100%;margin:0 auto 18px}
+.dir button{white-space:pre-line;word-break:keep-all;background:var(--wh);color:var(--tx);border:2px solid #d6dcf5;border-radius:12px;padding:12px 6px;font-size:15px;font-weight:900;line-height:1.3;cursor:pointer}
+.dir button.on{background:#111827;color:#fff;border-color:#111827}
 /* 언어 목록 */
 .list{position:fixed;inset:0;background:var(--bg);z-index:5;display:flex;flex-direction:column}
 .list .hd{max-width:520px;width:100%;margin:0 auto;padding:18px 22px 10px}
@@ -68,7 +71,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 .list .bd button i{font-style:normal;font-size:28px}
 .list .bd button small{display:block;font-size:14px;font-weight:500;color:var(--mu)}
 /* 방송 화면 */
-.lang2{text-align:center;font-size:30px;font-weight:900;margin:6px 0 2px}
+.lang2{white-space:pre-line;word-break:keep-all;text-align:center;font-size:30px;font-weight:900;margin:6px 0 2px}
 .micw{display:flex;justify-content:center;margin:34px 0 18px}
 #mic{width:210px;height:210px;border-radius:50%;border:0;background:var(--bl);color:#fff;font-size:22px;font-weight:900;box-shadow:0 0 0 12px rgba(59,78,240,.15);cursor:pointer;line-height:1.3}
 #mic span{display:block;font-size:70px}
@@ -172,7 +175,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <div class="top"></div>
   <h1>안전교육 통역시스템</h1>
   <div class="who" id="who"></div>
-  <div class="lab">방송할 언어</div>
+  <div class="lab" id="lab1">방송할 언어</div>
   <div class="big" id="l1"></div>
   <div class="sub" id="n1"></div>
   <div class="gd"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
@@ -185,7 +188,8 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 <!-- ② 방송 화면 : 마이크 + 속도 -->
 <div class="scr" id="s2" hidden>
   <div class="top"><button class="back" id="back" aria-label="뒤로">‹</button></div>
-  <div class="lab">방송 언어</div>
+  <div class="dir" style="margin-bottom:8px"><button data-dir="k2f"></button><button data-dir="f2k"></button></div>
+  <div class="lab" id="lab2">방송 언어</div>
   <div class="lang2" id="l2"></div>
   <div class="gd" style="margin-top:10px"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
   <div class="micw"><button id="mic"><span>🎙️</span>눌러서 시작</button></div>
@@ -364,6 +368,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   ].map(function(a){ return { g:a[0], t:a[1], fl:a[2], ko:a[3], na:a[4], gt:a[5] || a[0] }; });
   function byG(g){ for (var i = 0; i < LANGS.length; i++) if (LANGS[i].g === g) return LANGS[i]; return null; }
   var SRC = { g:'ko', t:'ko-KR' };
+  var KO = { g:'ko', t:'ko-KR', gt:'ko', fl:'🇰🇷', ko:'한국어', na:'한국어' };
+  var DIR = 'k2f';   // k2f: 한국어→외국어 (항상 기본) · f2k: 외국어→한국어 (방송 화면에서만 바꿈)
+  function srcL(){ return DIR === 'k2f' ? KO : TGT; }   // 알아들을 언어
+  function dstL(){ return DIR === 'k2f' ? TGT : KO; }   // 방송할 언어
   var TGT = byG(ls('dnTrLang')) || byG('ms');
   var rate = 1.0;   // 말하기 속도 — 관리자가 구글 시트에서 정함 (기본 1.0배)
   var GD = 'm';   // 항상 남성으로 시작
@@ -376,7 +384,12 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   function show(id){ ['s0', 's1', 's2', 's3'].forEach(function(x){ $(x).hidden = x !== id; }); window.scrollTo(0, 0); }
   function paint(){
     $('l1').textContent = TGT.fl + ' ' + TGT.ko; $('n1').textContent = TGT.na;
-    $('l2').textContent = TGT.fl + ' ' + TGT.ko;
+    $('l2').textContent = DIR === 'k2f' ? TGT.fl + ' ' + TGT.ko : TGT.fl + ' ' + TGT.ko + '\n→ 🇰🇷 한국어';
+    $('lab2').textContent = DIR === 'k2f' ? '방송 언어' : '외국어로 말하면 한국어로 방송';
+    [].forEach.call(document.querySelectorAll('[data-dir]'), function(b){
+      b.className = b.dataset.dir === DIR ? 'on' : '';
+      b.textContent = b.dataset.dir === 'k2f' ? '🇰🇷 한국어\n→ ' + TGT.ko : TGT.ko + '\n→ 🇰🇷 한국어';
+    });
   }
   function drawGrid(){
     var q = $('q').value.trim().toLowerCase();
@@ -389,7 +402,12 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   $('lstX').onclick = function(){ $('lst').hidden = true; };
   $('q').oninput = drawGrid;
   $('grid').onclick = function(e){ var b = e.target.closest('button'); if (!b) return; TGT = byG(b.dataset.g); ls('dnTrLang', TGT.g); paint(); $('lst').hidden = true; };
-  $('go').onclick = function(){ unlock(); show('s2'); };
+  $('go').onclick = function(){ unlock(); DIR = 'k2f'; paint(); show('s2'); };   // 들어갈 때마다 한국어 → 외국어로 시작
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-dir]'); if (!b || b.dataset.dir === DIR) return;
+    try{ stopAll(); }catch(_){}
+    DIR = b.dataset.dir; paint();
+  });
   $('back').onclick = function(){ stopAll(); show('s1'); };
   function rv(){ $('rv').textContent = rate.toFixed(1) + '배'; }
   $('rate').value = rate; rv();
@@ -624,9 +642,9 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     });
   }
   function say(text){
-    var L = TGT;
+    var L = dstL();
     $('srcT').textContent = text; $('dstT').textContent = '…'; setSt('🔄 번역 중…');
-    return translate(text, SRC.g, L.g).then(function(tr){
+    return translate(text, srcL().g, L.g).then(function(tr){
       $('dstT').textContent = tr; setSt('🔊 방송 중…');
       playing = true; closeMic();
       return speak(tr, L);
@@ -647,7 +665,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   function startRec(){
     if (!SR || !on || rec) return;
     var r = new SR(); rec = r;
-    r.lang = SRC.t; r.continuous = !IOS; r.interimResults = true; r.maxAlternatives = 1;
+    r.lang = srcL().t; r.continuous = !IOS; r.interimResults = true; r.maxAlternatives = 1;
     r.onresult = function(e){
       var hasFin = false;
       for (var k = e.resultIndex; k < e.results.length; k++) if (e.results[k].isFinal) hasFin = true;
@@ -661,7 +679,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
       $('srcT').textContent = (buf + ' ' + interim).trim();
       armFlush();
     };
-    r.onerror = function(e){ if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){ on = false; micUI(); setSt('❌ 마이크 권한을 허용해 주세요'); } };
+    r.onerror = function(e){ if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){ on = false; micUI(); setSt('❌ 마이크 권한을 허용해 주세요'); } else if (e.error === 'language-not-supported'){ on = false; micUI(); setSt('❌ 이 언어는 휴대폰이 알아듣지 못합니다'); } };
     r.onend = function(){ if (rec === r) rec = null; taint = false; if (on) setTimeout(startRec, 150); };
     try{ r.start(); setSt('🎙️ 듣는 중… 말씀하세요'); }catch(e){ rec = null; }
   }
@@ -671,9 +689,9 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     if (busy){ pendSR.push(text); return; }
     busy = true;
     clearTimeout(fTimer); buf = ''; interim = ''; stopRec();   // 방송하는 동안 마이크를 끔 → 스피커 소리를 다시 듣고 또 방송하는 일 방지
-    var L = TGT;
+    var L = dstL();
     $('srcT').textContent = text; $('dstT').textContent = '…'; setSt('🔄 번역 중…');
-    translate(text, SRC.g, L.g).then(function(tr){ $('dstT').textContent = tr; setSt('🔊 방송 중…'); logUse(text); return Promise.race([speak(tr, L), sleep(Math.min(60000, 8000 + tr.length * 250))]); })
+    translate(text, srcL().g, L.g).then(function(tr){ $('dstT').textContent = tr; setSt('🔊 방송 중…'); logUse(text); return Promise.race([speak(tr, L), sleep(Math.min(60000, 8000 + tr.length * 250))]); })
       .catch(function(){ $('dstT').textContent = ''; setSt('❌ 번역 실패 — 인터넷을 확인하세요'); return sleep(1500); })
       .then(function(){ return sleep(500); })
       .then(function(){ busy = false; ignoreUntil = Date.now() + 700; if (pendSR.length) return handleSR(pendSR.shift()); if (on){ setSt('🎙️ 듣는 중… 말씀하세요'); if (!rec) setTimeout(startRec, 150); } else setSt(''); });
@@ -707,7 +725,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   var pB = $('ptt'), pttDown = false, pttT0 = 0, pRec = null, pBase = '', pBuf = '', pInt = '';
   function pAll(){ return (pBase + ' ' + pBuf + ' ' + pInt).replace(/\s+/g, ' ').trim(); }
   function pttListen(){
-    var r = new SR(); pRec = r; r.lang = SRC.t; r.continuous = true; r.interimResults = true;
+    var r = new SR(); pRec = r; r.lang = srcL().t; r.continuous = true; r.interimResults = true;
     r.onresult = function(ev){
       if (pRec !== r) return;
       var it = '', fin = '';
