@@ -264,10 +264,11 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <h1 style="margin:0 0 6px;font-size:28px">📋 교육 기록 · 증빙</h1>
   <p class="sub" style="margin:0 0 18px">방송한 내용이 이 휴대폰에 자동으로 쌓입니다</p>
   <div class="lg">
-    <label>출력 기간</label>
-    <div class="seg" id="rMode"><button type="button" data-m="d">하루</button><button type="button" data-m="w">일주일</button><button type="button" data-m="m">한 달</button></div>
-    <label for="rDay">날짜 <span class="opt">(일주일·한 달은 이 날짜가 들어 있는 주·달)</span></label>
-    <input type="date" id="rDay">
+    <label for="rFrom">시작 날짜</label>
+    <input type="date" id="rFrom">
+    <label for="rTo">종료 날짜</label>
+    <input type="date" id="rTo">
+    <label>기록 있는 날 <span class="opt">(누르면 그 하루)</span></label>
     <div class="chips" id="rDays"></div>
     <label for="rKind">교육 구분</label>
     <select id="rKind"><option>TBM (작업 전 안전점검회의)</option><option>정기 안전보건교육</option><option>채용 시 교육</option><option>작업내용 변경 시 교육</option><option>특별교육</option><option>기타 안전교육</option></select>
@@ -282,7 +283,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <button class="ok" id="rXls" type="button">📊 엑셀로 받기 (편집 가능)</button>
   <button class="sub2" id="rPrint" type="button">🖨️ 바로 인쇄하기</button>
   <button class="sub2" id="rPdf" type="button">📄 PDF로 받기</button>
-  <div class="foot">하루: 갑지 + 참석자 서명지 · 일주일·한 달: 요약 + 날짜별 갑지·서명지 (A4)<br>기록은 이 휴대폰에만 저장됩니다.</div>
+  <div class="foot">하루: 갑지 + 참석자 서명지 · 여러 날: 요약 + 날짜별 갑지·서명지 (A4)<br>기록은 이 휴대폰에만 저장됩니다.</div>
 </div>
 <div id="printDoc"></div>
 
@@ -908,42 +909,44 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     $('rPlace').value = F.rPlace || '';
     $('rRows').value = ({20:1, 30:1, 40:1, 50:1, 0:1})[F.rRows] ? F.rRows : '30';
     var all = recAll(), today = dkey(Date.now());
-    $('rDay').value = all.some(function(r){ return dkey(r.t) === today; }) || !all.length ? today : dkey(all[all.length - 1].t);
+    $('rFrom').value = $('rTo').value = all.some(function(r){ return dkey(r.t) === today; }) || !all.length ? today : dkey(all[all.length - 1].t);
     drawRec(); show('s4');
   }
-  /* 출력 기간: 하루(d) · 일주일(w, 월~일) · 한 달(m) */
-  var MODE = ({ d:1, w:1, m:1 })[ls('dnTrRecM')] ? ls('dnTrRecM') : 'd';
+  /* 출력 기간: 시작 날짜 ~ 종료 날짜 (같은 날이면 하루 출력) */
+  var MODE = 'd';   // d: 하루 · p: 여러 날 (range()가 정함)
   function addDays(day, n){ var d = new Date(day + 'T00:00:00'); d.setDate(d.getDate() + n); return dkey(d.getTime()); }
   function md(day){ return (+day.slice(5, 7)) + '월 ' + (+day.slice(8)) + '일'; }
   function wd(day){ return '일월화수목금토'.charAt(new Date(day + 'T00:00:00').getDay()); }
+  function lastDay(day){ return day.slice(0, 8) + p2(new Date(+day.slice(0, 4), +day.slice(5, 7), 0).getDate()); }
   function range(){
-    var day = $('rDay').value, R;
-    if (MODE === 'w'){
-      var from = addDays(day, -((new Date(day + 'T00:00:00').getDay() + 6) % 7)), to = addDays(from, 6);
-      R = { from:from, to:to, kind:'주간', label:from.slice(0, 4) + '년 ' + md(from) + '(월) ~ ' + md(to) + '(일)', file:'week_' + from };
-    } else if (MODE === 'm'){
-      var ym = day.slice(0, 7), last = new Date(+ym.slice(0, 4), +ym.slice(5, 7), 0).getDate();
-      R = { from:ym + '-01', to:ym + '-' + p2(last), kind:'월간', label:ym.slice(0, 4) + '년 ' + (+ym.slice(5, 7)) + '월', file:'month_' + ym };
-    } else R = { from:day, to:day, kind:'', label:dayKo(day), file:day };
+    var from = $('rFrom').value, to = $('rTo').value || from;
+    if (!from) from = to;
+    if (to < from){ var x = from; from = to; to = x; $('rFrom').value = from; $('rTo').value = to; }
+    var R = { from:from, to:to };
+    if (from === to){ MODE = 'd'; R.kind = ''; R.label = dayKo(from); R.file = from; }
+    else {
+      MODE = 'p';
+      R.kind = from.slice(8) === '01' && to === lastDay(from) ? '월간' : (new Date(from + 'T00:00:00').getDay() === 1 && to === addDays(from, 6) ? '주간' : '기간별');
+      R.label = from.slice(0, 4) + '년 ' + md(from) + '(' + wd(from) + ') ~ ' + (to.slice(0, 4) !== from.slice(0, 4) ? to.slice(0, 4) + '년 ' : '') + md(to) + '(' + wd(to) + ')';
+      R.file = from + '_' + to;
+    }
     var cnt = {};
     recAll().forEach(function(r){ var k = dkey(r.t); if (k >= R.from && k <= R.to) cnt[k] = (cnt[k] || 0) + 1; });
     R.days = Object.keys(cnt).sort(); R.cnt = cnt;
     R.total = R.days.reduce(function(a, k){ return a + cnt[k]; }, 0);
     return R;
   }
-  function paintMode(){ [].forEach.call(document.querySelectorAll('#rMode button'), function(b){ b.className = b.dataset.m === MODE ? 'on' : ''; }); }
   function drawRec(){
-    paintMode();
-    var day = $('rDay').value, all = recAll(), cnt = {};
+    var R = range();
+    var all = recAll(), cnt = {};
     all.forEach(function(r){ var k = dkey(r.t); cnt[k] = (cnt[k] || 0) + 1; });
     var days = Object.keys(cnt).sort().reverse().slice(0, 14);
-    $('rDays').innerHTML = days.map(function(k){ return '<button type="button" data-day="' + k + '"' + (k === day ? ' class="on"' : '') + '>' + (+k.slice(5, 7)) + '/' + (+k.slice(8)) + ' · ' + cnt[k] + '건</button>'; }).join('');
-    var R = range();
+    $('rDays').innerHTML = days.map(function(k){ return '<button type="button" data-day="' + k + '"' + (MODE === 'd' && k === R.from ? ' class="on"' : '') + '>' + (+k.slice(5, 7)) + '/' + (+k.slice(8)) + ' · ' + cnt[k] + '건</button>'; }).join('') || '<span class="opt" style="padding:6px 0">아직 없습니다</span>';
     $('rPrint').disabled = $('rPdf').disabled = $('rXls').disabled = !R.total;
-    if (!R.total){ $('rList').innerHTML = '<div class="none">' + R.label + '<br>이 기간에는 방송 기록이 없습니다.' + (days.length ? '<br>위의 날짜를 눌러 보세요.' : '<br>방송을 하면 여기에 자동으로 쌓입니다.') + '</div>'; return; }
+    if (!R.total){ $('rList').innerHTML = '<div class="none">' + R.label + '<br>이 기간에는 방송 기록이 없습니다.' + (days.length ? '<br>‘기록 있는 날’을 눌러 보세요.' : '<br>방송을 하면 여기에 자동으로 쌓입니다.') + '</div>'; return; }
     if (MODE === 'd'){
-      var it = dayItems(day);
-      $('rList').innerHTML = '<div class="rh">' + dayKo(day) + ' · ' + it.length + '건</div>' + it.map(function(r){
+      var it = dayItems(R.from);
+      $('rList').innerHTML = '<div class="rh">' + dayKo(R.from) + ' · ' + it.length + '건</div>' + it.map(function(r){
         return '<div class="ri"><div class="rt"><span>' + hm(r.t) + ' · ' + r.fl + ' ' + esc(langOf(r)) + '</span><button type="button" data-del="' + r.t + '" aria-label="이 기록 빼기">✕</button></div><div class="rs">' + esc(r.s) + '</div><div class="rr">' + esc(r.r) + '</div></div>';
       }).join('');
       return;
@@ -955,12 +958,12 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   }
   $('recBtn').onclick = openRec;
   $('back4').onclick = function(){ show('s1'); };
-  $('rDay').onchange = drawRec;
-  $('rMode').onclick = function(e){ var b = e.target.closest('[data-m]'); if (!b) return; MODE = b.dataset.m; ls('dnTrRecM', MODE); drawRec(); };
-  $('rDays').onclick = function(e){ var b = e.target.closest('[data-day]'); if (!b) return; $('rDay').value = b.dataset.day; drawRec(); };
+  $('rFrom').onchange = function(){ if (!$('rTo').value || $('rTo').value < this.value) $('rTo').value = this.value; drawRec(); };
+  $('rTo').onchange = drawRec;
+  $('rDays').onclick = function(e){ var b = e.target.closest('[data-day]'); if (!b) return; $('rFrom').value = $('rTo').value = b.dataset.day; drawRec(); };
   $('rList').onclick = function(e){
     var g = e.target.closest('[data-go]');
-    if (g){ $('rDay').value = g.dataset.go; MODE = 'd'; ls('dnTrRecM', MODE); drawRec(); window.scrollTo(0, 0); return; }
+    if (g){ $('rFrom').value = $('rTo').value = g.dataset.go; drawRec(); window.scrollTo(0, 0); return; }
     var b = e.target.closest('[data-del]'); if (!b) return;
     if (!confirm('이 기록을 교육 기록에서 뺄까요?\n(잘못 방송한 내용일 때만 빼세요)')) return;
     var t = +b.dataset.del; recPut(recAll().filter(function(r){ return r.t !== t; })); drawRec();
