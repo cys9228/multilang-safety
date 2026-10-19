@@ -80,6 +80,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 .micbox{position:relative;width:210px;height:210px}
 #ring{position:absolute;left:-25px;top:-25px;width:260px;height:260px;transform:rotate(-90deg);pointer-events:none;display:none}
 #ring.show{display:block}
+.tk{position:absolute;width:56px;margin-left:-28px;margin-top:-13px;text-align:center;font-size:18px;font-weight:900;color:#9aa3c7;display:none;pointer-events:none}
+.tk.pass{color:#3b4ef0}
+.micbox.lis .tk{display:block}
+.micbox.lis{margin:22px 0 24px}
 .mlab{text-align:center;color:var(--mu);font-size:14px;font-weight:700;margin-top:-6px;margin-bottom:6px}
 #ptt{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:166px;width:100%;margin:16px 0 4px;padding:20px 10px;border-radius:16px;border:0;background:#111827;color:#fff;font-size:min(40px, 10vw);font-weight:900;line-height:1.3;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #ptt .tt{display:flex;align-items:center;gap:12px}
@@ -195,7 +199,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <div class="lab" id="lab2">방송 언어</div>
   <div class="lang2" id="l2"></div>
   <div class="gd" style="margin-top:10px"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
-  <div class="micw"><div class="micbox"><button id="mic"><span>🎙️</span>눌러서 시작</button><svg id="ring" viewBox="0 0 260 260" aria-hidden="true"><circle cx="130" cy="130" r="122" fill="none" stroke="#fff" stroke-width="9"/><circle id="arc" cx="130" cy="130" r="122" fill="none" stroke="#3b4ef0" stroke-width="9" stroke-linecap="round" stroke-dasharray="766.5" stroke-dashoffset="766.5"/></svg></div></div>
+  <div class="micw"><div class="micbox"><button id="mic"><span>🎙️</span>눌러서 시작</button><svg id="ring" viewBox="0 0 260 260" aria-hidden="true"><circle cx="130" cy="130" r="122" fill="none" stroke="#fff" stroke-width="9"/><g fill="#9aa3c7"><circle cx="252" cy="130" r="5"/><circle cx="130" cy="252" r="5"/><circle cx="8" cy="130" r="5"/><circle cx="130" cy="8" r="5"/></g><circle id="arc" cx="130" cy="130" r="122" fill="none" stroke="#3b4ef0" stroke-width="9" stroke-linecap="round" stroke-dasharray="766.5" stroke-dashoffset="766.5"/></svg><b class="tk" data-s="5" style="left:252px;top:105px">5초</b><b class="tk" data-s="10" style="left:105px;top:250px">10초</b><b class="tk" data-s="15" style="left:-42px;top:105px">15초</b><b class="tk" data-s="20" style="left:105px;top:-40px">20초</b></div></div>
   <div id="st"></div>
   <button id="ptt" hidden><span class="tt"><svg class="wt" viewBox="0 0 40 64" aria-hidden="true"><rect x="25" y="1" width="5" height="18" rx="2" fill="#facc15"/><rect x="6" y="15" width="28" height="47" rx="6" fill="#facc15"/><rect x="11" y="21" width="18" height="11" rx="2" fill="#111827"/><g fill="#111827"><rect x="11" y="37" width="18" height="2.5" rx="1.2"/><rect x="11" y="42" width="18" height="2.5" rx="1.2"/><rect x="11" y="47" width="18" height="2.5" rx="1.2"/></g><circle cx="20" cy="55.5" r="3" fill="#dc2626"/></svg>무전기 방식</span><small>누르고 있는 동안만 말하기<br>손 떼면 방송</small></button>
   <div class="out" hidden><div id="srcT">한국어로 말하면 여기에 나옵니다</div><div id="dstT"></div></div>
@@ -542,15 +546,17 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   var LAP = 20, lisT0 = 0, lisTick = null;
   function lisStart(){
     if (lisTick) return;   // 이미 듣는 중이면 이어서 셈 (음성 인식이 잠깐 다시 켜져도 0으로 안 돌아감)
-    lisT0 = Date.now(); $('ring').classList.add('show');
+    lisT0 = Date.now(); $('ring').classList.add('show'); $('ring').parentNode.classList.add('lis');
     lisTick = setInterval(lisDraw, 200); lisDraw();
   }
-  function lisStop(){ clearInterval(lisTick); lisTick = null; $('ring').classList.remove('show'); $('arc').setAttribute('stroke-dashoffset', 766.5); }
+  function lisStop(){ clearInterval(lisTick); lisTick = null; $('ring').classList.remove('show'); $('ring').parentNode.classList.remove('lis'); $('arc').setAttribute('stroke-dashoffset', 766.5); }
   function lisDraw(){
     var sec = (Date.now() - lisT0) / 1000, p = (sec % LAP) / LAP;
     if (sec >= LAP && p < 0.01) p = 1;
     $('arc').setAttribute('stroke-dashoffset', (766.5 * (1 - p)).toFixed(1));
-    var el = $('st'), t = '🎙️ 듣는 중\n' + Math.floor(sec) + '초';
+    var inLap = sec >= LAP && p === 1 ? LAP : sec % LAP;
+    [].forEach.call(document.querySelectorAll('.tk'), function(k){ k.classList.toggle('pass', inLap >= +k.dataset.s); });
+    var el = $('st'), t = '말씀하세요';
     if (el.textContent !== t){ el.textContent = t; fitSt(); }
   }
   function setSt(t){
