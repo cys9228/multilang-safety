@@ -337,10 +337,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   }
   function boot(){
     if (!SERVER){ toLogin(''); $('setup').hidden = false; return; }
-    if (/[?&]join=1/.test(location.search)){   // 카톡으로 받은 링크 → 저장된 로그인 지우고 회원가입 화면
+    if (/[?&]join=1/.test(location.search)){   // 카톡으로 받은 링크 → 저장된 로그인 지우고 첫 화면(로그인·회원가입)
       setToken(''); setWho(null);
       try{ history.replaceState(null, '', location.pathname); }catch(_){}
-      badF('', ''); show('s3'); return;
+      toLogin(''); return;
     }
     var t = token();
     if (!t){ toLogin(''); return; }
