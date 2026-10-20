@@ -282,7 +282,8 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     <div class="tm"><input type="time" id="rT1" value="07:00"><span>~</span><input type="time" id="rT2" value="07:30"></div>
     <label for="rPlace">교육 장소 <span class="opt">(선택)</span></label><input type="text" id="rPlace" placeholder="예: 1동 앞 TBM 장소">
     <label for="rRows">참석자 서명 칸</label>
-    <select id="rRows"><option value="20">20명</option><option value="30" selected>30명</option><option value="40">40명</option><option value="50">50명</option><option value="0">넣지 않음</option></select>
+    <select id="rRows"><option value="10">10명</option><option value="20">20명</option><option value="30" selected>30명</option><option value="40">40명</option><option value="50">50명</option><option value="c">직접 입력</option><option value="0">넣지 않음</option></select>
+    <input type="text" id="rRowsN" inputmode="numeric" placeholder="인원 수 입력 (예: 15)" hidden>
   </div>
   <div class="rlist" id="rList"></div>
   <button class="ok" id="rXls" type="button">📊 엑셀로 받기 (편집 가능)</button>
@@ -897,7 +898,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     recPut(a);
   }
   function recForm(){ try{ return JSON.parse(localStorage.getItem('dnTrRecF') || '{}') || {}; }catch(e){ return {}; } }
-  var RF = ['rKind', 'rSite', 'rCo', 'rWho', 'rPlace', 'rRows', 'rT1', 'rT2'];
+  var RF = ['rKind', 'rSite', 'rCo', 'rWho', 'rPlace', 'rRows', 'rRowsN', 'rT1', 'rT2'];
+  function attN(){ var v = $('rRows').value; if (v !== 'c') return +v || 0; var n = parseInt($('rRowsN').value, 10); return n > 0 ? Math.min(n, 100) : 0; }   // 참석자 서명 칸 수
+  $('rRows').addEventListener('change', function(){ $('rRowsN').hidden = this.value !== 'c'; if (this.value === 'c') $('rRowsN').focus(); });
+  $('rRowsN').addEventListener('input', function(){ this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3); });
   function saveForm(){ var o = {}; RF.forEach(function(k){ o[k] = $(k).value; }); ls('dnTrRecF', JSON.stringify(o)); }
   RF.forEach(function(k){ $(k).addEventListener('change', saveForm); });
   function dayItems(day){ return recAll().filter(function(r){ return dkey(r.t) === day; }); }
@@ -911,7 +915,8 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     $('rCo').value = F.rCo || WHO.company || '';
     $('rWho').value = F.rWho || WHO.name || '';
     $('rPlace').value = F.rPlace || '';
-    $('rRows').value = ({20:1, 30:1, 40:1, 50:1, 0:1})[F.rRows] ? F.rRows : '30';
+    $('rRows').value = ({10:1, 20:1, 30:1, 40:1, 50:1, c:1, 0:1})[F.rRows] ? F.rRows : '30';
+    $('rRowsN').value = F.rRowsN || ''; $('rRowsN').hidden = $('rRows').value !== 'c';
     var all = recAll(), today = dkey(Date.now());
     $('rFrom').value = $('rTo').value = all.some(function(r){ return dkey(r.t) === today; }) || !all.length ? today : dkey(all[all.length - 1].t);
     drawRec(); show('s4');
@@ -977,7 +982,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     var it = dayItems(day), F = {}; RF.forEach(function(k){ F[k] = $(k).value.trim(); });
     var langs = []; it.forEach(function(r){ if (langs.indexOf(r.fn) < 0) langs.push(r.fn); });
     return { day:day, dk:dayKo(day), it:it, F:F, langs:langs.join(', '), span:F.rT1 && F.rT2 ? F.rT1 + ' ~ ' + F.rT2 : (it.length ? hm(it[0].t) + ' ~ ' + hm(it[it.length - 1].t) : ''),   // 교육 시간: 입력한 시간 (비우면 방송 시각)
-       n:+F.rRows || 0 };
+       n:attN() };
   }
   function formNow(){ var F = {}; RF.forEach(function(k){ F[k] = $(k).value.trim(); }); return F; }
   var OKTXT = '위와 같이 근로자가 이해할 수 있는 언어로 안전교육을 실시하였음을 확인합니다.';
@@ -999,14 +1004,14 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     h += '<div class="pd-ok">' + OKTXT + '<br>교육 실시자 : ' + esc(F.rWho || '') + ' &nbsp; &nbsp; (서명)</div>';
     out.push(h);
     if (D.n){
-      var rows = D.n / 2, rh = Math.max(7, Math.min(15, (212 / rows))).toFixed(1);   // 서명 칸 높이: A4 한 장에 꽉 차게
+      var rows = Math.ceil(D.n / 2), rh = Math.max(7, Math.min(15, (212 / rows))).toFixed(1);   // 서명 칸 높이: A4 한 장에 꽉 차게
       h = '<div class="pd-h"><div class="pd-title">참석자 서명지</div>' + signBox() + '</div>';
       h += '<table class="pd-info"><tr><th>교육 일자</th><td>' + D.dk + '</td><th>교육 구분</th><td>' + esc(F.rKind) + '</td></tr>';
       h += '<tr><th>현장명</th><td>' + esc(F.rSite) + '</td><th>교육 실시자</th><td>' + esc(F.rWho) + '</td></tr></table>';
       h += '<table class="pd-att" style="margin-top:4mm"><thead><tr>';
       for (var c = 0; c < 2; c++) h += '<th style="width:11mm">번호</th><th>성명</th><th style="width:22mm">국적</th><th>서명</th>';
       h += '</tr></thead><tbody>';
-      for (var i = 1; i <= rows; i++) h += '<tr style="height:' + rh + 'mm"><td>' + i + '</td><td></td><td></td><td></td><td>' + (i + rows) + '</td><td></td><td></td><td></td></tr>';
+      for (var i = 1; i <= rows; i++) h += '<tr style="height:' + rh + 'mm"><td>' + i + '</td><td></td><td></td><td></td><td>' + (i + rows <= D.n ? i + rows : '') + '</td><td></td><td></td><td></td></tr>';
       h += '</tbody></table>';
       out.push(h);
     }
@@ -1157,10 +1162,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
         w2.getRow(4).height = 24; w2.getRow(5).height = 24; w2.getRow(6).height = 10;
         ['번호', '성명', '국적', '서명', '번호', '성명', '국적', '서명'].forEach(function(t, i){ lab(w2, 7, i + 1, i + 1, t); });
         w2.getRow(7).height = 24; u2 += 24 * 3 + 10;
-        var rows = D.n / 2, rh = Math.max(20, Math.min(60, Math.floor((PAGE_H - u2 - 4) / rows)));
+        var rows = Math.ceil(D.n / 2), rh = Math.max(20, Math.min(110, Math.floor((PAGE_H - u2 - 4) / rows)));
         for (var i = 1; i <= rows; i++){
           var rr = 7 + i;
-          box(w2, rr, 1, rr, 1, i); box(w2, rr, 5, rr, 5, i + rows);
+          box(w2, rr, 1, rr, 1, i); box(w2, rr, 5, rr, 5, i + rows <= D.n ? i + rows : '');
           [2, 3, 4, 6, 7, 8].forEach(function(k){ box(w2, rr, k, rr, k, ''); });
           w2.getRow(rr).height = rh;
         }
