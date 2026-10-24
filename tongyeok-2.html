@@ -918,7 +918,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
       { cap:'<개별내용> 제' + spNo(F) + '호 ' + SP[spNo(F) - 1], items:SPC[spNo(F) - 1] } ];
     if (/정기/.test(k)) return [{ cap:'근로자 정기교육 (별표 5 제1호 가목)', items:EDU_REG }];
     if (/채용|변경/.test(k)) return [{ cap:'채용 시 교육 및 작업내용 변경 시 교육 (별표 5 제1호 다목)', items:EDU_HIRE }];
-    if (/TBM/.test(k)) return [{ cap:'TBM (작업 전 안전점검회의) 기본 내용', items:EDU_TBM, note:'TBM은 법정 교육 구분이 아니므로 현장에서 흔히 쓰는 기본 항목입니다.' }];
+    if (/TBM/.test(k)) return [{ cap:'TBM (작업 전 안전점검회의) 기본 내용', items:EDU_TBM }];
     return [{ cap:'교육 내용 (직접 적어 주세요)', items:[] }];
   }
   function isSp(F){ return (F || formNow()).rKind === '특별교육'; }
@@ -1178,7 +1178,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
       });
     }
     ws.getRow(r).height = 8; used += 8; r++;
-    box(ws, r, 1, r, 9, '■ 교육 내용 (산업안전보건법 시행규칙 별표 5)', { h:'left', bold:true, size:11, border:false }); ws.getCell(r, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws.getRow(r).height = 22; used += 22; r++;
+    box(ws, r, 1, r, 9, /TBM|기타/.test(F.rKind || 'TBM') ? '■ 교육 내용' : '■ 교육 내용 (산업안전보건법 시행규칙 별표 5)', { h:'left', bold:true, size:11, border:false }); ws.getCell(r, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws.getRow(r).height = 22; used += 22; r++;
     var hr = r;
     lab(ws, r, 1, 1, 'No'); lab(ws, r, 2, 8, '교육 내용'); lab(ws, r, 9, 9, '실시 확인'); ws.getRow(r).height = 24; used += 24; r++;
     var no = 0;
