@@ -275,6 +275,13 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     <div class="chips" id="rDays"></div>
     <label for="rKind">교육 구분</label>
     <select id="rKind"><option>TBM</option><option>정기 안전보건교육</option><option>채용 시 교육</option><option>작업내용 변경 시 교육</option><option>특별교육</option><option>기타 안전교육</option></select>
+    <div id="rSpWrap" hidden>
+      <label for="rSp">특별교육 대상 작업 <span class="opt">(산업안전보건법 시행규칙 별표 5 · 40종)</span></label>
+      <select id="rSp" style="white-space:normal"><option value="1">제1호 고압실 내 작업(잠함공법이나 그 밖의 압기공법으로 대기압을 넘는 기압인 작업실 또는 수갱 내부에서 하는 작업만 해당)</option><option value="2">제2호 아세틸렌 용접장치 또는 가스집합 용접장치를 사용하는 금속의 용접·용단 또는 가열작업(발생기·도관 등에 의하여 구성되는 용접장치만 해당)</option><option value="3">제3호 밀폐된 장소(탱크 내 또는 환기가 극히 불량한 좁은 장소)에서 하는 용접작업 또는 습한 장소에서 하는 전기용접 작업</option><option value="4">제4호 폭발성·물반응성·자기반응성·자기발열성 물질, 자연발화성 액체·고체 및 인화성 액체의 제조 또는 취급작업(시험연구를 위한 취급작업은 제외)</option><option value="5">제5호 액화석유가스·수소가스 등 인화성 가스 또는 폭발성 물질 중 가스의 발생장치 취급 작업</option><option value="6">제6호 화학설비 중 반응기, 교반기·추출기의 사용 및 세척작업</option><option value="7">제7호 화학설비의 탱크 내 작업</option><option value="8">제8호 분말·원재료 등을 담은 호퍼·저장창고 등 저장탱크의 내부작업</option><option value="9">제9호 건조설비에 의한 물건의 가열·건조작업</option><option value="10">제10호 집재장치(집재기·가선·운반기구·지주 등)의 조립, 해체, 변경 또는 수리작업 및 이들 설비에 의한 집재 또는 운반 작업</option><option value="11">제11호 동력에 의하여 작동되는 프레스기계를 5대 이상 보유한 사업장에서 해당 기계로 하는 작업</option><option value="12">제12호 목재가공용 기계(둥근톱·띠톱·대패·모떼기기계 및 라우터기, 휴대용 제외)를 5대 이상 보유한 사업장에서 해당 기계로 하는 작업</option><option value="13">제13호 운반용 하역기계를 5대 이상 보유한 사업장에서의 해당 기계로 하는 작업</option><option value="14">제14호 1톤 이상의 크레인을 사용하는 작업 또는 1톤 미만의 크레인 또는 호이스트를 5대 이상 보유한 사업장에서 해당 기계로 하는 작업(제40호 작업 제외)</option><option value="15">제15호 건설용 리프트·곤돌라를 이용한 작업</option><option value="16">제16호 주물 및 단조 작업</option><option value="17">제17호 전압이 75볼트 이상인 정전 및 활선작업</option><option value="18">제18호 콘크리트 파쇄기를 사용하여 하는 파쇄작업(2미터 이상인 구축물의 파쇄작업만 해당)</option><option value="19">제19호 굴착면의 높이가 2미터 이상이 되는 지반 굴착(터널 및 수직갱 외의 갱 굴착은 제외)작업</option><option value="20">제20호 흙막이 지보공의 보강 또는 동바리를 설치하거나 해체하는 작업</option><option value="21">제21호 터널 안에서의 굴착작업 또는 같은 작업에서의 터널 거푸집 지보공의 조립 또는 콘크리트 작업</option><option value="22">제22호 굴착면의 높이가 2미터 이상이 되는 암석의 굴착작업</option><option value="23">제23호 높이가 2미터 이상인 물건을 쌓거나 무너뜨리는 작업(하역기계로만 하는 작업은 제외)</option><option value="24">제24호 선박에 짐을 쌓거나 부리거나 이동시키는 작업</option><option value="25">제25호 거푸집 동바리의 조립 또는 해체작업</option><option value="26">제26호 비계의 조립·해체 또는 변경작업</option><option value="27">제27호 건축물의 골조, 다리의 상부구조 또는 탑의 금속제 부재로 구성되는 것(5미터 이상)의 조립·해체 또는 변경작업</option><option value="28">제28호 처마 높이가 5미터 이상인 목조건축물의 구조 부재의 조립이나 건축물의 지붕 또는 외벽 밑에서의 설치작업</option><option value="29">제29호 콘크리트 인공구조물(높이 2미터 이상)의 해체 또는 파괴작업</option><option value="30">제30호 타워크레인을 설치(상승작업 포함)·해체하는 작업</option><option value="31">제31호 보일러(소형 보일러 등 제외)의 설치 및 취급 작업</option><option value="32">제32호 게이지 압력을 제곱센티미터당 1킬로그램 이상으로 사용하는 압력용기의 설치 및 취급작업</option><option value="33">제33호 방사선 업무에 관계되는 작업(의료 및 실험용 제외)</option><option value="34">제34호 맨홀작업</option><option value="35">제35호 밀폐공간에서의 작업</option><option value="36">제36호 허가 또는 관리 대상 유해물질의 제조 또는 취급작업</option><option value="37">제37호 로봇작업</option><option value="38">제38호 석면해체·제거작업</option><option value="39">제39호 가연물이 있는 장소에서 하는 화재위험작업</option><option value="40">제40호 타워크레인을 사용하는 작업 시 신호업무를 하는 작업</option></select>
+      <label for="rTgt">교육 대상 <span class="opt">(법정 교육시간)</span></label>
+      <select id="rTgt"><option value="g">일반 근로자 — 16시간 이상</option><option value="s">단기간·간헐적 작업 — 2시간 이상</option><option value="d">일용·1주 이하 기간제 근로자 — 2시간 이상 (제40호는 8시간)</option></select>
+      <div class="opt" id="rSpHint" style="margin:4px 0 6px;line-height:1.5"></div>
+    </div>
     <label for="rSite">현장명</label><input type="text" id="rSite" placeholder="예: OO 신축공사">
     <label for="rCo">회사명</label><input type="text" id="rCo">
     <label for="rWho">교육 실시자</label><input type="text" id="rWho" placeholder="예: 홍길동">
@@ -287,7 +294,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   </div>
   <div class="rlist" id="rList"></div>
   <button class="ok" id="rXls" type="button">📊 엑셀로 받기 (편집 가능)</button>
-  <div class="foot">엑셀 파일 · A4 인쇄용<br>하루: 갑지 + 참석자 서명지 · 여러 날: 요약 + 날짜별 갑지·서명지<br>기록은 이 휴대폰에만 저장됩니다.</div>
+  <div class="foot">엑셀 파일 · A4 인쇄용<br>교육 기록 1장 + 참석자 서명지 1장 (여러 날도 한 장에 합쳐서)<br>특별교육은 40종 작업명·법정 교육시간·실시 시간 누계가 함께 들어갑니다<br>기록은 이 휴대폰에만 저장됩니다.</div>
 </div>
 <div id="printDoc"></div>
 
@@ -898,12 +905,31 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     recPut(a);
   }
   function recForm(){ try{ return JSON.parse(localStorage.getItem('dnTrRecF') || '{}') || {}; }catch(e){ return {}; } }
-  var RF = ['rKind', 'rSite', 'rCo', 'rWho', 'rPlace', 'rRows', 'rRowsN', 'rT1', 'rT2'];
+  var RF = ['rKind', 'rSite', 'rCo', 'rWho', 'rPlace', 'rRows', 'rRowsN', 'rT1', 'rT2', 'rSp', 'rTgt'];
+  /* 특별교육 40종 — 산업안전보건법 시행규칙 [별표 5] 제1호 라목 */
+  var SP = ["고압실 내 작업(잠함공법이나 그 밖의 압기공법으로 대기압을 넘는 기압인 작업실 또는 수갱 내부에서 하는 작업만 해당)", "아세틸렌 용접장치 또는 가스집합 용접장치를 사용하는 금속의 용접·용단 또는 가열작업(발생기·도관 등에 의하여 구성되는 용접장치만 해당)", "밀폐된 장소(탱크 내 또는 환기가 극히 불량한 좁은 장소)에서 하는 용접작업 또는 습한 장소에서 하는 전기용접 작업", "폭발성·물반응성·자기반응성·자기발열성 물질, 자연발화성 액체·고체 및 인화성 액체의 제조 또는 취급작업(시험연구를 위한 취급작업은 제외)", "액화석유가스·수소가스 등 인화성 가스 또는 폭발성 물질 중 가스의 발생장치 취급 작업", "화학설비 중 반응기, 교반기·추출기의 사용 및 세척작업", "화학설비의 탱크 내 작업", "분말·원재료 등을 담은 호퍼·저장창고 등 저장탱크의 내부작업", "건조설비에 의한 물건의 가열·건조작업", "집재장치(집재기·가선·운반기구·지주 등)의 조립, 해체, 변경 또는 수리작업 및 이들 설비에 의한 집재 또는 운반 작업", "동력에 의하여 작동되는 프레스기계를 5대 이상 보유한 사업장에서 해당 기계로 하는 작업", "목재가공용 기계(둥근톱·띠톱·대패·모떼기기계 및 라우터기, 휴대용 제외)를 5대 이상 보유한 사업장에서 해당 기계로 하는 작업", "운반용 하역기계를 5대 이상 보유한 사업장에서의 해당 기계로 하는 작업", "1톤 이상의 크레인을 사용하는 작업 또는 1톤 미만의 크레인 또는 호이스트를 5대 이상 보유한 사업장에서 해당 기계로 하는 작업(제40호 작업 제외)", "건설용 리프트·곤돌라를 이용한 작업", "주물 및 단조 작업", "전압이 75볼트 이상인 정전 및 활선작업", "콘크리트 파쇄기를 사용하여 하는 파쇄작업(2미터 이상인 구축물의 파쇄작업만 해당)", "굴착면의 높이가 2미터 이상이 되는 지반 굴착(터널 및 수직갱 외의 갱 굴착은 제외)작업", "흙막이 지보공의 보강 또는 동바리를 설치하거나 해체하는 작업", "터널 안에서의 굴착작업 또는 같은 작업에서의 터널 거푸집 지보공의 조립 또는 콘크리트 작업", "굴착면의 높이가 2미터 이상이 되는 암석의 굴착작업", "높이가 2미터 이상인 물건을 쌓거나 무너뜨리는 작업(하역기계로만 하는 작업은 제외)", "선박에 짐을 쌓거나 부리거나 이동시키는 작업", "거푸집 동바리의 조립 또는 해체작업", "비계의 조립·해체 또는 변경작업", "건축물의 골조, 다리의 상부구조 또는 탑의 금속제 부재로 구성되는 것(5미터 이상)의 조립·해체 또는 변경작업", "처마 높이가 5미터 이상인 목조건축물의 구조 부재의 조립이나 건축물의 지붕 또는 외벽 밑에서의 설치작업", "콘크리트 인공구조물(높이 2미터 이상)의 해체 또는 파괴작업", "타워크레인을 설치(상승작업 포함)·해체하는 작업", "보일러(소형 보일러 등 제외)의 설치 및 취급 작업", "게이지 압력을 제곱센티미터당 1킬로그램 이상으로 사용하는 압력용기의 설치 및 취급작업", "방사선 업무에 관계되는 작업(의료 및 실험용 제외)", "맨홀작업", "밀폐공간에서의 작업", "허가 또는 관리 대상 유해물질의 제조 또는 취급작업", "로봇작업", "석면해체·제거작업", "가연물이 있는 장소에서 하는 화재위험작업", "타워크레인을 사용하는 작업 시 신호업무를 하는 작업"];
+  function isSp(F){ return (F || formNow()).rKind === '특별교육'; }
+  function spNo(F){ var n = +((F || formNow()).rSp) || 1; return Math.max(1, Math.min(40, n)); }
+  function spName(F){ var n = spNo(F); return '제' + n + '호 ' + SP[n - 1]; }
+  function spNeedMin(F){ F = F || formNow(); var t = F.rTgt || 'g'; if (t === 'g') return 960; if (t === 'd' && spNo(F) === 40) return 480; return 120; }
+  function spTgtTxt(F){ F = F || formNow(); var t = F.rTgt || 'g';
+    return t === 'g' ? '일반 근로자' : t === 's' ? '단기간·간헐적 작업 근로자' : '일용·1주 이하 기간제 근로자'; }
+  function spRuleTxt(F){ F = F || formNow(); var t = F.rTgt || 'g';
+    if (t === 'g') return '16시간 이상 (최초 작업 전 4시간 이상 실시, 나머지 12시간은 3개월 이내에서 분할 실시 가능)';
+    if (t === 'd' && spNo(F) === 40) return '8시간 이상 (타워크레인 신호작업)';
+    return '2시간 이상'; }
+  function hmTxt(m){ m = Math.max(0, Math.round(m)); var h = Math.floor(m / 60), r = m % 60; return (h ? h + '시간' : '') + (r ? (h ? ' ' : '') + r + '분' : (h ? '' : '0분')); }
+  function spanMin(span){ var m = /(\d{1,2}):(\d{2})\s*~\s*(\d{1,2}):(\d{2})/.exec(span || ''); if (!m) return 0; var a = +m[1] * 60 + +m[2], b = +m[3] * 60 + +m[4]; if (b < a) b += 1440; return b - a; }
+  function spToggle(){
+    var on = $('rKind').value === '특별교육'; $('rSpWrap').hidden = !on; if (!on) return;
+    $('rSpHint').textContent = '법정 교육시간: ' + spRuleTxt(formNow()) + ' · 여러 날 나눠 실시하면 기간을 잡아 한 번에 받으세요 (실시 시간 누계 자동 계산)';
+  }
   function attN(){ var v = $('rRows').value; if (v !== 'c') return +v || 0; var n = parseInt($('rRowsN').value, 10); return n > 0 ? Math.min(n, 100) : 0; }   // 참석자 서명 칸 수
   $('rRows').addEventListener('change', function(){ $('rRowsN').hidden = this.value !== 'c'; if (this.value === 'c') $('rRowsN').focus(); });
   $('rRowsN').addEventListener('input', function(){ this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3); });
   function saveForm(){ var o = {}; RF.forEach(function(k){ o[k] = $(k).value; }); ls('dnTrRecF', JSON.stringify(o)); }
   RF.forEach(function(k){ $(k).addEventListener('change', saveForm); });
+  ['rKind', 'rSp', 'rTgt'].forEach(function(k){ $(k).addEventListener('change', spToggle); });
   function dayItems(day){ return recAll().filter(function(r){ return dkey(r.t) === day; }); }
   function dayKo(day){ var d = new Date(day + 'T00:00:00'); return d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일 (' + '일월화수목금토'.charAt(d.getDay()) + ')'; }
   function langOf(r){ return r.d === 'f2k' ? r.fn + ' → 한국어' : '한국어 → ' + r.fn; }
@@ -917,6 +943,9 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     $('rPlace').value = F.rPlace || '';
     $('rRows').value = ({10:1, 20:1, 30:1, 40:1, 50:1, c:1, 0:1})[F.rRows] ? F.rRows : '30';
     $('rRowsN').value = F.rRowsN || ''; $('rRowsN').hidden = $('rRows').value !== 'c';
+    $('rSp').value = F.rSp || '1'; if (!$('rSp').value) $('rSp').value = '1';
+    $('rTgt').value = F.rTgt || 'g'; if (!$('rTgt').value) $('rTgt').value = 'g';
+    spToggle();
     var all = recAll(), today = dkey(Date.now());
     $('rFrom').value = $('rTo').value = all.some(function(r){ return dkey(r.t) === today; }) || !all.length ? today : dkey(all[all.length - 1].t);
     drawRec(); show('s4');
@@ -1101,77 +1130,89 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     function val(ws, r, c1, c2, t){ box(ws, r, c1, r, c2, t, { h:'left' }); }
     var COLS = [5.5, 7.5, 12.5, 17, 15, 5, 10, 10, 11];
 
-    /* ── 요약 (일주일·한 달) ── */
-    if (MODE !== 'd'){
-      var F0 = formNow(), langs = [];
-      R.days.forEach(function(k){ docData(k).langs.split(', ').forEach(function(l){ if (l && langs.indexOf(l) < 0) langs.push(l); }); });
-      var ws0 = sheet(R.kind + ' 요약', COLS, true), u0 = head(ws0, '다국어 안전교육 ' + R.kind + ' 실시 현황', 5, 6);
-      lab(ws0, 4, 1, 2, '기간'); val(ws0, 4, 3, 9, R.label);
-      [['현장명', F0.rSite, '회사명', F0.rCo], ['교육 실시자', F0.rWho, '교육 구분', F0.rKind], ['교육 일수', R.days.length + '일', '총 방송 횟수', R.total + '회']].forEach(function(a, i){
-        var r = 5 + i; lab(ws0, r, 1, 2, a[0]); val(ws0, r, 3, 5, a[1]); lab(ws0, r, 6, 7, a[2]); val(ws0, r, 8, 9, a[3]);
-      });
-      lab(ws0, 8, 1, 2, '교육 언어'); val(ws0, 8, 3, 9, langs.join(', '));
-      for (var q = 4; q <= 8; q++) ws0.getRow(q).height = 24;
-      ws0.getRow(9).height = 10;
-      box(ws0, 10, 1, 10, 9, '■ 일자별 교육 실시 현황', { h:'left', bold:true, size:11, border:false }); ws0.getCell(10, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws0.getRow(10).height = 22;
-      lab(ws0, 11, 1, 1, 'No'); lab(ws0, 11, 2, 3, '교육 일자'); lab(ws0, 11, 4, 4, '교육 시간'); lab(ws0, 11, 5, 6, '교육 언어'); lab(ws0, 11, 7, 7, '방송 횟수'); lab(ws0, 11, 8, 9, '비고'); ws0.getRow(11).height = 24;
-      u0 += 24 * 5 + 10 + 22 + 24;
-      var r0 = 12;
-      R.days.forEach(function(k, i){
-        var D = docData(k);
-        box(ws0, r0, 1, r0, 1, i + 1); box(ws0, r0, 2, r0, 3, D.dk); box(ws0, r0, 4, r0, 4, D.span); box(ws0, r0, 5, r0, 6, D.langs, { h:'left' }); box(ws0, r0, 7, r0, 7, R.cnt[k] + '회'); box(ws0, r0, 8, r0, 9, '');
-        ws0.getRow(r0).height = 24; u0 += 24; r0++;
-      });
-      while (u0 + 24 + 46 <= PAGE_H){ box(ws0, r0, 1, r0, 1, ''); box(ws0, r0, 2, r0, 3, ''); box(ws0, r0, 4, r0, 4, ''); box(ws0, r0, 5, r0, 6, ''); box(ws0, r0, 7, r0, 7, ''); box(ws0, r0, 8, r0, 9, ''); ws0.getRow(r0).height = 24; u0 += 24; r0++; }
-      ws0.getRow(r0).height = 10; r0++;
-      box(ws0, r0, 1, r0, 9, '붙임 : 일자별 다국어 안전교육 실시 기록 및 참석자 서명지 각 ' + R.days.length + '부', { border:false, size:11, h:'left' }); ws0.getRow(r0).height = 26;
-      ws0.pageSetup.printArea = 'A1:I' + r0;
+    /* ── v2: 날짜별 시트 없이 「교육 기록」 1장 + 「참석자 서명지」 1장 ── */
+    var F = formNow(), SPX = isSp(F), multi = R.days.length > 1, DD = R.days.map(docData), items = [], langs = [];
+    DD.forEach(function(D){ D.it.forEach(function(x){ items.push({ x:x, day:D.day }); }); D.langs.split(', ').forEach(function(l){ if (l && langs.indexOf(l) < 0) langs.push(l); }); });
+    var dayMin = DD.map(function(D){ return spanMin(D.span); }), totMin = dayMin.reduce(function(a, b){ return a + b; }, 0);
+    var kindTxt = SPX ? '특별교육 (제' + spNo(F) + '호)' : (F.rKind || 'TBM');
+    var ws = sheet('교육 기록', COLS, false), used = head(ws, SPX ? '다국어 특별안전보건교육 실시 기록' : '다국어 안전교육 실시 기록', 5, 6);
+    var info = [[multi ? '교육 기간' : '교육 일자', R.label, '교육 구분', kindTxt], ['현장명', F.rSite, '회사명', F.rCo],
+                ['교육 시간', multi ? '아래 일자별 현황 참조' : DD[0].span, '교육 장소', F.rPlace], ['교육 실시자', F.rWho, '방송 횟수', R.total + '회']];
+    var r = 4;
+    info.forEach(function(a){ lab(ws, r, 1, 2, a[0]); val(ws, r, 3, 5, a[1]); lab(ws, r, 6, 7, a[2]); val(ws, r, 8, 9, a[3]); ws.getRow(r).height = 24; used += 24; r++; });
+    lab(ws, r, 1, 2, '교육 언어'); val(ws, r, 3, 9, langs.join(', ')); ws.getRow(r).height = 24; used += 24; r++;
+    if (SPX){
+      var need = spNeedMin(F), ok = totMin >= need;
+      var hN = Math.max(24, nLines(spName(F), 66) * 14 + 10);
+      lab(ws, r, 1, 2, '대상 작업\n(별표 5)'); val(ws, r, 3, 9, spName(F)); ws.getRow(r).height = hN; used += hN; r++;
+      lab(ws, r, 1, 2, '교육 대상'); val(ws, r, 3, 5, spTgtTxt(F)); lab(ws, r, 6, 7, '법정 시간'); val(ws, r, 8, 9, hmTxt(need) + ' 이상'); ws.getRow(r).height = 24; used += 24; r++;
+      lab(ws, r, 1, 2, '실시 시간 누계'); val(ws, r, 3, 5, hmTxt(totMin) + (multi ? ' (' + R.days.length + '일)' : '')); lab(ws, r, 6, 7, '이수 판정');
+      val(ws, r, 8, 9, ok ? '충족' : hmTxt(need - totMin) + ' 부족'); ws.getCell(r, 8).font = { name:FONT, size:10, bold:true, color:{ argb:ok ? 'FF15803D' : 'FFB91C1C' } };
+      ws.getRow(r).height = 24; used += 24; r++;
+      var hR = Math.max(24, nLines('교육시간 기준: ' + spRuleTxt(F), 80) * 14 + 8);
+      box(ws, r, 1, r, 9, '※ 교육시간 기준: ' + spRuleTxt(F) + ' — 산업안전보건법 시행규칙 [별표 4]', { h:'left', size:9, border:false }); ws.getRow(r).height = hR; used += hR; r++;
     }
-
-    R.days.forEach(function(day){
-      var D = docData(day), F = D.F, tag = MODE === 'd' ? '' : (+day.slice(5, 7)) + '-' + (+day.slice(8)) + ' ';
-      /* ── 갑지 : A No · B~C 언어 · D~E 말한 내용 · F~I 방송한 내용 ── */
-      var ws = sheet(tag + '갑지', COLS, false), used = head(ws, '다국어 안전교육 실시 기록', 5, 6);
-      var info = [['교육 일자', D.dk, '교육 구분', F.rKind], ['현장명', F.rSite, '회사명', F.rCo], ['교육 시간', D.span, '교육 장소', F.rPlace], ['교육 실시자', F.rWho, '방송 횟수', D.it.length + '회']];
-      info.forEach(function(a, i){ var r = 4 + i; lab(ws, r, 1, 2, a[0]); val(ws, r, 3, 5, a[1]); lab(ws, r, 6, 7, a[2]); val(ws, r, 8, 9, a[3]); ws.getRow(r).height = 24; });
-      lab(ws, 8, 1, 2, '교육 언어'); val(ws, 8, 3, 9, D.langs); ws.getRow(8).height = 24;
-      ws.getRow(9).height = 10;
-      box(ws, 10, 1, 10, 9, '■ 교육 내용 (방송 기록)', { h:'left', bold:true, size:11, border:false }); ws.getCell(10, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws.getRow(10).height = 22;
-      lab(ws, 11, 1, 1, 'No'); lab(ws, 11, 2, 3, '언어'); lab(ws, 11, 4, 5, '말한 내용'); lab(ws, 11, 6, 9, '방송한 내용 (번역)'); ws.getRow(11).height = 24;
-      used += 24 * 5 + 10 + 22 + 24;
-      var r = 12;
-      D.it.forEach(function(x, i){
-        box(ws, r, 1, r, 1, i + 1); box(ws, r, 2, r, 3, langOf(x));
-        box(ws, r, 4, r, 5, x.s, { h:'left' }); box(ws, r, 6, r, 9, x.r, { h:'left' });
-        var hgt = Math.max(28, Math.max(nLines(x.s, 28), nLines(x.r, 31)) * 14 + 8);
-        ws.getRow(r).height = hgt; used += hgt; r++;
+    if (multi || SPX){
+      ws.getRow(r).height = 8; used += 8; r++;
+      box(ws, r, 1, r, 9, '■ 일자별 교육 실시 현황', { h:'left', bold:true, size:11, border:false }); ws.getCell(r, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws.getRow(r).height = 22; used += 22; r++;
+      lab(ws, r, 1, 1, 'No'); lab(ws, r, 2, 3, '교육 일자'); lab(ws, r, 4, 4, '교육 시간'); lab(ws, r, 5, 5, '실시 시간'); lab(ws, r, 6, 7, '교육 언어'); lab(ws, r, 8, 8, '방송'); lab(ws, r, 9, 9, '누계'); ws.getRow(r).height = 24; used += 24; r++;
+      var acc = 0;
+      DD.forEach(function(D, i){
+        acc += dayMin[i];
+        box(ws, r, 1, r, 1, i + 1); box(ws, r, 2, r, 3, D.dk); box(ws, r, 4, r, 4, D.span); box(ws, r, 5, r, 5, hmTxt(dayMin[i]));
+        box(ws, r, 6, r, 7, D.langs, { h:'left' }); box(ws, r, 8, r, 8, R.cnt[D.day] + '회'); box(ws, r, 9, r, 9, hmTxt(acc));
+        ws.getRow(r).height = 24; used += 24; r++;
       });
-      var tail = 10 + 26 + 26;
-      while (used + 26 + tail <= PAGE_H){ for (var k = 1; k <= 9; k++) box(ws, r, k, r, k, ''); ws.mergeCells(r, 2, r, 3); ws.mergeCells(r, 4, r, 5); ws.mergeCells(r, 6, r, 9); ws.getRow(r).height = 26; used += 26; r++; }   // 빈 줄로 한 장을 꽉 채움
-      ws.getRow(r).height = 10; r++;
-      box(ws, r, 1, r, 9, OKTXT, { border:false, size:11 }); ws.getRow(r).height = 26; r++;
-      box(ws, r, 1, r, 9, '교육 실시자 :  ' + (F.rWho || '') + '          (서명)', { border:false, size:11 }); ws.getRow(r).height = 26;
-      ws.pageSetup.printTitlesRow = '11:11';
-      ws.pageSetup.printArea = 'A1:I' + r;
-
-      /* ── 참석자 서명지 : 번호 · 성명 · 국적 · 서명 × 2 ── */
-      if (D.n){
-        var w2 = sheet(tag + (tag ? '서명지' : '참석자 서명지'), [6, 14, 10, 15, 6, 14, 10, 15], true), u2 = head(w2, '참석자 서명지', 4, 5);
-        lab(w2, 4, 1, 2, '교육 일자'); val(w2, 4, 3, 4, D.dk); lab(w2, 4, 5, 6, '교육 구분'); val(w2, 4, 7, 8, F.rKind);
-        lab(w2, 5, 1, 2, '현장명'); val(w2, 5, 3, 4, F.rSite); lab(w2, 5, 5, 6, '교육 실시자'); val(w2, 5, 7, 8, F.rWho);
-        w2.getRow(4).height = 24; w2.getRow(5).height = 24; w2.getRow(6).height = 10;
-        ['번호', '성명', '국적', '서명', '번호', '성명', '국적', '서명'].forEach(function(t, i){ lab(w2, 7, i + 1, i + 1, t); });
-        w2.getRow(7).height = 24; u2 += 24 * 3 + 10;
-        var rows = Math.ceil(D.n / 2), rh = Math.max(20, Math.min(110, Math.floor((PAGE_H - u2 - 4) / rows)));
-        for (var i = 1; i <= rows; i++){
-          var rr = 7 + i;
-          box(w2, rr, 1, rr, 1, i); box(w2, rr, 5, rr, 5, i + rows <= D.n ? i + rows : '');
-          [2, 3, 4, 6, 7, 8].forEach(function(k){ box(w2, rr, k, rr, k, ''); });
-          w2.getRow(rr).height = rh;
-        }
-        w2.pageSetup.printArea = 'A1:H' + (7 + rows);
-      }
+    }
+    ws.getRow(r).height = 8; used += 8; r++;
+    box(ws, r, 1, r, 9, '■ 교육 내용 (방송 기록)', { h:'left', bold:true, size:11, border:false }); ws.getCell(r, 1).alignment = { vertical:'bottom', horizontal:'left' }; ws.getRow(r).height = 22; used += 22; r++;
+    var hr = r;
+    if (multi){ lab(ws, r, 1, 1, 'No'); lab(ws, r, 2, 2, '일자'); lab(ws, r, 3, 3, '언어'); lab(ws, r, 4, 5, '말한 내용'); lab(ws, r, 6, 9, '방송한 내용 (번역)'); }
+    else { lab(ws, r, 1, 1, 'No'); lab(ws, r, 2, 3, '언어'); lab(ws, r, 4, 5, '말한 내용'); lab(ws, r, 6, 9, '방송한 내용 (번역)'); }
+    ws.getRow(r).height = 24; used += 24; r++;
+    items.forEach(function(o, i){
+      var x = o.x;
+      box(ws, r, 1, r, 1, i + 1);
+      if (multi){ box(ws, r, 2, r, 2, (+o.day.slice(5, 7)) + '/' + (+o.day.slice(8))); box(ws, r, 3, r, 3, x.d === 'f2k' ? x.fn + '→한' : '한→' + x.fn); }
+      else box(ws, r, 2, r, 3, langOf(x));
+      box(ws, r, 4, r, 5, x.s, { h:'left' }); box(ws, r, 6, r, 9, x.r, { h:'left' });
+      var hgt = Math.max(28, Math.max(nLines(x.s, 28), nLines(x.r, 31)) * 14 + 8);
+      ws.getRow(r).height = hgt; used += hgt; r++;
     });
+    var tail = 10 + 26 + 26, pageLeft = PAGE_H - (used % PAGE_H);
+    var room = used <= PAGE_H ? PAGE_H - used : pageLeft;
+    while (room >= 26 + tail){
+      for (var k = 1; k <= 9; k++) box(ws, r, k, r, k, '');
+      if (multi){ ws.mergeCells(r, 4, r, 5); } else { ws.mergeCells(r, 2, r, 3); ws.mergeCells(r, 4, r, 5); }
+      ws.mergeCells(r, 6, r, 9); ws.getRow(r).height = 26; room -= 26; r++;
+    }
+    ws.getRow(r).height = 10; r++;
+    box(ws, r, 1, r, 9, OKTXT, { border:false, size:11 }); ws.getRow(r).height = 26; r++;
+    box(ws, r, 1, r, 9, '교육 실시자 :  ' + (F.rWho || '') + '          (서명)', { border:false, size:11 }); ws.getRow(r).height = 26;
+    ws.pageSetup.printTitlesRow = hr + ':' + hr;
+    ws.pageSetup.printArea = 'A1:I' + r;
+
+    /* ── 참석자 서명지 1장 ── */
+    var N = attN();
+    if (N){
+      var w2 = sheet('참석자 서명지', [6, 14, 10, 15, 6, 14, 10, 15], true), u2 = head(w2, '참석자 서명지', 4, 5);
+      lab(w2, 4, 1, 2, multi ? '교육 기간' : '교육 일자'); val(w2, 4, 3, 4, R.label); lab(w2, 4, 5, 6, '교육 구분'); val(w2, 4, 7, 8, kindTxt);
+      lab(w2, 5, 1, 2, '현장명'); val(w2, 5, 3, 4, F.rSite); lab(w2, 5, 5, 6, '교육 실시자'); val(w2, 5, 7, 8, F.rWho);
+      w2.getRow(4).height = multi ? 34 : 24; w2.getRow(5).height = 24; u2 += (multi ? 34 : 24) + 24;
+      var r2 = 6;
+      if (SPX){ lab(w2, 6, 1, 2, '대상 작업'); val(w2, 6, 3, 8, spName(F)); var h6 = Math.max(24, nLines(spName(F), 56) * 14 + 10); w2.getRow(6).height = h6; u2 += h6; r2 = 7; }
+      w2.getRow(r2).height = 10; u2 += 10; r2++;
+      ['번호', '성명', '국적', '서명', '번호', '성명', '국적', '서명'].forEach(function(t, i){ lab(w2, r2, i + 1, i + 1, t); });
+      w2.getRow(r2).height = 24; u2 += 24;
+      var rows = Math.ceil(N / 2), rh = Math.max(20, Math.min(110, Math.floor((PAGE_H - u2 - 4) / rows)));
+      for (var i = 1; i <= rows; i++){
+        var rr = r2 + i;
+        box(w2, rr, 1, rr, 1, i); box(w2, rr, 5, rr, 5, i + rows <= N ? i + rows : '');
+        [2, 3, 4, 6, 7, 8].forEach(function(k){ box(w2, rr, k, rr, k, ''); });
+        w2.getRow(rr).height = rh;
+      }
+      w2.pageSetup.printArea = 'A1:H' + (r2 + rows);
+    }
     return wb.xlsx.writeBuffer();
   }
   $('rXls').onclick = function(){
@@ -1180,7 +1221,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     loadJS('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js', 'ExcelJS')
       .then(function(){ return buildXlsx(R); })
       .then(function(buf){
-        saveBlob(new Blob([buf], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), 'SafeTree_EduRecord_' + R.file + '.xlsx');
+        saveBlob(new Blob([buf], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), (isSp() ? 'SafeTree_특별교육_제' + spNo() + '호_' : 'SafeTree_EduRecord_') + R.file + '.xlsx');
         done(); toast('📊 엑셀 파일을 저장했습니다.\n다운로드 폴더에서 열어 고칠 수 있습니다.');
       })
       .catch(function(){ done(); toast('엑셀을 만들지 못했습니다.\n인터넷 연결을 확인하고 다시 눌러 주세요.'); });
