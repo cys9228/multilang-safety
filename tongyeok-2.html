@@ -71,6 +71,18 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 .list .bd button i{font-style:normal;font-size:28px}
 .list .bd button small{display:block;font-size:14px;font-weight:500;color:var(--mu)}
 /* 방송 화면 */
+.mul{background:var(--wh);border-radius:14px;padding:12px 12px 14px;margin:16px auto 0;max-width:420px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.mul .mh{font-size:17px;font-weight:900;text-align:center}
+.mul .mh span{display:block;font-size:13px;font-weight:600;color:var(--mu);margin-top:2px}
+.mul .mc{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0 8px}
+.mul .mc span{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:#1e3a8a;border-radius:999px;padding:6px 6px 6px 12px;font-size:16px;font-weight:800}
+.mul .mc span.m{background:var(--bl);color:#fff;padding-right:12px}
+.mul .mc button{background:none;border:0;font-size:16px;font-weight:900;color:inherit;cursor:pointer;padding:0 4px}
+.mul .ad{display:block;margin:0 auto;background:#fff;color:var(--bl);border:2px dashed var(--bl);border-radius:12px;padding:10px 16px;font-size:17px;font-weight:900;cursor:pointer}
+#grid button{position:relative}
+#grid button .no{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--bl);color:#fff;font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center}
+#lst .hint3{font-size:15px;color:var(--mu);text-align:center;padding:6px 10px 2px}
+#lst .done{position:sticky;bottom:0;display:block;width:100%;background:var(--bl);color:#fff;border:0;padding:16px;font-size:19px;font-weight:900;cursor:pointer}
 .lang2{white-space:pre-line;word-break:keep-all;text-align:center;font-size:30px;font-weight:900;margin:6px 0 2px}
 .micw{display:flex;justify-content:center;margin:34px 0 18px}
 #mic{width:210px;height:210px;border-radius:50%;border:0;background:var(--bl);color:#fff;font-size:22px;font-weight:900;box-shadow:0 0 0 12px rgba(59,78,240,.15);cursor:pointer;line-height:1.3}
@@ -303,7 +315,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 <!-- 언어 목록 -->
 <div class="list" id="lst" hidden>
   <div class="hd"><button class="back" id="lstX" aria-label="닫기">‹</button><b>언어 선택</b><input id="q" placeholder="🔍 나라·언어 검색 (예: 말레이)"></div>
-  <div class="bd" id="grid"></div>
+  <div class="hint3">누르는 순서대로 <b>1번 · 2번 · 3번</b> (최대 3개 나라) — 한국어로 한 번 말하면 차례대로 방송합니다</div><div class="bd" id="grid"></div><button type="button" class="done" id="lstDone">✔ 선택 완료</button>
 </div>
 
 <script>
@@ -470,6 +482,16 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   function srcL(){ return DIR === 'k2f' ? KO : TGT; }   // 알아들을 언어
   function dstL(){ return DIR === 'k2f' ? TGT : KO; }   // 방송할 언어
   var TGT = byG(ls('dnTrLang')) || byG('ms');
+  /* v3: 언어별 순차 방송 — 첫 언어(TGT) 다음에 차례로 방송할 언어들 */
+  var MULTI = []; try{ MULTI = (JSON.parse(ls('dnTrMulti') || '[]') || []).filter(function(g){ return byG(g) && g !== TGT.g; }).slice(0, 2); }catch(e){ MULTI = []; }
+  var SEL = [];   // 언어 선택 화면에서 고르는 중인 순서 (최대 3개)
+  function saveMulti(){ ls('dnTrMulti', JSON.stringify(MULTI)); }
+  function seqLangs(){
+    if (DIR !== 'k2f') return null;
+    var out = [TGT]; MULTI.forEach(function(g){ var L = byG(g); if (L && out.indexOf(L) < 0) out.push(L); });
+    return out.length > 1 ? out : null;
+  }
+  var PICK = 'main';
   var rate = 1.0;   // 말하기 속도 — 관리자가 구글 시트에서 정함 (기본 1.0배)
   var GD = 'm';   // 항상 남성으로 시작
   function paintGd(){ [].forEach.call(document.querySelectorAll('[data-gd]'), function(b){ b.className = b.dataset.gd === GD ? 'on' : ''; }); }
@@ -480,9 +502,14 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   /* ---------- 화면 ---------- */
   function show(id){ ['s0', 's1', 's2', 's3', 's4'].forEach(function(x){ $(x).hidden = x !== id; }); window.scrollTo(0, 0); }
   function paint(){
-    $('l1').textContent = TGT.fl + ' ' + TGT.ko; $('n1').textContent = TGT.na;
-    $('l2').textContent = DIR === 'k2f' ? TGT.fl + ' ' + TGT.ko : TGT.fl + ' ' + TGT.ko + '\n→ 🇰🇷 한국어';
-    $('lab2').textContent = DIR === 'k2f' ? '방송 언어' : '외국어로 말하면 한국어로 방송';
+    var SQ = seqLangs(), K = DIR; DIR = 'k2f'; var SQ1 = seqLangs(); DIR = K;
+    $('l1').textContent = SQ1 ? SQ1.map(function(L, i){ return (i + 1) + '. ' + L.fl + ' ' + L.ko; }).join('\n') : TGT.fl + ' ' + TGT.ko;
+    $('l1').style.whiteSpace = 'pre-line'; $('l1').style.fontSize = SQ1 ? '30px' : '';
+    $('n1').textContent = SQ1 ? '한국어로 한 번 말하면 1번부터 차례대로 방송' : TGT.na;
+    $('lab1').textContent = SQ1 ? '방송할 언어 (순서대로 ' + SQ1.length + '개)' : '방송할 언어';
+    $('l2').textContent = DIR === 'k2f' ? (SQ ? SQ.map(function(L, i){ return (i + 1) + '. ' + L.fl + ' ' + L.ko; }).join('\n') : TGT.fl + ' ' + TGT.ko) : TGT.fl + ' ' + TGT.ko + '\n→ 🇰🇷 한국어';
+    $('l2').style.fontSize = SQ && DIR === 'k2f' ? (SQ.length > 3 ? '20px' : '24px') : '';
+    $('lab2').textContent = DIR === 'k2f' ? (SQ ? '🔁 순차 방송 언어 (' + SQ.length + '개 · 차례대로)' : '방송 언어') : '외국어로 말하면 한국어로 방송';
     [].forEach.call(document.querySelectorAll('[data-dir]'), function(b){
       b.className = b.dataset.dir === DIR ? 'on' : '';
       b.textContent = b.dataset.dir === 'k2f' ? '🇰🇷 한국어\n→ ' + TGT.ko : TGT.ko + '\n→ 🇰🇷 한국어';
@@ -491,14 +518,24 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   function drawGrid(){
     var q = $('q').value.trim().toLowerCase();
     $('grid').innerHTML = LANGS.filter(function(L){ return !q || (L.ko + L.na + L.g).toLowerCase().indexOf(q) >= 0; }).map(function(L){
-      return '<button data-g="' + L.g + '"' + (L === TGT ? ' class="on"' : '') + '><i>' + L.fl + '</i><span>' + esc(L.ko) + '<small>' + esc(L.na) + '</small></span></button>';
+      var k = SEL.indexOf(L.g);
+      return '<button data-g="' + L.g + '"' + (k >= 0 ? ' class="on"' : '') + '>' + (k >= 0 ? '<b class="no">' + (k + 1) + '</b>' : '') + '<i>' + L.fl + '</i><span>' + esc(L.ko) + '<small>' + esc(L.na) + '</small></span></button>';
     }).join('') || '<div class="sub">찾는 언어가 없습니다</div>';
   }
-  function openList(){ $('q').value = ''; drawGrid(); $('lst').hidden = false; $('grid').scrollTop = 0; }
+  function openList(){ SEL = [TGT.g].concat(MULTI.filter(function(g){ return g !== TGT.g; })).slice(0, 3); $('q').value = ''; drawGrid(); $('lst').hidden = false; $('grid').scrollTop = 0; }
+  function applySel(){ if (!SEL.length){ toast('방송할 언어를 1개 이상 골라 주세요'); return false; } TGT = byG(SEL[0]); ls('dnTrLang', TGT.g); MULTI = SEL.slice(1); saveMulti(); paint(); $('lst').hidden = true; return true; }
   $('pick1').onclick = openList;
-  $('lstX').onclick = function(){ $('lst').hidden = true; };
+  $('lstDone').onclick = applySel;
+  $('lstX').onclick = function(){ if (SEL.length) applySel(); else $('lst').hidden = true; };
   $('q').oninput = drawGrid;
-  $('grid').onclick = function(e){ var b = e.target.closest('button'); if (!b) return; TGT = byG(b.dataset.g); ls('dnTrLang', TGT.g); paint(); $('lst').hidden = true; };
+  $('grid').onclick = function(e){
+    var b = e.target.closest('button[data-g]'); if (!b) return;
+    var g = b.dataset.g, i = SEL.indexOf(g);
+    if (i >= 0) SEL.splice(i, 1);
+    else { if (SEL.length >= 3){ toast('3개 나라까지 고를 수 있습니다.\n번호를 눌러 빼고 다시 고르세요.'); return; } SEL.push(g); }
+    drawGrid();
+  };
+
   $('go').onclick = function(){ unlock(); DIR = 'k2f'; paint(); show('s2'); };   // 들어갈 때마다 한국어 → 외국어로 시작
   document.addEventListener('click', function(e){
     var b = e.target.closest('[data-dir]'); if (!b || b.dataset.dir === DIR) return;
@@ -740,7 +777,31 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
       if (queue.length) pump(); else if (on && !speaking) setSt('🎙️ 듣는 중… 말씀하세요'); else if (!on) setSt('');
     });
   }
+  /* v3: 한국어 한 문장 → 여러 언어로 차례대로 번역·방송 */
+  function saveRecL(text, tr, L){
+    var a = recAll(); a.push({ t:Date.now(), d:'k2f', fl:L.fl, fn:L.ko, s:String(text).slice(0, 1000), r:String(tr).slice(0, 1500) }); recPut(a);
+  }
+  function sayMulti(text, Ls){
+    $('srcT').textContent = text; $('dstT').textContent = '…';
+    var out = [], i = 0;
+    return (function nx(){
+      if (i >= Ls.length) return Promise.resolve();
+      var L = Ls[i++], tag = '(' + i + '/' + Ls.length + ') ' + L.fl + ' ' + L.ko;
+      setSt('🔄 번역 중 ' + tag);
+      return translate(text, 'ko', L.g).then(function(tr){
+        out.push(L.fl + ' ' + tr); $('dstT').textContent = out.join('\n');
+        setSt('🔊 방송 중 ' + tag); saveRecL(text, tr, L);
+        return Promise.race([speak(tr, L), sleep(Math.min(60000, 8000 + tr.length * 250))]);
+      }).catch(function(){ out.push(L.fl + ' (번역 실패)'); $('dstT').textContent = out.join('\n'); })
+        .then(function(){ return on || i < Ls.length ? sleep(400) : null; }).then(nx);
+    })();
+  }
   function say(text){
+    var SQ = seqLangs();
+    if (SQ){
+      playing = true; closeMic(); try{ logUse(text); }catch(_){}
+      return sayMulti(text, SQ).then(function(){ playing = false; if (on) return sleep(250).then(openMic).catch(function(){}); });
+    }
     var L = dstL();
     $('srcT').textContent = text; $('dstT').textContent = '…'; setSt('🔄 번역 중…');
     return translate(text, srcL().g, L.g).then(function(tr){
@@ -788,10 +849,11 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     if (busy){ pendSR.push(text); return; }
     busy = true;
     clearTimeout(fTimer); buf = ''; interim = ''; stopRec();   // 방송하는 동안 마이크를 끔 → 스피커 소리를 다시 듣고 또 방송하는 일 방지
-    var L = dstL();
-    $('srcT').textContent = text; $('dstT').textContent = '…'; setSt('🔄 번역 중…');
+    var L = dstL(), SQ = seqLangs();
+    (SQ ? (logUse(text), sayMulti(text, SQ)) :
+    ($('srcT').textContent = text, $('dstT').textContent = '…', setSt('🔄 번역 중…'),
     translate(text, srcL().g, L.g).then(function(tr){ $('dstT').textContent = tr; setSt('🔊 방송 중…'); logUse(text); saveRec(text, tr); return Promise.race([speak(tr, L), sleep(Math.min(60000, 8000 + tr.length * 250))]); })
-      .catch(function(){ $('dstT').textContent = ''; setSt('❌ 번역 실패 — 인터넷을 확인하세요'); return sleep(1500); })
+      .catch(function(){ $('dstT').textContent = ''; setSt('❌ 번역 실패 — 인터넷을 확인하세요'); return sleep(1500); })))
       .then(function(){ return sleep(500); })
       .then(function(){ busy = false; ignoreUntil = Date.now() + 700; if (pendSR.length) return handleSR(pendSR.shift()); if (on){ setSt('🎙️ 듣는 중… 말씀하세요'); if (!rec) setTimeout(startRec, 150); } else setSt(''); });
   }
