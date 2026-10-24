@@ -82,7 +82,12 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 #grid button{position:relative}
 #grid button .no{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--bl);color:#fff;font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center}
 #lst .hint3{font-size:15px;color:var(--mu);text-align:center;padding:6px 10px 2px}
-#lst .done{position:sticky;bottom:0;display:block;width:100%;background:var(--bl);color:#fff;border:0;padding:16px;font-size:19px;font-weight:900;cursor:pointer}
+#lst .ttl{display:flex;align-items:center;justify-content:flex-start;gap:14px;margin:6px 0 12px}
+#lst .ttl b{margin:0}
+@keyframes dnBlink{0%,100%{background:var(--bl);box-shadow:0 0 0 0 rgba(59,91,255,.6)}50%{background:#f59e0b;box-shadow:0 0 0 8px rgba(245,158,11,.25)}}
+#lst .done.blink{animation:dnBlink 1s ease-in-out infinite}
+#lst .done{flex:none;background:var(--bl);color:#fff;border:0;border-radius:12px;padding:10px 18px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+#s1 .gd{margin:26px auto 30px}
 .lang2{white-space:pre-line;word-break:keep-all;text-align:center;font-size:30px;font-weight:900;margin:6px 0 2px}
 .micw{display:flex;justify-content:center;margin:34px 0 18px}
 #mic{width:210px;height:210px;border-radius:50%;border:0;background:var(--bl);color:#fff;font-size:22px;font-weight:900;box-shadow:0 0 0 12px rgba(59,78,240,.15);cursor:pointer;line-height:1.3}
@@ -239,11 +244,11 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <div class="top"></div>
   <h1>안전교육 통역시스템</h1>
   <div class="who" id="who"></div>
-  <div class="lab" id="lab1">방송할 언어</div>
-  <div class="big" id="l1"></div>
-  <div class="sub" id="n1"></div>
+  <div class="lab" id="lab1" hidden>방송할 언어</div>
+  <div class="big" id="l1" hidden></div>
+  <div class="sub" id="n1" hidden></div>
   <div class="gd"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
-  <div class="ask">이 언어로 방송하시겠습니까?</div>
+  <div class="ask" hidden>이 언어로 방송하시겠습니까?</div>
   <div class="btns"><button class="ok" id="go">확인</button><button class="gl" id="pick1" aria-label="언어 바꾸기">🌐</button></div>
   <button class="recb" id="recBtn" type="button">📋 교육 기록 · 증빙 출력</button>
   <button class="kshare" data-share type="button">💬 카톡으로 앱 보내기</button>
@@ -314,8 +319,8 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 
 <!-- 언어 목록 -->
 <div class="list" id="lst" hidden>
-  <div class="hd"><button class="back" id="lstX" aria-label="닫기">‹</button><b>언어 선택</b><input id="q" placeholder="🔍 나라·언어 검색 (예: 말레이)"></div>
-  <div class="hint3">누르는 순서대로 <b>1번 · 2번 · 3번</b> (최대 3개 나라) — 한국어로 한 번 말하면 차례대로 방송합니다</div><div class="bd" id="grid"></div><button type="button" class="done" id="lstDone">✔ 선택 완료</button>
+  <div class="hd"><button class="back" id="lstX" aria-label="닫기">‹</button><div class="ttl"><b>언어 선택</b><button type="button" class="done" id="lstDone">✔ 선택 완료</button></div><input id="q" placeholder="🔍 나라·언어 검색 (예: 말레이)"></div>
+  <div class="hint3">누르는 순서대로 <b>1번 · 2번 · 3번</b> (최대 3개 나라) — 한국어로 한 번 말하면 차례대로 방송합니다</div><div class="bd" id="grid"></div>
 </div>
 
 <script>
@@ -502,11 +507,8 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   /* ---------- 화면 ---------- */
   function show(id){ ['s0', 's1', 's2', 's3', 's4'].forEach(function(x){ $(x).hidden = x !== id; }); window.scrollTo(0, 0); }
   function paint(){
-    var SQ = seqLangs(), K = DIR; DIR = 'k2f'; var SQ1 = seqLangs(); DIR = K;
-    $('l1').textContent = SQ1 ? SQ1.map(function(L, i){ return (i + 1) + '. ' + L.fl + ' ' + L.ko; }).join('\n') : TGT.fl + ' ' + TGT.ko;
-    $('l1').style.whiteSpace = 'pre-line'; $('l1').style.fontSize = SQ1 ? '30px' : '';
-    $('n1').textContent = SQ1 ? '한국어로 한 번 말하면 1번부터 차례대로 방송' : TGT.na;
-    $('lab1').textContent = SQ1 ? '방송할 언어 (순서대로 ' + SQ1.length + '개)' : '방송할 언어';
+    var SQ = seqLangs();
+    $('l1').textContent = TGT.fl + ' ' + TGT.ko; $('n1').textContent = TGT.na; $('lab1').textContent = '방송할 언어';
     $('l2').textContent = DIR === 'k2f' ? (SQ ? SQ.map(function(L, i){ return (i + 1) + '. ' + L.fl + ' ' + L.ko; }).join('\n') : TGT.fl + ' ' + TGT.ko) : TGT.fl + ' ' + TGT.ko + '\n→ 🇰🇷 한국어';
     $('l2').style.fontSize = SQ && DIR === 'k2f' ? (SQ.length > 3 ? '20px' : '24px') : '';
     $('lab2').textContent = DIR === 'k2f' ? (SQ ? '🔁 순차 방송 언어 (' + SQ.length + '개 · 차례대로)' : '방송 언어') : '외국어로 말하면 한국어로 방송';
@@ -522,10 +524,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
       return '<button data-g="' + L.g + '"' + (k >= 0 ? ' class="on"' : '') + '>' + (k >= 0 ? '<b class="no">' + (k + 1) + '</b>' : '') + '<i>' + L.fl + '</i><span>' + esc(L.ko) + '<small>' + esc(L.na) + '</small></span></button>';
     }).join('') || '<div class="sub">찾는 언어가 없습니다</div>';
   }
-  function openList(){ SEL = [TGT.g].concat(MULTI.filter(function(g){ return g !== TGT.g; })).slice(0, 3); $('q').value = ''; drawGrid(); $('lst').hidden = false; $('grid').scrollTop = 0; }
-  function applySel(){ if (!SEL.length){ toast('방송할 언어를 1개 이상 골라 주세요'); return false; } TGT = byG(SEL[0]); ls('dnTrLang', TGT.g); MULTI = SEL.slice(1); saveMulti(); paint(); $('lst').hidden = true; return true; }
+  function openList(){ SEL = [TGT.g].concat(MULTI.filter(function(g){ return g !== TGT.g; })).slice(0, 3); $('q').value = ''; drawGrid(); $('lst').hidden = false; $('grid').scrollTop = 0; $('lstDone').classList.add('blink'); }
+  function applySel(go){ if (!SEL.length){ toast('방송할 언어를 1개 이상 골라 주세요'); return false; } TGT = byG(SEL[0]); ls('dnTrLang', TGT.g); MULTI = SEL.slice(1); saveMulti(); paint(); $('lst').hidden = true; $('lstDone').classList.remove('blink'); if (go === true){ try{ unlock(); }catch(_){} DIR = 'k2f'; paint(); show('s2'); } return true; }
   $('pick1').onclick = openList;
-  $('lstDone').onclick = applySel;
+  $('lstDone').onclick = function(){ applySel(true); };
   $('lstX').onclick = function(){ if (SEL.length) applySel(); else $('lst').hidden = true; };
   $('q').oninput = drawGrid;
   $('grid').onclick = function(e){
@@ -533,7 +535,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     var g = b.dataset.g, i = SEL.indexOf(g);
     if (i >= 0) SEL.splice(i, 1);
     else { if (SEL.length >= 3){ toast('3개 나라까지 고를 수 있습니다.\n번호를 눌러 빼고 다시 고르세요.'); return; } SEL.push(g); }
-    drawGrid();
+    drawGrid(); $('lstDone').classList.toggle('blink', SEL.length > 0);
   };
 
   $('go').onclick = function(){ unlock(); DIR = 'k2f'; paint(); show('s2'); };   // 들어갈 때마다 한국어 → 외국어로 시작
