@@ -88,6 +88,21 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 #lst .done.blink{animation:dnBlink 1s ease-in-out infinite}
 #lst .done{flex:none;background:var(--bl);color:#fff;border:0;border-radius:12px;padding:10px 18px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15)}
 #s1 .gd{margin:26px auto 30px}
+.bx{max-width:420px;width:100%;margin:4px auto 0}
+.bh{font-size:19px;font-weight:900;margin:0 2px 10px}
+.lcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.lcards.n1{grid-template-columns:1fr}.lcards.n2{grid-template-columns:1fr 1fr}
+.lcards button{background:var(--wh);border:2px solid transparent;border-radius:16px;padding:14px 4px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.07);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:17px;font-weight:900;color:var(--tx);font-family:inherit}
+.lcards button img{width:48px;height:48px;border-radius:50%;object-fit:cover;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.lcards button i{font-style:normal;font-size:38px;line-height:48px}
+.lcards button.now{background:#dbe6ff;border-color:var(--bl);color:var(--bl)}
+.vg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vg button{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--wh);color:var(--tx);border:0;border-radius:14px;padding:16px 6px;font-size:20px;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer;font-family:inherit}
+.vg button svg{width:26px;height:26px;fill:currentColor}
+.vg button.on{background:var(--bl);color:#fff}
+#mic{width:230px;height:230px}
+#mic svg{display:block;width:78px;height:78px;margin:0 auto 6px;fill:#fff}
+#mic small{display:block;font-size:14px;font-weight:700;opacity:.9;margin-top:4px}
 .lang2{white-space:pre-line;word-break:keep-all;text-align:center;font-size:30px;font-weight:900;margin:6px 0 2px}
 .micw{display:flex;justify-content:center;margin:34px 0 18px}
 #mic{width:210px;height:210px;border-radius:50%;border:0;background:var(--bl);color:#fff;font-size:22px;font-weight:900;box-shadow:0 0 0 12px rgba(59,78,240,.15);cursor:pointer;line-height:1.3}
@@ -247,7 +262,6 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   <div class="lab" id="lab1" hidden>방송할 언어</div>
   <div class="big" id="l1" hidden></div>
   <div class="sub" id="n1" hidden></div>
-  <div class="gd"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
   <div class="ask" hidden>이 언어로 방송하시겠습니까?</div>
   <div class="btns"><button class="ok" id="go">확인</button><button class="gl" id="pick1" aria-label="언어 바꾸기">🌐</button></div>
   <button class="recb" id="recBtn" type="button">📋 교육 기록 · 증빙 출력</button>
@@ -258,10 +272,15 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 <!-- ② 방송 화면 : 마이크 + 속도 -->
 <div class="scr" id="s2" hidden>
   <div class="top"><button class="back" id="back" aria-label="뒤로">‹</button></div>
-  <div class="dir" style="margin-bottom:8px"><button data-dir="k2f"></button><button data-dir="f2k"></button></div>
-  <div class="lab" id="lab2">방송 언어</div>
-  <div class="lang2" id="l2"></div>
-  <div class="gd" style="margin-top:10px"><button data-gd="m">👨 남성</button><button data-gd="f">👩 여성</button></div>
+  <div class="dir" style="margin-bottom:16px"><button data-dir="k2f"></button><button data-dir="f2k"></button></div>
+  <div class="lab" id="lab2" hidden>방송 언어</div>
+  <div class="lang2" id="l2" hidden></div>
+  <div class="bx">
+    <div class="bh">선택한 방송 언어</div>
+    <div class="lcards" id="lc"></div>
+    <div class="bh" style="margin-top:18px">음성 선택</div>
+    <div class="vg"><button type="button" data-gd="m"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.2"/><path d="M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5z"/></svg>남성</button><button type="button" data-gd="f"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2c-2.7 0-4.6 2-4.6 4.8 0 1.7.4 3.6-.9 5.2 1 .7 2.4 1 3.6 1h3.8c1.2 0 2.6-.3 3.6-1-1.3-1.6-.9-3.5-.9-5.2 0-2.8-1.9-4.8-4.6-4.8z"/><path d="M4 21c0-4.2 3.4-7 8-7s8 2.8 8 7z"/></svg>여성</button></div>
+  </div>
   <div class="micw"><button id="mic"><span>🎙️</span>눌러서 시작</button></div>
   <div id="st"></div>
   <button id="ptt" hidden><span class="tt"><svg class="wt" viewBox="0 0 40 64" aria-hidden="true"><rect x="25" y="1" width="5" height="18" rx="2" fill="#facc15"/><rect x="6" y="15" width="28" height="47" rx="6" fill="#facc15"/><rect x="11" y="21" width="18" height="11" rx="2" fill="#111827"/><g fill="#111827"><rect x="11" y="37" width="18" height="2.5" rx="1.2"/><rect x="11" y="42" width="18" height="2.5" rx="1.2"/><rect x="11" y="47" width="18" height="2.5" rx="1.2"/></g><circle cx="20" cy="55.5" r="3" fill="#dc2626"/></svg>무전기 방식</span><small>누르고 있는 동안만 말하기<br>손 떼면 방송</small></button>
@@ -506,8 +525,16 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
 
   /* ---------- 화면 ---------- */
   function show(id){ ['s0', 's1', 's2', 's3', 's4'].forEach(function(x){ $(x).hidden = x !== id; }); window.scrollTo(0, 0); }
+  function flagCode(fl){ var cps = Array.from(fl || ''); if (cps.length < 2) return ''; var a = cps[0].codePointAt(0) - 0x1F1E6, b = cps[1].codePointAt(0) - 0x1F1E6; if (a < 0 || a > 25 || b < 0 || b > 25) return ''; return String.fromCharCode(97 + a) + String.fromCharCode(97 + b); }
+  function flagHTML(L){ var c = flagCode(L.fl); return c ? '<img src="https://flagcdn.com/w80/' + c + '.png" alt="" onerror="this.outerHTML=\'<i>' + L.fl + '</i>\'">' : '<i>' + L.fl + '</i>'; }
+  function drawCards(nowG){
+    var Ls = seqLangs() || [TGT], el = $('lc'); if (!el) return;
+    var bh = document.querySelector('.bx .bh'); if (bh) bh.textContent = DIR === 'k2f' ? '선택한 방송 언어' : '외국어로 말하면 🇰🇷 한국어로 방송';
+    el.className = 'lcards n' + Math.min(3, Ls.length);
+    el.innerHTML = Ls.map(function(L, i){ return '<button type="button" data-lc="1"' + ((nowG ? L.g === nowG : i === 0) ? ' class="now"' : '') + ' title="언어 바꾸기">' + flagHTML(L) + esc(L.ko) + '</button>'; }).join('');
+  }
   function paint(){
-    var SQ = seqLangs();
+    var SQ = seqLangs(); drawCards();
     $('l1').textContent = TGT.fl + ' ' + TGT.ko; $('n1').textContent = TGT.na; $('lab1').textContent = '방송할 언어';
     $('l2').textContent = DIR === 'k2f' ? (SQ ? SQ.map(function(L, i){ return (i + 1) + '. ' + L.fl + ' ' + L.ko; }).join('\n') : TGT.fl + ' ' + TGT.ko) : TGT.fl + ' ' + TGT.ko + '\n→ 🇰🇷 한국어';
     $('l2').style.fontSize = SQ && DIR === 'k2f' ? (SQ.length > 3 ? '20px' : '24px') : '';
@@ -527,6 +554,7 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
   function openList(){ SEL = [TGT.g].concat(MULTI.filter(function(g){ return g !== TGT.g; })).slice(0, 3); $('q').value = ''; drawGrid(); $('lst').hidden = false; $('grid').scrollTop = 0; $('lstDone').classList.add('blink'); }
   function applySel(go){ if (!SEL.length){ toast('방송할 언어를 1개 이상 골라 주세요'); return false; } TGT = byG(SEL[0]); ls('dnTrLang', TGT.g); MULTI = SEL.slice(1); saveMulti(); paint(); $('lst').hidden = true; $('lstDone').classList.remove('blink'); if (go === true){ try{ unlock(); }catch(_){} DIR = 'k2f'; paint(); show('s2'); } return true; }
   $('pick1').onclick = openList;
+  $('lc').onclick = function(e){ if (e.target.closest('[data-lc]')){ try{ stopAll(); }catch(_){} openList(); } };
   $('lstDone').onclick = function(){ applySel(true); };
   $('lstX').onclick = function(){ if (SEL.length) applySel(); else $('lst').hidden = true; };
   $('q').oninput = drawGrid;
@@ -681,7 +709,10 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     while (size > 18 && el.scrollWidth > w){ size -= 2; el.style.fontSize = size + 'px'; }
   }
   window.addEventListener('resize', fitSt);
-  function micUI(){ $('mic').className = on ? 'on' : ''; $('mic').innerHTML = on ? '<span>⏹️</span>눌러서 멈춤' : '<span>🎙️</span>눌러서 시작'; if (!on) setSt(''); }
+  var MIC_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="2" width="7" height="12.5" rx="3.5"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0h-1.8a4.7 4.7 0 0 1-9.4 0z"/><rect x="11.1" y="17.6" width="1.8" height="2.8"/><rect x="8" y="20" width="8" height="1.8" rx=".9"/></svg>';
+  var STOP_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>';
+  function micUI(){ $('mic').className = on ? 'on' : ''; $('mic').innerHTML = on ? STOP_SVG + '눌러서 멈춤<small>(방송 중입니다)</small>' : MIC_SVG + '눌러서 말하기<small>(말하는 동안 방송됩니다)</small>'; if (!on) setSt(''); }
+  try{ micUI(); }catch(_){}
   function wake(o){ try{ if (o && navigator.wakeLock) navigator.wakeLock.request('screen').then(function(w){ wl = w; }).catch(function(){}); else if (!o && wl){ wl.release(); wl = null; } }catch(e){} }
   document.addEventListener('visibilitychange', function(){ if (on && document.visibilityState === 'visible') wake(true); });
 
@@ -789,14 +820,14 @@ h1{text-align:center;font-size:34px;font-weight:900;margin:40px 0 60px;letter-sp
     return (function nx(){
       if (i >= Ls.length) return Promise.resolve();
       var L = Ls[i++], tag = '(' + i + '/' + Ls.length + ') ' + L.fl + ' ' + L.ko;
-      setSt('🔄 번역 중 ' + tag);
+      setSt('🔄 번역 중 ' + tag); drawCards(L.g);
       return translate(text, 'ko', L.g).then(function(tr){
         out.push(L.fl + ' ' + tr); $('dstT').textContent = out.join('\n');
         setSt('🔊 방송 중 ' + tag); saveRecL(text, tr, L);
         return Promise.race([speak(tr, L), sleep(Math.min(60000, 8000 + tr.length * 250))]);
       }).catch(function(){ out.push(L.fl + ' (번역 실패)'); $('dstT').textContent = out.join('\n'); })
         .then(function(){ return on || i < Ls.length ? sleep(400) : null; }).then(nx);
-    })();
+    })().then(function(){ drawCards(); });
   }
   function say(text){
     var SQ = seqLangs();
